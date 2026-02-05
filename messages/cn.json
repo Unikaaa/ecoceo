@@ -1,0 +1,45 @@
+{
+  "common": {
+    "home": "首页",
+    "shop": "商店",
+    "cart": "购物车",
+    "checkout": "结账",
+    "customizer": "定制",
+    "about": "关于我们",
+    "contact": "联系我们",
+    "shipping": "配送",
+    "returns": "退货"
+  },
+  "home": {
+    "title": "艺术陶瓷",
+    "subtitle": "为您的家创造独特作品",
+    "exploreShop": "探索商店",
+    "createProduct": "创建您的产品",
+    "featuredProducts": "我们的精选",
+    "viewAll": "查看所有产品"
+  },
+  "shop": {
+    "title": "我们的商店",
+    "addToCart": "加入购物车",
+    "inStock": "有库存",
+    "outOfStock": "缺货",
+    "price": "价格"
+  },
+  "cart": {
+    "title": "您的购物车",
+    "empty": "您的购物车是空的",
+    "subtotal": "小计",
+    "shipping": "配送",
+    "total": "总计",
+    "checkout": "前往结账",
+    "continueShopping": "继续购物",
+    "remove": "移除",
+    "quantity": "数量"
+  },
+  "product": {
+    "description": "描述",
+    "specifications": "规格",
+    "addToCart": "加入购物车",
+    "quantity": "数量"
+  }
+}

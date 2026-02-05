@@ -1,0 +1,45 @@
+{
+  "common": {
+    "home": "Inicio",
+    "shop": "Tienda",
+    "cart": "Carrito",
+    "checkout": "Pago",
+    "customizer": "Personalizar",
+    "about": "Sobre Nosotros",
+    "contact": "Contacto",
+    "shipping": "Envío",
+    "returns": "Devoluciones"
+  },
+  "home": {
+    "title": "Cerámica Artística",
+    "subtitle": "Crea piezas únicas para tu hogar",
+    "exploreShop": "Explorar Tienda",
+    "createProduct": "Crea Tu Producto",
+    "featuredProducts": "Nuestros Favoritos",
+    "viewAll": "Ver Todos los Productos"
+  },
+  "shop": {
+    "title": "Nuestra Tienda",
+    "addToCart": "Añadir al Carrito",
+    "inStock": "Disponible",
+    "outOfStock": "Agotado",
+    "price": "Precio"
+  },
+  "cart": {
+    "title": "Tu Carrito",
+    "empty": "Tu carrito está vacío",
+    "subtotal": "Subtotal",
+    "shipping": "Envío",
+    "total": "Total",
+    "checkout": "Proceder al Pago",
+    "continueShopping": "Continuar Comprando",
+    "remove": "Eliminar",
+    "quantity": "Cantidad"
+  },
+  "product": {
+    "description": "Descripción",
+    "specifications": "Especificaciones",
+    "addToCart": "Añadir al Carrito",
+    "quantity": "Cantidad"
+  }
+}

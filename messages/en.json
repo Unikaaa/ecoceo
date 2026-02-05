@@ -1,0 +1,45 @@
+{
+  "common": {
+    "home": "Home",
+    "shop": "Shop",
+    "cart": "Cart",
+    "checkout": "Checkout",
+    "customizer": "Customize",
+    "about": "About Us",
+    "contact": "Contact",
+    "shipping": "Shipping",
+    "returns": "Returns"
+  },
+  "home": {
+    "title": "Artistic Ceramics",
+    "subtitle": "Create unique pieces for your home",
+    "exploreShop": "Explore Shop",
+    "createProduct": "Create Your Product",
+    "featuredProducts": "Our Favorites",
+    "viewAll": "View All Products"
+  },
+  "shop": {
+    "title": "Our Shop",
+    "addToCart": "Add to Cart",
+    "inStock": "In Stock",
+    "outOfStock": "Out of Stock",
+    "price": "Price"
+  },
+  "cart": {
+    "title": "Your Cart",
+    "empty": "Your cart is empty",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "total": "Total",
+    "checkout": "Proceed to Checkout",
+    "continueShopping": "Continue Shopping",
+    "remove": "Remove",
+    "quantity": "Quantity"
+  },
+  "product": {
+    "description": "Description",
+    "specifications": "Specifications",
+    "addToCart": "Add to Cart",
+    "quantity": "Quantity"
+  }
+}

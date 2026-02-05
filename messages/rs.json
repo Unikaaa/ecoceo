@@ -1,0 +1,45 @@
+{
+  "common": {
+    "home": "Почетна",
+    "shop": "Продавница",
+    "cart": "Корпа",
+    "checkout": "Плаћање",
+    "customizer": "Прилагоди",
+    "about": "О нама",
+    "contact": "Контакт",
+    "shipping": "Достава",
+    "returns": "Повраћај"
+  },
+  "home": {
+    "title": "Уметничка Керамика",
+    "subtitle": "Креирајте јединствене комаде за ваш дом",
+    "exploreShop": "Истражите Продавницу",
+    "createProduct": "Креирајте Ваш Производ",
+    "featuredProducts": "Наши Фаворити",
+    "viewAll": "Погледајте Све Производе"
+  },
+  "shop": {
+    "title": "Наша Продавница",
+    "addToCart": "Додај у Корпу",
+    "inStock": "На лагеру",
+    "outOfStock": "Нема на лагеру",
+    "price": "Цена"
+  },
+  "cart": {
+    "title": "Ваша Корпа",
+    "empty": "Ваша корпа је празна",
+    "subtotal": "Међузбир",
+    "shipping": "Достава",
+    "total": "Укупно",
+    "checkout": "Наставите на Плаћање",
+    "continueShopping": "Наставите са Куповином",
+    "remove": "Уклони",
+    "quantity": "Количина"
+  },
+  "product": {
+    "description": "Опис",
+    "specifications": "Спецификације",
+    "addToCart": "Додај у Корпу",
+    "quantity": "Количина"
+  }
+}
