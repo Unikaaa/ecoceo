@@ -19,12 +19,17 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url)
     const categoryId = searchParams.get('category_id')
+    const includeInactive = searchParams.get('include_inactive') === 'true'
 
     let query = supabase
       .from('product_types')
       .select('*')
-      .eq('is_active', true)
-      .order('display_order', { ascending: true })
+
+    if (!includeInactive) {
+      query = query.eq('is_active', true)
+    }
+
+    query = query.order('display_order', { ascending: true })
 
     if (categoryId) {
       query = query.eq('category_id', categoryId)
@@ -134,11 +139,17 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'ID tipo prodotto richiesto' }, { status: 400 })
     }
 
+    // Prima elimina le configurazioni che referenziano questo tipo prodotto
+    await supabase
+      .from('configurations')
+      .delete()
+      .eq('product_type_id', id)
+
     const { error } = await supabase.from('product_types').delete().eq('id', id)
 
     if (error) {
       console.error('Errore eliminazione tipo prodotto:', error)
-      return NextResponse.json({ error: 'Errore durante l\'eliminazione del tipo prodotto' }, { status: 500 })
+      return NextResponse.json({ error: 'Errore durante l\'eliminazione del tipo prodotto. Potrebbe avere elementi collegati.' }, { status: 500 })
     }
 
     return NextResponse.json({ success: true })

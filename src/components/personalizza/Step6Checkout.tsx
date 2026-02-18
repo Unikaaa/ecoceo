@@ -9,7 +9,6 @@ interface Step6CheckoutProps {
   state: PersonalizzaState
   sessionId: string
   onPrev: () => void
-  onNext?: () => void
 }
 
 export default function PersonalizzaStep6({

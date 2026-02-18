@@ -39,10 +39,15 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ background: data })
     }
 
+    const includeInactive = searchParams.get('include_inactive') === 'true'
+
     let query = supabase
       .from('backgrounds')
       .select('*')
-      .eq('is_active', true)
+
+    if (!includeInactive) {
+      query = query.eq('is_active', true)
+    }
 
     if (styleId) {
       query = query.eq('style_id', styleId)
@@ -174,11 +179,17 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'ID sfondo richiesto' }, { status: 400 })
     }
 
+    // Prima elimina le configurazioni che referenziano questo sfondo
+    await supabase
+      .from('configurations')
+      .delete()
+      .eq('background_id', id)
+
     const { error } = await supabase.from('backgrounds').delete().eq('id', id)
 
     if (error) {
       console.error('Errore eliminazione sfondo:', error)
-      return NextResponse.json({ error: 'Errore durante l\'eliminazione dello sfondo' }, { status: 500 })
+      return NextResponse.json({ error: 'Errore durante l\'eliminazione dello sfondo. Potrebbe avere elementi collegati.' }, { status: 500 })
     }
 
     return NextResponse.json({ success: true })

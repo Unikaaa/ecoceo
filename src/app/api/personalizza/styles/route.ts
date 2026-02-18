@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
@@ -8,7 +8,7 @@ const supabase = supabaseUrl && supabaseServiceKey
   ? createClient(supabaseUrl, supabaseServiceKey)
   : null
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     if (!supabase) {
       return NextResponse.json(
@@ -17,10 +17,18 @@ export async function GET() {
       )
     }
 
-    const { data, error } = await supabase
+    const { searchParams } = new URL(request.url)
+    const includeInactive = searchParams.get('include_inactive') === 'true'
+
+    let query = supabase
       .from('styles')
       .select('*')
-      .eq('is_active', true)
+
+    if (!includeInactive) {
+      query = query.eq('is_active', true)
+    }
+
+    const { data, error } = await query
       .order('display_order', { ascending: true })
 
     if (error) {
@@ -129,11 +137,17 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'ID stile richiesto' }, { status: 400 })
     }
 
+    // Prima elimina le configurazioni che referenziano questo stile
+    await supabase
+      .from('configurations')
+      .delete()
+      .eq('style_id', id)
+
     const { error } = await supabase.from('styles').delete().eq('id', id)
 
     if (error) {
       console.error('Errore eliminazione stile:', error)
-      return NextResponse.json({ error: 'Errore durante l\'eliminazione dello stile' }, { status: 500 })
+      return NextResponse.json({ error: 'Errore durante l\'eliminazione dello stile. Potrebbe avere elementi collegati.' }, { status: 500 })
     }
 
     return NextResponse.json({ success: true })

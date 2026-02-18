@@ -22,10 +22,15 @@ export async function GET(request: NextRequest) {
     const styleId = searchParams.get('style_id')
     const categoryId = searchParams.get('category_id')
 
+    const includeInactive = searchParams.get('include_inactive') === 'true'
+
     let query = supabase
       .from('decorations')
       .select('*')
-      .eq('is_active', true)
+
+    if (!includeInactive) {
+      query = query.eq('is_active', true)
+    }
 
     if (ids) {
       const idArray = ids.split(',')
@@ -162,11 +167,12 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'ID decorazione richiesto' }, { status: 400 })
     }
 
+    // Decorazioni non hanno FK diretta in configurations, ma puliamo per sicurezza
     const { error } = await supabase.from('decorations').delete().eq('id', id)
 
     if (error) {
       console.error('Errore eliminazione decorazione:', error)
-      return NextResponse.json({ error: 'Errore durante l\'eliminazione della decorazione' }, { status: 500 })
+      return NextResponse.json({ error: 'Errore durante l\'eliminazione della decorazione. Potrebbe avere elementi collegati.' }, { status: 500 })
     }
 
     return NextResponse.json({ success: true })

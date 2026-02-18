@@ -50,6 +50,8 @@ export default function PersonalizzaStep1({
 
   const handleSelectCategory = (categoryId: string) => {
     updateState({ categoryId })
+    // Auto-avanza allo step successivo al click
+    onNext()
   }
 
   if (isLoading) {
@@ -119,18 +121,12 @@ export default function PersonalizzaStep1({
         ))}
       </div>
 
-      {/* Bottoni Navigazione */}
-      <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
-        <div></div>
-        <Button
-          onClick={onNext}
-          disabled={!state.categoryId}
-          variant="primary"
-          className="px-8 py-3"
-        >
-          Avanti →
-        </Button>
-      </div>
+      {/* Indicazione selezione */}
+      {!state.categoryId && (
+        <p className="text-center text-gray-500 mt-8 pt-6 border-t border-gray-200 text-sm">
+          Seleziona una categoria per continuare
+        </p>
+      )}
     </div>
   )
 }

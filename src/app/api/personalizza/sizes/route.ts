@@ -37,10 +37,17 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ size: data })
     }
 
-    const { data, error } = await supabase
+    const includeInactive = searchParams.get('include_inactive') === 'true'
+
+    let sizesQuery = supabase
       .from('sizes')
       .select('*')
-      .eq('is_active', true)
+
+    if (!includeInactive) {
+      sizesQuery = sizesQuery.eq('is_active', true)
+    }
+
+    const { data, error } = await sizesQuery
       .order('display_order', { ascending: true })
 
     if (error) {
@@ -148,11 +155,17 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'ID dimensione richiesto' }, { status: 400 })
     }
 
+    // Prima elimina le configurazioni che referenziano questa dimensione
+    await supabase
+      .from('configurations')
+      .delete()
+      .eq('size_id', id)
+
     const { error } = await supabase.from('sizes').delete().eq('id', id)
 
     if (error) {
       console.error('Errore eliminazione dimensione:', error)
-      return NextResponse.json({ error: 'Errore durante l\'eliminazione della dimensione' }, { status: 500 })
+      return NextResponse.json({ error: 'Errore durante l\'eliminazione della dimensione. Potrebbe avere elementi collegati.' }, { status: 500 })
     }
 
     return NextResponse.json({ success: true })

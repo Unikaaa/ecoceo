@@ -51,6 +51,8 @@ export default function PersonalizzaStep3({
 
   const handleSelectStyle = (styleId: string) => {
     updateState({ styleId })
+    // Auto-avanza allo step successivo al click
+    onNext()
   }
 
   if (isLoading) {
@@ -125,7 +127,7 @@ export default function PersonalizzaStep3({
         ))}
       </div>
 
-      {/* Bottoni Navigazione */}
+      {/* Navigazione */}
       <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
         <Button
           onClick={onPrev}
@@ -134,14 +136,11 @@ export default function PersonalizzaStep3({
         >
           ← Indietro
         </Button>
-        <Button
-          onClick={onNext}
-          disabled={!state.styleId}
-          variant="primary"
-          className="px-8 py-3"
-        >
-          Avanti →
-        </Button>
+        {!state.styleId && (
+          <p className="text-gray-500 text-sm">
+            Seleziona uno stile per continuare
+          </p>
+        )}
       </div>
     </div>
   )

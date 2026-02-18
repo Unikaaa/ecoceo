@@ -154,6 +154,30 @@ export async function DELETE(request: NextRequest) {
       )
     }
 
+    // Prima elimina/nullifica le configurazioni che referenziano questa categoria
+    await supabase
+      .from('configurations')
+      .delete()
+      .eq('category_id', id)
+
+    // Elimina anche i tipi prodotto collegati
+    await supabase
+      .from('product_types')
+      .delete()
+      .eq('category_id', id)
+
+    // Elimina decorazioni collegate
+    await supabase
+      .from('decorations')
+      .delete()
+      .eq('category_id', id)
+
+    // Elimina sfondi collegati
+    await supabase
+      .from('backgrounds')
+      .delete()
+      .eq('category_id', id)
+
     const { error } = await supabase
       .from('categories')
       .delete()
@@ -162,7 +186,7 @@ export async function DELETE(request: NextRequest) {
     if (error) {
       console.error('Errore eliminazione categoria:', error)
       return NextResponse.json(
-        { error: 'Errore durante l\'eliminazione della categoria' },
+        { error: 'Errore durante l\'eliminazione della categoria. Potrebbe avere elementi collegati.' },
         { status: 500 }
       )
     }

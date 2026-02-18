@@ -50,6 +50,16 @@ export async function POST(request: NextRequest) {
       .eq('status', 'draft')
       .single()
 
+    // Non salvare se non ci sono almeno categoria e tipo prodotto e stile e dimensione
+    // per evitare errori di NOT NULL constraint
+    if (!categoryId || !productTypeId || !styleId || !sizeId) {
+      return NextResponse.json({
+        success: true,
+        configuration: null,
+        message: 'Configurazione incompleta, non salvata nel database',
+      })
+    }
+
     const configData = {
       user_session_id: sessionId,
       category_id: categoryId,

@@ -65,31 +65,31 @@ export default function PersonalizzaPage() {
   }
 
   const fetchProductTypes = async () => {
-    const res = await fetch('/api/personalizza/product-types')
+    const res = await fetch('/api/personalizza/product-types?include_inactive=true')
     const data = await res.json()
     if (res.ok) setProductTypes(data.productTypes?.sort((a: any, b: any) => a.display_order - b.display_order) || [])
   }
 
   const fetchStyles = async () => {
-    const res = await fetch('/api/personalizza/styles')
+    const res = await fetch('/api/personalizza/styles?include_inactive=true')
     const data = await res.json()
     if (res.ok) setStyles(data.styles?.sort((a: any, b: any) => a.display_order - b.display_order) || [])
   }
 
   const fetchSizes = async () => {
-    const res = await fetch('/api/personalizza/sizes')
+    const res = await fetch('/api/personalizza/sizes?include_inactive=true')
     const data = await res.json()
     if (res.ok) setSizes(data.sizes?.sort((a: any, b: any) => a.display_order - b.display_order) || [])
   }
 
   const fetchDecorations = async () => {
-    const res = await fetch('/api/personalizza/decorations')
+    const res = await fetch('/api/personalizza/decorations?include_inactive=true')
     const data = await res.json()
     if (res.ok) setDecorations(data.decorations?.sort((a: any, b: any) => a.display_order - b.display_order) || [])
   }
 
   const fetchBackgrounds = async () => {
-    const res = await fetch('/api/personalizza/backgrounds')
+    const res = await fetch('/api/personalizza/backgrounds?include_inactive=true')
     const data = await res.json()
     if (res.ok) setBackgrounds(data.backgrounds?.sort((a: any, b: any) => a.display_order - b.display_order) || [])
   }
@@ -288,7 +288,55 @@ export default function PersonalizzaPage() {
   }
 
   const handleDelete = async (type: string, id: string) => {
-    if (!confirm(`Sei sicuro di voler eliminare questo elemento?`)) return
+    // Controlla dipendenze prima di eliminare
+    if (type === 'categories') {
+      const linkedPTs = productTypes.filter(pt => pt.category_id === id)
+      const linkedDecs = decorations.filter(d => d.category_id === id)
+      const linkedBgs = backgrounds.filter(b => b.category_id === id)
+      const deps = []
+      if (linkedPTs.length > 0) deps.push(`${linkedPTs.length} tipo/i prodotto`)
+      if (linkedDecs.length > 0) deps.push(`${linkedDecs.length} decorazione/i`)
+      if (linkedBgs.length > 0) deps.push(`${linkedBgs.length} sfondo/i`)
+
+      if (deps.length > 0) {
+        const confirmMsg = `Questa categoria ha: ${deps.join(', ')}.\n\nEliminando la categoria verranno eliminati anche tutti gli elementi collegati.\n\nVuoi continuare?`
+        if (!confirm(confirmMsg)) return
+
+        // Elimina prima i figli
+        for (const pt of linkedPTs) {
+          await fetch('/api/personalizza/product-types', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: pt.id }),
+          })
+        }
+        for (const dec of linkedDecs) {
+          await fetch('/api/personalizza/decorations', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: dec.id }),
+          })
+        }
+        for (const bg of linkedBgs) {
+          await fetch('/api/personalizza/backgrounds', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: bg.id }),
+          })
+        }
+      } else {
+        if (!confirm('Sei sicuro di voler eliminare questa categoria?')) return
+      }
+    } else {
+      const labelMap: Record<string, string> = {
+        'product-types': 'tipo prodotto',
+        'styles': 'stile',
+        'sizes': 'dimensione',
+        'decorations': 'decorazione',
+        'backgrounds': 'sfondo',
+      }
+      if (!confirm(`Sei sicuro di voler eliminare questo ${labelMap[type] || 'elemento'}?`)) return
+    }
 
     try {
       const res = await fetch(`/api/personalizza/${type}`, {
@@ -299,12 +347,22 @@ export default function PersonalizzaPage() {
 
       if (res.ok) {
         await fetchAll()
+        // Se abbiamo eliminato la categoria selezionata, torna alla lista
+        if (type === 'categories' && selectedCategory === id) {
+          setSelectedCategory(null)
+          setSelectedProductType(null)
+        }
+        if (type === 'product-types' && selectedProductType === id) {
+          setSelectedProductType(null)
+        }
       } else {
-        alert('Errore durante l\'eliminazione')
+        const data = await res.json().catch(() => ({}))
+        const errorMsg = data.error || 'Errore durante l\'eliminazione'
+        alert(`${errorMsg}\n\nPotrebbe essere collegato ad altri elementi. Prova a eliminare prima gli elementi collegati.`)
       }
     } catch (error) {
       console.error('Errore eliminazione:', error)
-      alert('Errore durante l\'eliminazione')
+      alert('Errore di connessione durante l\'eliminazione. Riprova.')
     }
   }
 
