@@ -19,8 +19,9 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url)
     const includeInactive = searchParams.get('include_inactive') === 'true'
+    const productTypeId = searchParams.get('product_type_id')
 
-    let query = supabase
+    let query: any = supabase
       .from('styles')
       .select('*')
 
@@ -28,8 +29,25 @@ export async function GET(request: NextRequest) {
       query = query.eq('is_active', true)
     }
 
-    const { data, error } = await query
+    if (productTypeId) {
+      query = query.eq('product_type_id', productTypeId)
+    }
+
+    let { data, error } = await query
       .order('display_order', { ascending: true })
+
+    // Backward compatibility: se la colonna non esiste, riprova senza filtro
+    if (error && productTypeId && `${error.message || ''}`.includes('product_type_id')) {
+      let fallbackQuery: any = supabase
+        .from('styles')
+        .select('*')
+      if (!includeInactive) {
+        fallbackQuery = fallbackQuery.eq('is_active', true)
+      }
+      const fallbackResult = await fallbackQuery.order('display_order', { ascending: true })
+      data = fallbackResult.data
+      error = fallbackResult.error
+    }
 
     if (error) {
       console.error('Errore query stili:', error)
@@ -56,25 +74,36 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { name, slug, description, preview_url, price_extra, is_active, display_order } = body
+    const { name, slug, description, preview_url, price_extra, is_active, display_order, product_type_id } = body
 
     if (!name || !slug) {
       return NextResponse.json({ error: 'Nome e slug sono obbligatori' }, { status: 400 })
     }
 
-    const { data, error } = await supabase
+    const payload: any = {
+      name,
+      slug,
+      description: description || null,
+      preview_url: preview_url || null,
+      price_extra: parseFloat(price_extra) || 0,
+      is_active: is_active !== false,
+      display_order: display_order || 0,
+    }
+    if (product_type_id) payload.product_type_id = product_type_id
+
+    let { data, error } = await supabase
       .from('styles')
-      .insert({
-        name,
-        slug,
-        description: description || null,
-        preview_url: preview_url || null,
-        price_extra: parseFloat(price_extra) || 0,
-        is_active: is_active !== false,
-        display_order: display_order || 0,
-      })
+      .insert(payload)
       .select()
       .single()
+
+    // Backward compatibility: se la colonna non esiste, riprova senza product_type_id
+    if (error && product_type_id && `${error.message || ''}`.includes('product_type_id')) {
+      const { product_type_id: _removed, ...fallbackPayload } = payload
+      const retry = await supabase.from('styles').insert(fallbackPayload).select().single()
+      data = retry.data
+      error = retry.error
+    }
 
     if (error) {
       console.error('Errore creazione stile:', error)
@@ -105,12 +134,27 @@ export async function PATCH(request: NextRequest) {
       updates.price_extra = parseFloat(updates.price_extra) || 0
     }
 
-    const { data, error } = await supabase
+    const hasProductTypeUpdate = Object.prototype.hasOwnProperty.call(updates, 'product_type_id')
+
+    let { data, error } = await supabase
       .from('styles')
       .update(updates)
       .eq('id', id)
       .select()
       .single()
+
+    // Backward compatibility: se la colonna non esiste, riprova senza product_type_id
+    if (error && hasProductTypeUpdate && `${error.message || ''}`.includes('product_type_id')) {
+      const { product_type_id: _removed, ...fallbackUpdates } = updates
+      const retry = await supabase
+        .from('styles')
+        .update(fallbackUpdates)
+        .eq('id', id)
+        .select()
+        .single()
+      data = retry.data
+      error = retry.error
+    }
 
     if (error) {
       console.error('Errore aggiornamento stile:', error)

@@ -11,6 +11,7 @@ import Button from '@/components/ui/Button'
 export default function FeaturedProducts() {
   const t = useTranslations('home')
   const [featured, setFeatured] = useState<Product[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const fetchFeatured = async () => {
@@ -22,6 +23,8 @@ export default function FeaturedProducts() {
         }
       } catch (error) {
         console.error('Errore caricamento prodotti featured:', error)
+      } finally {
+        setIsLoading(false)
       }
     }
     fetchFeatured()
@@ -55,11 +58,26 @@ export default function FeaturedProducts() {
 
         {/* Griglia elegante con 3 prodotti grandi */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-10 lg:gap-12 max-w-7xl mx-auto">
-          {featured.map((product, index) => (
+          {isLoading && [0, 1, 2].map((idx) => (
+            <div key={`skeleton-${idx}`} className="bg-white rounded-artistic overflow-hidden shadow-md animate-pulse">
+              <div className="aspect-[4/5] bg-gray-200" />
+              <div className="p-6 md:p-8 space-y-3">
+                <div className="h-6 bg-gray-200 rounded w-3/4" />
+                <div className="h-4 bg-gray-200 rounded w-full" />
+                <div className="h-4 bg-gray-200 rounded w-2/3" />
+                <div className="h-8 bg-gray-200 rounded w-1/3 mt-6" />
+              </div>
+            </div>
+          ))}
+          {!isLoading && featured.map((product, index) => (
             <Link
               key={product.id}
               href={`/shop/${product.slug}`}
-              className="group bg-white rounded-artistic overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
+              className={`group bg-white rounded-artistic overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 ${
+                product.featured
+                  ? 'ring-2 ring-amber-200/70 shadow-[0_20px_45px_-24px_rgba(180,83,9,0.45)]'
+                  : ''
+              }`}
               style={{ animationDelay: `${index * 100}ms` }}
             >
               {/* Immagine prodotto */}
@@ -81,12 +99,22 @@ export default function FeaturedProducts() {
                 {/* Overlay hover elegante */}
                 <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                 
-                {/* Badge featured */}
-                <div className="absolute top-4 right-4">
-                  <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-primary text-xs font-semibold rounded-full shadow-sm">
-                    Featured
-                  </span>
-                </div>
+                {/* Badge favorito (allineato allo Shop) */}
+                {product.featured && (
+                  <div className="absolute top-4 left-4 z-20">
+                    <div className="inline-flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-amber-50/95 to-yellow-50/95 backdrop-blur-sm text-amber-900 rounded-xl shadow-lg border border-amber-200/90">
+                      <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-sm">
+                        <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.922-.755 1.688-1.539 1.118l-2.8-2.034a1 1 0 00-1.176 0l-2.8 2.034c-.783.57-1.838-.196-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81H7.03a1 1 0 00.95-.69l1.07-3.292z" />
+                        </svg>
+                      </span>
+                      <div className="leading-tight">
+                        <p className="text-[11px] font-bold uppercase tracking-wider">Favorito</p>
+                        <p className="text-[10px] text-amber-700 font-medium">Piu venduto</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Contenuto prodotto */}

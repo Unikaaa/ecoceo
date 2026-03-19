@@ -20,35 +20,63 @@ interface ContactModalProps {
   contact: Contact | null
   isOpen: boolean
   onClose: () => void
-  onUpdate: () => void
+  onUpdate: (updatedContact?: Contact) => void
 }
 
 export default function ContactModal({ contact, isOpen, onClose, onUpdate }: ContactModalProps) {
+  const [currentContact, setCurrentContact] = useState<Contact | null>(contact)
   const [assignedTo, setAssignedTo] = useState('')
   const [replyMessage, setReplyMessage] = useState('')
-  const [isReplying, setIsReplying] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+  const [isAssigning, setIsAssigning] = useState(false)
   const [showConfirmDialog, setShowConfirmDialog] = useState(false)
 
   useEffect(() => {
     if (contact) {
+      setCurrentContact(contact)
       setAssignedTo(contact.assigned_to || '')
       setReplyMessage(contact.reply_message || '')
-      setIsReplying(false)
+      setIsAssigning(false)
       setShowConfirmDialog(false)
     }
   }, [contact])
 
-  if (!isOpen || !contact) return null
+  if (!isOpen || !currentContact) return null
 
-  const handleStartReply = () => {
-    setIsReplying(true)
-  }
+  const handleTakeInCharge = async (closeAfterMove: boolean = false) => {
+    if (!assignedTo.trim()) {
+      alert('Inserisci il nome di chi prende in carico il messaggio')
+      return
+    }
 
-  const handleCancel = () => {
-    setIsReplying(false)
-    setAssignedTo(contact.assigned_to || '')
-    setReplyMessage(contact.reply_message || '')
+    setIsAssigning(true)
+    try {
+      const response = await fetch('/api/contacts/reply', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contactId: currentContact.id,
+          assignedTo: assignedTo.trim(),
+          replyMessage: replyMessage.trim(),
+        }),
+      })
+
+      if (response.ok) {
+        const result = await response.json()
+        setCurrentContact(result.contact)
+        onUpdate(result.contact)
+        if (closeAfterMove) {
+          onClose()
+        }
+      } else {
+        alert('Errore durante la presa in carico')
+      }
+    } catch (error) {
+      console.error('Errore presa in carico:', error)
+      alert('Errore durante la presa in carico')
+    } finally {
+      setIsAssigning(false)
+    }
   }
 
   const handleSaveDraft = async () => {
@@ -63,15 +91,17 @@ export default function ContactModal({ contact, isOpen, onClose, onUpdate }: Con
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          contactId: contact.id,
+          contactId: currentContact.id,
           assignedTo: assignedTo.trim(),
           replyMessage: replyMessage.trim(),
         }),
       })
 
       if (response.ok) {
-        onUpdate()
-        setIsReplying(false)
+        const result = await response.json()
+        setCurrentContact(result.contact)
+        onUpdate(result.contact)
+        onClose()
       }
     } catch (error) {
       console.error('Errore salvataggio bozza:', error)
@@ -92,14 +122,16 @@ export default function ContactModal({ contact, isOpen, onClose, onUpdate }: Con
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          contactId: contact.id,
+          contactId: currentContact.id,
           assignedTo: assignedTo.trim(),
           replyMessage: replyMessage.trim(),
         }),
       })
 
       if (response.ok) {
-        onUpdate()
+        const result = await response.json()
+        setCurrentContact(result.contact)
+        onUpdate(result.contact)
         onClose()
       }
     } catch (error) {
@@ -114,8 +146,10 @@ export default function ContactModal({ contact, isOpen, onClose, onUpdate }: Con
     setShowConfirmDialog(true)
   }
 
-  const isReadOnly = contact.status === 'completed'
-  const canReply = contact.status === 'unread' || contact.status === 'read' || contact.status === 'in_elaboration'
+  const isReadOnly = currentContact.status === 'completed'
+  const canReply = currentContact.status === 'unread' || currentContact.status === 'read' || currentContact.status === 'in_elaboration'
+  const isUnreadFlow = currentContact.status === 'unread' || currentContact.status === 'read'
+  const shouldShowReplyComposer = currentContact.status === 'in_elaboration'
 
   return (
     <>
@@ -125,14 +159,14 @@ export default function ContactModal({ contact, isOpen, onClose, onUpdate }: Con
           {/* Header */}
           <div className="p-6 border-b border-gray-200 flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-serif text-gray-900 mb-1">{contact.subject}</h2>
+              <h2 className="text-2xl font-serif text-gray-900 mb-1">{currentContact.subject}</h2>
               <p className="text-sm text-gray-600">
-                Da: {contact.name} ({contact.email})
+                Da: {currentContact.name} ({currentContact.email})
               </p>
             </div>
             <button
               onClick={onClose}
-              className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+              className="p-2 text-black hover:text-gray-700 transition-colors"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -148,19 +182,19 @@ export default function ContactModal({ contact, isOpen, onClose, onUpdate }: Con
                 <div>
                   <span className="text-gray-600">Data invio:</span>
                   <span className="ml-2 font-medium text-gray-900">
-                    {new Date(contact.created_at).toLocaleString('it-IT')}
+                    {new Date(currentContact.created_at).toLocaleString('it-IT')}
                   </span>
                 </div>
-                {contact.assigned_to && contact.status === 'completed' && (
+                {currentContact.assigned_to && currentContact.status === 'completed' && (
                   <div>
                     <span className="text-gray-600">Eseguito da:</span>
-                    <span className="ml-2 font-medium text-[#663399]">{contact.assigned_to}</span>
+                    <span className="ml-2 font-medium text-[#663399]">{currentContact.assigned_to}</span>
                   </div>
                 )}
-                {contact.assigned_to && contact.status !== 'completed' && (
+                {currentContact.assigned_to && currentContact.status !== 'completed' && (
                   <div>
                     <span className="text-gray-600">In elaborazione da:</span>
-                    <span className="ml-2 font-medium text-[#663399]">{contact.assigned_to}</span>
+                    <span className="ml-2 font-medium text-[#663399]">{currentContact.assigned_to}</span>
                   </div>
                 )}
               </div>
@@ -170,19 +204,19 @@ export default function ContactModal({ contact, isOpen, onClose, onUpdate }: Con
             <div className="mb-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-3">Messaggio del Cliente</h3>
               <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <p className="text-gray-700 whitespace-pre-wrap">{contact.message}</p>
+                <p className="text-gray-700 whitespace-pre-wrap">{currentContact.message}</p>
               </div>
             </div>
 
             {/* Risposta (se completato) */}
-            {isReadOnly && contact.reply_message && (
+            {isReadOnly && currentContact.reply_message && (
               <div className="mb-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-3">Risposta Inviata</h3>
                 <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                  <p className="text-gray-700 whitespace-pre-wrap">{contact.reply_message}</p>
-                  {contact.replied_at && (
+                  <p className="text-gray-700 whitespace-pre-wrap">{currentContact.reply_message}</p>
+                  {currentContact.replied_at && (
                     <p className="text-xs text-gray-500 mt-2">
-                      Inviata il: {new Date(contact.replied_at).toLocaleString('it-IT')}
+                      Inviata il: {new Date(currentContact.replied_at).toLocaleString('it-IT')}
                     </p>
                   )}
                 </div>
@@ -192,14 +226,33 @@ export default function ContactModal({ contact, isOpen, onClose, onUpdate }: Con
             {/* Form Risposta (se non completato) */}
             {canReply && (
               <div className="mb-6">
-                {!isReplying ? (
-                  <button
-                    onClick={handleStartReply}
-                    className="px-6 py-3 bg-[#663399] text-white rounded-lg hover:bg-[#552288] transition-colors font-medium"
-                  >
-                    Rispondi
-                  </button>
+                {isUnreadFlow ? (
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Il tuo nome * <span className="text-xs text-gray-500">(obbligatorio per prendere in carico)</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={assignedTo}
+                        onChange={(e) => setAssignedTo(e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#663399]"
+                        placeholder="Es. Daniele"
+                        required
+                      />
+                    </div>
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => handleTakeInCharge(false)}
+                        disabled={isAssigning || !assignedTo.trim()}
+                        className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                      >
+                        {isAssigning ? 'Passaggio in elaborazione...' : 'Rispondi'}
+                      </button>
+                    </div>
+                  </div>
                 ) : (
+                  shouldShowReplyComposer && (
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -242,18 +295,13 @@ export default function ContactModal({ contact, isOpen, onClose, onUpdate }: Con
                       >
                         Invia Messaggio
                       </button>
-                      <button
-                        onClick={handleCancel}
-                        disabled={isSaving}
-                        className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
-                      >
-                        Annulla
-                      </button>
                     </div>
                   </div>
+                  )
                 )}
               </div>
             )}
+
           </div>
         </div>
       </div>
@@ -264,7 +312,7 @@ export default function ContactModal({ contact, isOpen, onClose, onUpdate }: Con
           <div className="bg-white rounded-lg shadow-2xl max-w-md w-full p-6">
             <h3 className="text-xl font-semibold text-gray-900 mb-4">Conferma Invio</h3>
             <p className="text-gray-600 mb-6">
-              Sei sicuro di voler inviare questa email a {contact.email}?
+              Sei sicuro di voler inviare questa email a {currentContact.email}?
             </p>
             <div className="flex gap-3">
               <button

@@ -21,6 +21,7 @@ export async function GET(request: NextRequest) {
     const ids = searchParams.get('ids')
     const styleId = searchParams.get('style_id')
     const categoryId = searchParams.get('category_id')
+    const productTypeId = searchParams.get('product_type_id')
 
     const includeInactive = searchParams.get('include_inactive') === 'true'
 
@@ -45,9 +46,26 @@ export async function GET(request: NextRequest) {
       query = query.eq('category_id', categoryId)
     }
 
-    query = query.order('display_order', { ascending: true })
+    if (productTypeId) {
+      query = query.eq('product_type_id', productTypeId)
+    }
 
-    const { data, error } = await query
+    query = query.order('display_order', { ascending: true })
+    let { data, error } = await query
+
+    // Backward compatibility: se la colonna non esiste, riprova senza filtro
+    if (error && productTypeId && `${error.message || ''}`.includes('product_type_id')) {
+      let fallbackQuery: any = supabase
+        .from('decorations')
+        .select('*')
+      if (!includeInactive) fallbackQuery = fallbackQuery.eq('is_active', true)
+      if (ids) fallbackQuery = fallbackQuery.in('id', ids.split(','))
+      if (styleId) fallbackQuery = fallbackQuery.eq('style_id', styleId)
+      if (categoryId) fallbackQuery = fallbackQuery.eq('category_id', categoryId)
+      const fallbackResult = await fallbackQuery.order('display_order', { ascending: true })
+      data = fallbackResult.data
+      error = fallbackResult.error
+    }
 
     if (error) {
       console.error('Errore query decorazioni:', error)
@@ -77,7 +95,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { name, image_url, style_id, category_id, price_extra, is_active, display_order } = body
+    const { name, image_url, style_id, category_id, product_type_id, price_extra, is_active, display_order } = body
 
     if (!name || !image_url) {
       return NextResponse.json(
@@ -86,19 +104,29 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { data, error } = await supabase
+    const payload: any = {
+      name,
+      image_url,
+      style_id: style_id || null,
+      category_id: category_id || null,
+      price_extra: parseFloat(price_extra) || 0,
+      is_active: is_active !== false,
+      display_order: display_order || 0,
+    }
+    if (product_type_id) payload.product_type_id = product_type_id
+
+    let { data, error } = await supabase
       .from('decorations')
-      .insert({
-        name,
-        image_url,
-        style_id: style_id || null,
-        category_id: category_id || null,
-        price_extra: parseFloat(price_extra) || 0,
-        is_active: is_active !== false,
-        display_order: display_order || 0,
-      })
+      .insert(payload)
       .select()
       .single()
+
+    if (error && product_type_id && `${error.message || ''}`.includes('product_type_id')) {
+      const { product_type_id: _removed, ...fallbackPayload } = payload
+      const retry = await supabase.from('decorations').insert(fallbackPayload).select().single()
+      data = retry.data
+      error = retry.error
+    }
 
     if (error) {
       console.error('Errore inserimento decorazione:', error)
@@ -134,13 +162,26 @@ export async function PATCH(request: NextRequest) {
     if (updates.price_extra !== undefined) {
       updates.price_extra = parseFloat(updates.price_extra) || 0
     }
+    const hasProductTypeUpdate = Object.prototype.hasOwnProperty.call(updates, 'product_type_id')
 
-    const { data, error } = await supabase
+    let { data, error } = await supabase
       .from('decorations')
       .update(updates)
       .eq('id', id)
       .select()
       .single()
+
+    if (error && hasProductTypeUpdate && `${error.message || ''}`.includes('product_type_id')) {
+      const { product_type_id: _removed, ...fallbackUpdates } = updates
+      const retry = await supabase
+        .from('decorations')
+        .update(fallbackUpdates)
+        .eq('id', id)
+        .select()
+        .single()
+      data = retry.data
+      error = retry.error
+    }
 
     if (error) {
       console.error('Errore aggiornamento decorazione:', error)

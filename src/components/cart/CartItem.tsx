@@ -6,7 +6,6 @@ import { CartItem as CartItemType } from '@/lib/store/cartStore'
 import { formatPrice } from '@/lib/utils'
 import { useCartStore } from '@/lib/store/cartStore'
 import { useTranslations } from '@/lib/i18n/hooks'
-import Button from '@/components/ui/Button'
 
 interface CartItemProps {
   item: CartItemType
@@ -34,11 +33,22 @@ export default function CartItem({ item }: CartItemProps) {
       </Link>
 
       <div className="flex-grow">
-        <Link href={`/shop/${item.slug}`}>
-          <h3 className="font-medium text-gray-900 hover:text-primary transition mb-2">
-            {item.name}
-          </h3>
-        </Link>
+        <div className="flex items-start justify-between gap-2">
+          <Link href={`/shop/${item.slug}`}>
+            <h3 className="font-medium text-gray-900 hover:text-primary transition mb-2">
+              {item.name}
+            </h3>
+          </Link>
+          <button
+            type="button"
+            onClick={() => removeItem(item.id)}
+            className="h-7 w-7 rounded-full text-gray-500 hover:bg-red-50 hover:text-red-600 text-sm"
+            aria-label="Rimuovi prodotto"
+            title={t('remove')}
+          >
+            x
+          </button>
+        </div>
         <p className="text-primary font-semibold mb-4">
           {formatPrice(item.price)}
         </p>
@@ -62,14 +72,14 @@ export default function CartItem({ item }: CartItemProps) {
             </button>
           </div>
 
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => removeItem(item.id)}
-            className="text-red-600 hover:text-red-700"
-          >
-            {t('remove')}
-          </Button>
+          <input
+            type="number"
+            min={1}
+            value={item.quantity}
+            onChange={(e) => handleQuantityChange(Number(e.target.value) || 1)}
+            className="w-20 px-2 py-1 border border-gray-300 rounded-lg text-sm"
+            aria-label="Quantita prodotto"
+          />
         </div>
       </div>
 

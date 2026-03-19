@@ -36,7 +36,7 @@ export default function DashboardLayout({ children, onLogout, activeSection }: D
           <Link
             href="/dashboard"
             className={`w-full block px-4 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors ${
-              isActive('/dashboard') && !isActive('/dashboard/contacts') && !isActive('/dashboard/magazzino') && !isActive('/dashboard/personalizza') && !isActive('/dashboard/progetti') && !isActive('/dashboard/contenuti') ? 'bg-gray-100 font-medium text-[#663399]' : ''
+              isActive('/dashboard') && !isActive('/dashboard/contacts') && !isActive('/dashboard/magazzino') && !isActive('/dashboard/personalizza') && !isActive('/dashboard/progetti') && !isActive('/dashboard/contenuti') && !isActive('/dashboard/popup') ? 'bg-gray-100 font-medium text-[#663399]' : ''
             }`}
           >
             Menu
@@ -81,6 +81,14 @@ export default function DashboardLayout({ children, onLogout, activeSection }: D
             }`}
           >
             Progetti & Brand
+          </Link>
+          <Link
+            href="/dashboard/popup"
+            className={`w-full block px-4 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors ${
+              isActive('/dashboard/popup') ? 'bg-gray-100 font-medium text-[#663399]' : ''
+            }`}
+          >
+            Pop Up
           </Link>
         </nav>
 

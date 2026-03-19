@@ -84,7 +84,19 @@ export default function ContenutiPage() {
     try {
       const res = await fetch('/api/articles?published=false')
       const data = await res.json()
-      if (res.ok) setArticles(data.articles || [])
+      if (res.ok) {
+        const list = data.articles || []
+        if (list.length === 0) {
+          await fetch('/api/articles/seed', { method: 'POST' })
+          const retry = await fetch('/api/articles?published=false')
+          const retryData = await retry.json()
+          if (retry.ok) {
+            setArticles(retryData.articles || [])
+            return
+          }
+        }
+        setArticles(list)
+      }
     } catch (error) {
       console.error('Errore caricamento articoli:', error)
     }
@@ -241,6 +253,45 @@ export default function ContenutiPage() {
     return names[key] || key
   }
 
+  const isManagedInsidePhilosophy = (key: string) =>
+    key === 'philosophy_card_1' || key === 'philosophy_card_2' || key === 'philosophy_card_3'
+
+  const visibleAboutSections = aboutSections.filter(
+    (section) => !isManagedInsidePhilosophy(section.section_key)
+  )
+
+  const parsePhilosophyImages = (raw?: string | null): [string, string, string] => {
+    if (!raw) return ['', '', '']
+
+    try {
+      const parsed = JSON.parse(raw)
+      if (Array.isArray(parsed)) {
+        return [
+          typeof parsed[0] === 'string' ? parsed[0] : '',
+          typeof parsed[1] === 'string' ? parsed[1] : '',
+          typeof parsed[2] === 'string' ? parsed[2] : '',
+        ]
+      }
+      if (parsed && Array.isArray(parsed.images)) {
+        return [
+          typeof parsed.images[0] === 'string' ? parsed.images[0] : '',
+          typeof parsed.images[1] === 'string' ? parsed.images[1] : '',
+          typeof parsed.images[2] === 'string' ? parsed.images[2] : '',
+        ]
+      }
+    } catch {
+      // Se non e' JSON, il vecchio formato viene usato come prima immagine
+    }
+
+    return [raw, '', '']
+  }
+
+  const updatePhilosophyImageAt = (index: number, url: string) => {
+    const current = parsePhilosophyImages(aboutFormData.image_url)
+    current[index] = url
+    setAboutFormData({ ...aboutFormData, image_url: JSON.stringify(current) })
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-site flex items-center justify-center">
@@ -329,7 +380,7 @@ export default function ContenutiPage() {
               </p>
             </div>
 
-            {aboutSections.map((section) => (
+            {visibleAboutSections.map((section) => (
               <div
                 key={section.id}
                 className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
@@ -358,6 +409,12 @@ export default function ContenutiPage() {
                   {section.subtitle && <p><strong>Sottotitolo:</strong> {section.subtitle}</p>}
                   {section.content && (
                     <p><strong>Contenuto:</strong> {section.content.substring(0, 150)}...</p>
+                  )}
+                  {section.section_key === 'philosophy' && (
+                    <p>
+                      <strong>Immagini filosofia:</strong>{' '}
+                      {parsePhilosophyImages(section.image_url).filter(Boolean).length}/3
+                    </p>
                   )}
                 </div>
               </div>
@@ -620,12 +677,35 @@ export default function ContenutiPage() {
                     placeholder="Contenuto della sezione..."
                   />
                 </div>
-                <ImageUploadField
-                  value={aboutFormData.image_url || ''}
-                  onChange={(url) => setAboutFormData({ ...aboutFormData, image_url: url as string })}
-                  folder="about"
-                  label="Immagine (opzionale)"
-                />
+                {editingAbout.section_key === 'philosophy' ? (
+                  <div className="space-y-3">
+                    <ImageUploadField
+                      value={parsePhilosophyImages(aboutFormData.image_url)[0]}
+                      onChange={(url) => updatePhilosophyImageAt(0, (url as string) || '')}
+                      folder="about"
+                      label="Immagine casella 1 (Atelier)"
+                    />
+                    <ImageUploadField
+                      value={parsePhilosophyImages(aboutFormData.image_url)[1]}
+                      onChange={(url) => updatePhilosophyImageAt(1, (url as string) || '')}
+                      folder="about"
+                      label="Immagine casella 2 (Dettagli)"
+                    />
+                    <ImageUploadField
+                      value={parsePhilosophyImages(aboutFormData.image_url)[2]}
+                      onChange={(url) => updatePhilosophyImageAt(2, (url as string) || '')}
+                      folder="about"
+                      label="Immagine casella 3 (Materia)"
+                    />
+                  </div>
+                ) : (
+                  <ImageUploadField
+                    value={aboutFormData.image_url || ''}
+                    onChange={(url) => setAboutFormData({ ...aboutFormData, image_url: url as string })}
+                    folder="about"
+                    label="Immagine (opzionale)"
+                  />
+                )}
                 <div className="flex gap-3 pt-4 border-t border-gray-200">
                   <button
                     onClick={handleSaveAbout}

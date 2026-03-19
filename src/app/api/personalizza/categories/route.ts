@@ -154,29 +154,83 @@ export async function DELETE(request: NextRequest) {
       )
     }
 
-    // Prima elimina/nullifica le configurazioni che referenziano questa categoria
-    await supabase
-      .from('configurations')
-      .delete()
+    // Recupera i tipi prodotto della categoria per eliminare tutte le dipendenze figlie
+    const { data: linkedProductTypes, error: linkedProductTypesError } = await supabase
+      .from('product_types')
+      .select('id')
       .eq('category_id', id)
 
-    // Elimina anche i tipi prodotto collegati
-    await supabase
+    if (linkedProductTypesError) {
+      console.error('Errore recupero tipi prodotto collegati:', linkedProductTypesError)
+      return NextResponse.json(
+        { error: 'Errore durante il recupero degli elementi collegati alla categoria' },
+        { status: 500 }
+      )
+    }
+
+    const productTypeIds = (linkedProductTypes || []).map((pt: { id: string }) => pt.id)
+
+    // Elimina dipendenze dirette della categoria
+    const directDeleteSteps: Array<{ table: string; column: string; value: string }> = [
+      { table: 'configurations', column: 'category_id', value: id },
+      { table: 'decorations', column: 'category_id', value: id },
+      { table: 'backgrounds', column: 'category_id', value: id },
+    ]
+
+    for (const step of directDeleteSteps) {
+      const { error: stepError } = await supabase
+        .from(step.table)
+        .delete()
+        .eq(step.column, step.value)
+
+      if (stepError) {
+        console.error(`Errore eliminazione dipendenze categoria (${step.table}):`, stepError)
+        return NextResponse.json(
+          { error: `Errore durante l'eliminazione degli elementi collegati (${step.table})` },
+          { status: 500 }
+        )
+      }
+    }
+
+    // Elimina dipendenze dei tipi prodotto collegati (stili, dimensioni, decorazioni, sfondi, configurazioni)
+    if (productTypeIds.length > 0) {
+      const productTypeDeleteSteps: Array<{ table: string; column: string }> = [
+        { table: 'configurations', column: 'product_type_id' },
+        { table: 'styles', column: 'product_type_id' },
+        { table: 'sizes', column: 'product_type_id' },
+        { table: 'decorations', column: 'product_type_id' },
+        { table: 'backgrounds', column: 'product_type_id' },
+      ]
+
+      for (const step of productTypeDeleteSteps) {
+        const { error: stepError } = await supabase
+          .from(step.table)
+          .delete()
+          .in(step.column, productTypeIds)
+
+        if (stepError) {
+          console.error(`Errore eliminazione dipendenze tipo prodotto (${step.table}):`, stepError)
+          return NextResponse.json(
+            { error: `Errore durante l'eliminazione degli elementi collegati (${step.table})` },
+            { status: 500 }
+          )
+        }
+      }
+    }
+
+    // Elimina i tipi prodotto collegati alla categoria
+    const { error: productTypesDeleteError } = await supabase
       .from('product_types')
       .delete()
       .eq('category_id', id)
 
-    // Elimina decorazioni collegate
-    await supabase
-      .from('decorations')
-      .delete()
-      .eq('category_id', id)
-
-    // Elimina sfondi collegati
-    await supabase
-      .from('backgrounds')
-      .delete()
-      .eq('category_id', id)
+    if (productTypesDeleteError) {
+      console.error('Errore eliminazione tipi prodotto della categoria:', productTypesDeleteError)
+      return NextResponse.json(
+        { error: 'Errore durante l\'eliminazione dei tipi prodotto collegati' },
+        { status: 500 }
+      )
+    }
 
     const { error } = await supabase
       .from('categories')

@@ -4,12 +4,14 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { PersonalizzaState } from '@/app/personalizza/page'
 import Button from '@/components/ui/Button'
+import { inferCeramicShapeFromProduct } from '@/lib/personalizza/productShape'
 
 interface ProductType {
   id: string
   category_id: string
   name: string
   slug: string
+  canvas_shape?: string | null
   description: string | null
   thumbnail_url: string | null
   is_active: boolean
@@ -38,13 +40,23 @@ export default function PersonalizzaStep2({
   }, [state.categoryId])
 
   const fetchProductTypes = async () => {
+    const cacheKey = `personalizza_product_types_${state.categoryId || 'none'}`
     try {
+      const cached = sessionStorage.getItem(cacheKey)
+      if (cached) {
+        setProductTypes(JSON.parse(cached))
+        setIsLoading(false)
+      }
+
       const response = await fetch(
-        `/api/personalizza/product-types?category_id=${state.categoryId}`
+        `/api/personalizza/product-types?category_id=${state.categoryId}`,
+        { cache: 'force-cache' }
       )
       const data = await response.json()
       if (response.ok) {
-        setProductTypes(data.productTypes || [])
+        const productTypesData = data.productTypes || []
+        setProductTypes(productTypesData)
+        sessionStorage.setItem(cacheKey, JSON.stringify(productTypesData))
       }
     } catch (error) {
       console.error('Errore caricamento tipi prodotto:', error)
@@ -53,8 +65,11 @@ export default function PersonalizzaStep2({
     }
   }
 
-  const handleSelectProductType = (productTypeId: string) => {
-    updateState({ productTypeId })
+  const handleSelectProductType = (productType: ProductType) => {
+    updateState({
+      productTypeId: productType.id,
+      ceramicShape: inferCeramicShapeFromProduct(productType),
+    })
     // Auto-avanza allo step successivo al click
     onNext()
   }
@@ -74,7 +89,7 @@ export default function PersonalizzaStep2({
         {productTypes.map((productType) => (
           <button
             key={productType.id}
-            onClick={() => handleSelectProductType(productType.id)}
+            onClick={() => handleSelectProductType(productType)}
             className={`group relative p-6 bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border-2 ${
               state.productTypeId === productType.id
                 ? 'border-[#663399] scale-105'

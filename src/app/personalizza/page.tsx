@@ -1,12 +1,21 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import PersonalizzaStep1 from '@/components/personalizza/Step1Category'
-import PersonalizzaStep2 from '@/components/personalizza/Step2ProductType'
-import PersonalizzaStep3 from '@/components/personalizza/Step3Style'
-import PersonalizzaStep4 from '@/components/personalizza/Step4Customization'
-import PersonalizzaStep5 from '@/components/personalizza/Step5Preview'
-import PersonalizzaStep6 from '@/components/personalizza/Step6Checkout'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import dynamic from 'next/dynamic'
+import { CeramicShape } from '@/lib/personalizza/productShape'
+
+const StepLoading = () => (
+  <div className="min-h-[320px] flex items-center justify-center">
+    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#663399]" />
+  </div>
+)
+
+const PersonalizzaStep1 = dynamic(() => import('@/components/personalizza/Step1Category'), { loading: StepLoading })
+const PersonalizzaStep2 = dynamic(() => import('@/components/personalizza/Step2ProductType'), { loading: StepLoading })
+const PersonalizzaStep3 = dynamic(() => import('@/components/personalizza/Step3Style'), { loading: StepLoading })
+const PersonalizzaStep4 = dynamic(() => import('@/components/personalizza/Step4Customization'), { loading: StepLoading })
+const PersonalizzaStep5 = dynamic(() => import('@/components/personalizza/Step5Preview'), { loading: StepLoading })
+const PersonalizzaStep6 = dynamic(() => import('@/components/personalizza/Step6Checkout'), { loading: StepLoading })
 
 export interface PersonalizzaState {
   categoryId: string | null
@@ -19,7 +28,7 @@ export interface PersonalizzaState {
   customTextFont: string
   customTextColor: string
   customTextSize: number
-  ceramicShape: 'oval' | 'square'
+  ceramicShape: CeramicShape
   userImages: Array<{ url: string; id: string }>
   canvasData: any
   totalPrice: number
@@ -46,6 +55,7 @@ export default function PersonalizzaPage() {
   const [state, setState] = useState<PersonalizzaState>(INITIAL_STATE)
   const [sessionId, setSessionId] = useState<string>('')
   const [currentStep, setCurrentStep] = useState(1)
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Genera session ID univoco
   useEffect(() => {
@@ -59,30 +69,40 @@ export default function PersonalizzaPage() {
     }
   }, [])
 
-  // Salva stato automaticamente
-  useEffect(() => {
-    if (sessionId && state.categoryId) {
-      const timeoutId = setTimeout(() => {
-        saveConfiguration()
-      }, 1000)
-      return () => clearTimeout(timeoutId)
-    }
-  }, [state, sessionId])
-
-  const saveConfiguration = async () => {
+  const saveConfiguration = useCallback(async (snapshot: PersonalizzaState) => {
     try {
       await fetch('/api/personalizza/save', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           sessionId,
-          ...state,
+          ...snapshot,
         }),
       })
     } catch (error) {
       console.error('Errore salvataggio configurazione:', error)
     }
-  }
+  }, [sessionId])
+
+  // Salva stato automaticamente senza ricaricare pagina:
+  // debounce per evitare scritture troppo frequenti al database.
+  useEffect(() => {
+    if (!sessionId || !state.categoryId) return
+
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current)
+    }
+
+    saveTimeoutRef.current = setTimeout(() => {
+      saveConfiguration(state)
+    }, 2400)
+
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current)
+      }
+    }
+  }, [state, sessionId, saveConfiguration])
 
   const updateState = (updates: Partial<PersonalizzaState>) => {
     setState((prev) => ({ ...prev, ...updates }))
@@ -145,8 +165,8 @@ export default function PersonalizzaPage() {
     'Categoria',
     'Tipo Prodotto',
     'Stile',
-    'Personalizzazione',
-    'Anteprima',
+    'Dimensione',
+    'Personalizzazione Canva',
     'Checkout',
   ]
 

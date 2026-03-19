@@ -19,6 +19,7 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
+    const productTypeId = searchParams.get('product_type_id')
 
     if (id) {
       const { data, error } = await supabase
@@ -47,8 +48,25 @@ export async function GET(request: NextRequest) {
       sizesQuery = sizesQuery.eq('is_active', true)
     }
 
-    const { data, error } = await sizesQuery
+    if (productTypeId) {
+      sizesQuery = sizesQuery.eq('product_type_id', productTypeId)
+    }
+
+    let { data, error } = await sizesQuery
       .order('display_order', { ascending: true })
+
+    // Backward compatibility: se la colonna non esiste, riprova senza filtro
+    if (error && productTypeId && `${error.message || ''}`.includes('product_type_id')) {
+      let fallbackQuery: any = supabase
+        .from('sizes')
+        .select('*')
+      if (!includeInactive) {
+        fallbackQuery = fallbackQuery.eq('is_active', true)
+      }
+      const fallbackResult = await fallbackQuery.order('display_order', { ascending: true })
+      data = fallbackResult.data
+      error = fallbackResult.error
+    }
 
     if (error) {
       console.error('Errore query dimensioni:', error)
@@ -75,24 +93,35 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { name, width_cm, height_cm, base_price, is_active, display_order } = body
+    const { name, width_cm, height_cm, base_price, is_active, display_order, product_type_id } = body
 
     if (!name || !width_cm || !height_cm) {
       return NextResponse.json({ error: 'Nome, larghezza e altezza sono obbligatori' }, { status: 400 })
     }
 
-    const { data, error } = await supabase
+    const payload: any = {
+      name,
+      width_cm: parseFloat(width_cm) || 0,
+      height_cm: parseFloat(height_cm) || 0,
+      base_price: parseFloat(base_price) || 0,
+      is_active: is_active !== false,
+      display_order: display_order || 0,
+    }
+    if (product_type_id) payload.product_type_id = product_type_id
+
+    let { data, error } = await supabase
       .from('sizes')
-      .insert({
-        name,
-        width_cm: parseFloat(width_cm) || 0,
-        height_cm: parseFloat(height_cm) || 0,
-        base_price: parseFloat(base_price) || 0,
-        is_active: is_active !== false,
-        display_order: display_order || 0,
-      })
+      .insert(payload)
       .select()
       .single()
+
+    // Backward compatibility: se la colonna non esiste, riprova senza product_type_id
+    if (error && product_type_id && `${error.message || ''}`.includes('product_type_id')) {
+      const { product_type_id: _removed, ...fallbackPayload } = payload
+      const retry = await supabase.from('sizes').insert(fallbackPayload).select().single()
+      data = retry.data
+      error = retry.error
+    }
 
     if (error) {
       console.error('Errore creazione dimensione:', error)
@@ -122,13 +151,27 @@ export async function PATCH(request: NextRequest) {
     if (updates.width_cm !== undefined) updates.width_cm = parseFloat(updates.width_cm) || 0
     if (updates.height_cm !== undefined) updates.height_cm = parseFloat(updates.height_cm) || 0
     if (updates.base_price !== undefined) updates.base_price = parseFloat(updates.base_price) || 0
+    const hasProductTypeUpdate = Object.prototype.hasOwnProperty.call(updates, 'product_type_id')
 
-    const { data, error } = await supabase
+    let { data, error } = await supabase
       .from('sizes')
       .update(updates)
       .eq('id', id)
       .select()
       .single()
+
+    // Backward compatibility: se la colonna non esiste, riprova senza product_type_id
+    if (error && hasProductTypeUpdate && `${error.message || ''}`.includes('product_type_id')) {
+      const { product_type_id: _removed, ...fallbackUpdates } = updates
+      const retry = await supabase
+        .from('sizes')
+        .update(fallbackUpdates)
+        .eq('id', id)
+        .select()
+        .single()
+      data = retry.data
+      error = retry.error
+    }
 
     if (error) {
       console.error('Errore aggiornamento dimensione:', error)

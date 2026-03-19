@@ -11,6 +11,7 @@ const SHIPPING_COST = 10.0
 export default function CartSummary() {
   const t = useTranslations('cart')
   const subtotal = useCartStore((state) => state.getTotal())
+  const clearCart = useCartStore((state) => state.clearCart)
   const total = subtotal + SHIPPING_COST
 
   return (
@@ -33,6 +34,14 @@ export default function CartSummary() {
       </div>
 
       <CheckoutButton />
+
+      <button
+        type="button"
+        onClick={() => clearCart()}
+        className="w-full mt-3 px-4 py-2 rounded-lg border border-red-200 text-red-600 text-sm font-semibold hover:bg-red-50 transition-colors"
+      >
+        Svuota carrello
+      </button>
 
       <Link href="/shop" className="block mt-4 text-center text-gray-600 hover:text-primary transition">
         {t('continueShopping')}

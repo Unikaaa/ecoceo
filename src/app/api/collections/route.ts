@@ -160,7 +160,7 @@ export async function PATCH(request: NextRequest) {
   }
 }
 
-// DELETE - Elimina una collezione
+// DELETE - Elimina definitivamente una collezione
 export async function DELETE(request: NextRequest) {
   try {
     if (!supabase) {
@@ -180,13 +180,10 @@ export async function DELETE(request: NextRequest) {
       )
     }
 
-    // Soft delete: imposta is_active = false invece di eliminare
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('collections')
-      .update({ is_active: false })
+      .delete()
       .eq('id', id)
-      .select()
-      .single()
 
     if (error) {
       console.error('Errore eliminazione collezione:', error)
@@ -196,7 +193,7 @@ export async function DELETE(request: NextRequest) {
       )
     }
 
-    return NextResponse.json({ collection: data }, { status: 200 })
+    return NextResponse.json({ success: true }, { status: 200 })
   } catch (error: any) {
     console.error('Errore API collezioni DELETE:', error)
     return NextResponse.json(

@@ -5,6 +5,14 @@ import { useRouter } from 'next/navigation'
 import DashboardLayout from '@/components/dashboard/DashboardLayout'
 import ImageUploadField from '@/components/dashboard/ImageUploadField'
 
+const SHAPE_OPTIONS = [
+  { value: 'oval', label: 'Ovale' },
+  { value: 'square', label: 'Quadrata' },
+  { value: 'triangle', label: 'Triangolare' },
+  { value: 'rectangle', label: 'Rettangolare' },
+  { value: 'circle', label: 'Rotonda' },
+]
+
 export default function PersonalizzaPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
@@ -33,19 +41,34 @@ export default function PersonalizzaPage() {
   const [editingItem, setEditingItem] = useState<{ type: string; id: string; data: any } | null>(null)
   const [editFormData, setEditFormData] = useState<any>({})
 
+  const isEmptyNumberInput = (value: any) =>
+    value === undefined || value === null || value === ''
+
   useEffect(() => {
     const authStatus = sessionStorage.getItem('dashboard_auth')
     if (authStatus === 'authenticated') {
       setIsAuthenticated(true)
-      fetchAll()
+      fetchAll('initial')
     }
     setIsLoading(false)
   }, [])
 
-  const fetchAll = async () => {
+  const fetchAll = async (mode: 'initial' | 'full' = 'full') => {
     setIsLoadingData(true)
     try {
-      await Promise.all([
+      if (mode === 'initial') {
+        // Primo paint veloce: carica subito solo i livelli principali.
+        await Promise.allSettled([fetchCategories(), fetchProductTypes()])
+        void Promise.allSettled([
+          fetchStyles(),
+          fetchSizes(),
+          fetchDecorations(),
+          fetchBackgrounds(),
+        ])
+        return
+      }
+
+      await Promise.allSettled([
         fetchCategories(),
         fetchProductTypes(),
         fetchStyles(),
@@ -59,39 +82,63 @@ export default function PersonalizzaPage() {
   }
 
   const fetchCategories = async () => {
-    const res = await fetch('/api/personalizza/categories')
-    const data = await res.json()
-    if (res.ok) setCategories(data.categories?.sort((a: any, b: any) => a.display_order - b.display_order) || [])
+    try {
+      const res = await fetch('/api/personalizza/categories')
+      const data = await res.json()
+      if (res.ok) setCategories(data.categories?.sort((a: any, b: any) => a.display_order - b.display_order) || [])
+    } catch (error) {
+      console.error('Errore fetch categorie:', error)
+    }
   }
 
   const fetchProductTypes = async () => {
-    const res = await fetch('/api/personalizza/product-types?include_inactive=true')
-    const data = await res.json()
-    if (res.ok) setProductTypes(data.productTypes?.sort((a: any, b: any) => a.display_order - b.display_order) || [])
+    try {
+      const res = await fetch('/api/personalizza/product-types?include_inactive=true')
+      const data = await res.json()
+      if (res.ok) setProductTypes(data.productTypes?.sort((a: any, b: any) => a.display_order - b.display_order) || [])
+    } catch (error) {
+      console.error('Errore fetch tipi prodotto:', error)
+    }
   }
 
   const fetchStyles = async () => {
-    const res = await fetch('/api/personalizza/styles?include_inactive=true')
-    const data = await res.json()
-    if (res.ok) setStyles(data.styles?.sort((a: any, b: any) => a.display_order - b.display_order) || [])
+    try {
+      const res = await fetch('/api/personalizza/styles?include_inactive=true')
+      const data = await res.json()
+      if (res.ok) setStyles(data.styles?.sort((a: any, b: any) => a.display_order - b.display_order) || [])
+    } catch (error) {
+      console.error('Errore fetch stili:', error)
+    }
   }
 
   const fetchSizes = async () => {
-    const res = await fetch('/api/personalizza/sizes?include_inactive=true')
-    const data = await res.json()
-    if (res.ok) setSizes(data.sizes?.sort((a: any, b: any) => a.display_order - b.display_order) || [])
+    try {
+      const res = await fetch('/api/personalizza/sizes?include_inactive=true')
+      const data = await res.json()
+      if (res.ok) setSizes(data.sizes?.sort((a: any, b: any) => a.display_order - b.display_order) || [])
+    } catch (error) {
+      console.error('Errore fetch dimensioni:', error)
+    }
   }
 
   const fetchDecorations = async () => {
-    const res = await fetch('/api/personalizza/decorations?include_inactive=true')
-    const data = await res.json()
-    if (res.ok) setDecorations(data.decorations?.sort((a: any, b: any) => a.display_order - b.display_order) || [])
+    try {
+      const res = await fetch('/api/personalizza/decorations?include_inactive=true')
+      const data = await res.json()
+      if (res.ok) setDecorations(data.decorations?.sort((a: any, b: any) => a.display_order - b.display_order) || [])
+    } catch (error) {
+      console.error('Errore fetch decorazioni:', error)
+    }
   }
 
   const fetchBackgrounds = async () => {
-    const res = await fetch('/api/personalizza/backgrounds?include_inactive=true')
-    const data = await res.json()
-    if (res.ok) setBackgrounds(data.backgrounds?.sort((a: any, b: any) => a.display_order - b.display_order) || [])
+    try {
+      const res = await fetch('/api/personalizza/backgrounds?include_inactive=true')
+      const data = await res.json()
+      if (res.ok) setBackgrounds(data.backgrounds?.sort((a: any, b: any) => a.display_order - b.display_order) || [])
+    } catch (error) {
+      console.error('Errore fetch sfondi:', error)
+    }
   }
 
   const generateSlug = (name: string) => {
@@ -141,6 +188,7 @@ export default function PersonalizzaPage() {
           slug: addFormData.slug || generateSlug(addFormData.name),
           description: addFormData.description || '',
           thumbnail_url: addFormData.thumbnail_url || '',
+          canvas_shape: addFormData.canvas_shape || 'oval',
           is_active: true,
           display_order: 0,
         }),
@@ -171,6 +219,7 @@ export default function PersonalizzaPage() {
           slug: addFormData.slug || generateSlug(addFormData.name),
           description: addFormData.description || '',
           preview_url: addFormData.preview_url || '',
+          product_type_id: selectedProductType,
           price_extra: parseFloat(addFormData.price_extra) || 0,
           is_active: true,
           display_order: 0,
@@ -201,6 +250,7 @@ export default function PersonalizzaPage() {
           name: addFormData.name,
           width_cm: parseFloat(addFormData.width_cm),
           height_cm: parseFloat(addFormData.height_cm),
+          product_type_id: selectedProductType,
           base_price: parseFloat(addFormData.base_price) || 0,
           is_active: true,
           display_order: 0,
@@ -233,6 +283,7 @@ export default function PersonalizzaPage() {
           price_extra: parseFloat(addFormData.price_extra) || 0,
           style_id: null,
           category_id: selectedCategory,
+          product_type_id: selectedProductType,
           is_active: true,
           display_order: 0,
         }),
@@ -264,6 +315,7 @@ export default function PersonalizzaPage() {
           price_extra: parseFloat(addFormData.price_extra) || 0,
           style_id: null,
           category_id: selectedCategory,
+          product_type_id: selectedProductType,
           is_active: true,
           display_order: 0,
         }),
@@ -301,29 +353,6 @@ export default function PersonalizzaPage() {
       if (deps.length > 0) {
         const confirmMsg = `Questa categoria ha: ${deps.join(', ')}.\n\nEliminando la categoria verranno eliminati anche tutti gli elementi collegati.\n\nVuoi continuare?`
         if (!confirm(confirmMsg)) return
-
-        // Elimina prima i figli
-        for (const pt of linkedPTs) {
-          await fetch('/api/personalizza/product-types', {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: pt.id }),
-          })
-        }
-        for (const dec of linkedDecs) {
-          await fetch('/api/personalizza/decorations', {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: dec.id }),
-          })
-        }
-        for (const bg of linkedBgs) {
-          await fetch('/api/personalizza/backgrounds', {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: bg.id }),
-          })
-        }
       } else {
         if (!confirm('Sei sicuro di voler eliminare questa categoria?')) return
       }
@@ -370,10 +399,21 @@ export default function PersonalizzaPage() {
     if (!editingItem) return
 
     try {
+      const payload: any = { id: editingItem.id, ...editFormData }
+      if (
+        selectedProductType &&
+        ['styles', 'sizes', 'decorations', 'backgrounds'].includes(editingItem.type)
+      ) {
+        payload.product_type_id = selectedProductType
+      }
+      if (selectedCategory && ['decorations', 'backgrounds'].includes(editingItem.type)) {
+        payload.category_id = selectedCategory
+      }
+
       const res = await fetch(`/api/personalizza/${editingItem.type}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: editingItem.id, ...editFormData }),
+        body: JSON.stringify(payload),
       })
 
       if (res.ok) {
@@ -427,14 +467,24 @@ export default function PersonalizzaPage() {
     return productTypes.filter(pt => pt.category_id === selectedCategory)
   }
 
-  const getCategoryDecorations = () => {
-    if (!selectedCategory) return []
-    return decorations.filter(dec => dec.category_id === selectedCategory)
+  const getProductTypeStyles = () => {
+    if (!selectedProductType) return styles
+    return styles.filter((style) => style.product_type_id === selectedProductType)
   }
 
-  const getCategoryBackgrounds = () => {
+  const getProductTypeSizes = () => {
+    if (!selectedProductType) return sizes
+    return sizes.filter((size) => size.product_type_id === selectedProductType)
+  }
+
+  const getProductTypeDecorations = () => {
     if (!selectedCategory) return []
-    return backgrounds.filter(bg => bg.category_id === selectedCategory)
+    return decorations.filter((dec) => dec.category_id === selectedCategory && dec.product_type_id === selectedProductType)
+  }
+
+  const getProductTypeBackgrounds = () => {
+    if (!selectedCategory) return []
+    return backgrounds.filter((bg) => bg.category_id === selectedCategory && bg.product_type_id === selectedProductType)
   }
 
   const renderAddForm = () => {
@@ -548,11 +598,22 @@ export default function PersonalizzaPage() {
                   />
                 </div>
                 <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Forma Canvas</label>
+                  <select
+                    value={addFormData.canvas_shape || 'oval'}
+                    onChange={(e) => setAddFormData({ ...addFormData, canvas_shape: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#663399]"
+                  >
+                    {SHAPE_OPTIONS.map((shape) => (
+                      <option key={shape.value} value={shape.value}>{shape.label}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Miniatura (opzionale)</label>
                   <ImageUploadField
                     value={addFormData.thumbnail_url || ''}
                     onChange={(url) => setAddFormData({ ...addFormData, thumbnail_url: url || '' })}
-                    folder="personalizza/product-types"
                   />
                 </div>
                 <div className="flex gap-3 pt-4">
@@ -606,13 +667,12 @@ export default function PersonalizzaPage() {
                   <ImageUploadField
                     value={addFormData.preview_url || ''}
                     onChange={(url) => setAddFormData({ ...addFormData, preview_url: url || '' })}
-                    folder="personalizza/styles"
                   />
                 </div>
                 <div className="flex gap-3 pt-4">
                   <button
                     onClick={handleAddStyle}
-                    disabled={!addFormData.name || !addFormData.price_extra}
+                    disabled={!addFormData.name || isEmptyNumberInput(addFormData.price_extra)}
                     className="flex-1 px-4 py-2 bg-[#663399] text-white rounded-lg hover:bg-[#552288] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                   >
                     Salva
@@ -680,7 +740,12 @@ export default function PersonalizzaPage() {
                 <div className="flex gap-3 pt-4">
                   <button
                     onClick={handleAddSize}
-                    disabled={!addFormData.name || !addFormData.width_cm || !addFormData.height_cm || !addFormData.base_price}
+                    disabled={
+                      !addFormData.name ||
+                      isEmptyNumberInput(addFormData.width_cm) ||
+                      isEmptyNumberInput(addFormData.height_cm) ||
+                      isEmptyNumberInput(addFormData.base_price)
+                    }
                     className="flex-1 px-4 py-2 bg-[#663399] text-white rounded-lg hover:bg-[#552288] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                   >
                     Salva
@@ -853,6 +918,18 @@ export default function PersonalizzaPage() {
                     onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#663399]"
                   />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Forma Canvas</label>
+                  <select
+                    value={editFormData.canvas_shape || 'oval'}
+                    onChange={(e) => setEditFormData({ ...editFormData, canvas_shape: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#663399]"
+                  >
+                    {SHAPE_OPTIONS.map((shape) => (
+                      <option key={shape.value} value={shape.value}>{shape.label}</option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Stato</label>
@@ -1214,6 +1291,7 @@ export default function PersonalizzaPage() {
                   >
                     <h4 className="text-lg font-semibold text-gray-900 mb-2">{pt.name}</h4>
                     <p className="text-sm text-gray-600 mb-4">{pt.slug}</p>
+                    <p className="text-xs text-gray-500 mb-4">Forma: {pt.canvas_shape || 'oval'}</p>
                     <div className="flex items-center justify-between">
                       <span className={`px-2 py-1 rounded-full text-xs ${
                         pt.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
@@ -1279,11 +1357,11 @@ export default function PersonalizzaPage() {
                     + Aggiungi
                   </button>
                 </div>
-                {styles.length === 0 ? (
+                {getProductTypeStyles().length === 0 ? (
                   <p className="text-gray-500 text-sm">Nessuno stile disponibile.</p>
                 ) : (
                   <div className="space-y-2">
-                    {styles.map((style) => (
+                    {getProductTypeStyles().map((style) => (
                       <div key={style.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100">
                         <div>
                           <span className="font-medium text-gray-900">{style.name}</span>
@@ -1320,11 +1398,11 @@ export default function PersonalizzaPage() {
                     + Aggiungi
                   </button>
                 </div>
-                {sizes.length === 0 ? (
+                {getProductTypeSizes().length === 0 ? (
                   <p className="text-gray-500 text-sm">Nessuna dimensione disponibile.</p>
                 ) : (
                   <div className="space-y-2">
-                    {sizes.map((size) => (
+                    {getProductTypeSizes().map((size) => (
                       <div key={size.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100">
                         <div>
                           <span className="font-medium text-gray-900">{size.name}</span>
@@ -1363,11 +1441,11 @@ export default function PersonalizzaPage() {
                     + Aggiungi
                   </button>
                 </div>
-                {getCategoryDecorations().length === 0 ? (
+                {getProductTypeDecorations().length === 0 ? (
                   <p className="text-gray-500 text-sm">Nessuna decorazione disponibile.</p>
                 ) : (
                   <div className="space-y-2">
-                    {getCategoryDecorations().map((dec) => (
+                    {getProductTypeDecorations().map((dec) => (
                       <div key={dec.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100">
                         <div>
                           <span className="font-medium text-gray-900">{dec.name}</span>
@@ -1404,11 +1482,11 @@ export default function PersonalizzaPage() {
                     + Aggiungi
                   </button>
                 </div>
-                {getCategoryBackgrounds().length === 0 ? (
+                {getProductTypeBackgrounds().length === 0 ? (
                   <p className="text-gray-500 text-sm">Nessuno sfondo disponibile.</p>
                 ) : (
                   <div className="space-y-2">
-                    {getCategoryBackgrounds().map((bg) => (
+                    {getProductTypeBackgrounds().map((bg) => (
                       <div key={bg.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100">
                         <div>
                           <span className="font-medium text-gray-900">{bg.name}</span>

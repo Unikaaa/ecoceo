@@ -16,7 +16,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
 
   return (
     <Link
-      href={`/shop/${category.slug}`}
+      href={`/shop/category/${category.slug}`}
       className="group block bg-white rounded-artistic overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
     >
       <div className="aspect-video bg-gradient-to-br from-ceramic-beige via-ceramic-white to-ceramic-sand flex items-center justify-center relative overflow-hidden">

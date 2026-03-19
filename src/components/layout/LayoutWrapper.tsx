@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation'
 import Header from './Header'
 import Footer from './Footer'
+import SitePopup from './SitePopup'
 
 export default function LayoutWrapper({
   children,
@@ -18,6 +19,7 @@ export default function LayoutWrapper({
 
   return (
     <div className="flex flex-col min-h-screen bg-site">
+      <SitePopup />
       <Header />
       <main className="flex-grow bg-site">
         {children}

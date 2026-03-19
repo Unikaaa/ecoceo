@@ -9,7 +9,7 @@ export default function Hero() {
     <section className="relative h-[700px] md:h-[800px] flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 z-0">
         <Image
-          src="/imageHero.png"
+          src="/home-bg.png"
           alt="Ceramiche artistiche"
           fill
           className="object-cover"

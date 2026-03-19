@@ -1,18 +1,20 @@
 import { notFound } from 'next/navigation'
-import { mockArticles } from '@/lib/data/mockArticles'
 import Image from 'next/image'
 import { Metadata } from 'next'
 import Link from 'next/link'
+import { getArticleBySlugFromDb } from '@/lib/news/articlesServer'
+
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 interface PageProps {
   params: {
-    locale: string
     slug: string
   }
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const article = mockArticles.find((a) => a.slug === params.slug)
+  const article = await getArticleBySlugFromDb(params.slug)
 
   if (!article) {
     return {
@@ -26,22 +28,22 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       title: article.title,
       description: article.excerpt,
-      images: [article.image],
+      images: [article.image_url || '/placeholder-article.jpg'],
       type: 'article',
-      publishedTime: article.publishedAt.toISOString(),
+      publishedTime: new Date(article.published_at).toISOString(),
       authors: [article.author],
     },
   }
 }
 
-export default function ArticlePage({ params }: PageProps) {
-  const article = mockArticles.find((a) => a.slug === params.slug)
+export default async function ArticlePage({ params }: PageProps) {
+  const article = await getArticleBySlugFromDb(params.slug)
 
   if (!article) {
     notFound()
   }
 
-  const formattedDate = new Date(article.publishedAt).toLocaleDateString('it-IT', {
+  const formattedDate = new Date(article.published_at).toLocaleDateString('it-IT', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -90,7 +92,7 @@ export default function ArticlePage({ params }: PageProps) {
               <span className="px-5 py-2 bg-gradient-to-r from-[#663399]/15 via-[#663399]/10 to-[#c45824]/15 text-[#663399] rounded-full text-sm font-semibold border-2 border-[#663399]/30 shadow-lg backdrop-blur-sm hover:scale-110 transition-transform duration-300">
                 {article.category}
               </span>
-              {article.tags && article.tags.map((tag, idx) => (
+              {article.tags && article.tags.map((tag: string, idx: number) => (
                 <span 
                   key={tag} 
                   className="px-3 py-1.5 bg-white/80 backdrop-blur-sm text-gray-600 rounded-full text-xs hover:bg-[#663399]/10 hover:text-[#663399] transition-all duration-300 hover:scale-105 shadow-sm"
@@ -115,9 +117,7 @@ export default function ArticlePage({ params }: PageProps) {
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#663399] via-[#c45824] to-[#663399] p-0.5 shadow-lg hover:scale-110 transition-transform duration-300">
                     <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
-                      <span className="text-[#663399] font-bold text-sm">
-                        {article.author.charAt(0).toUpperCase()}
-                      </span>
+                            <span className="text-[#663399] font-bold text-sm">{article.author.charAt(0).toUpperCase()}</span>
                     </div>
                   </div>
                   <div>

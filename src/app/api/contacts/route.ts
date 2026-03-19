@@ -114,3 +114,45 @@ export async function PATCH(request: NextRequest) {
     )
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Configurazione database non valida.' },
+        { status: 500 }
+      )
+    }
+
+    const body = await request.json()
+    const { id } = body
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'ID contatto richiesto.' },
+        { status: 400 }
+      )
+    }
+
+    const { error } = await supabase
+      .from('contacts')
+      .delete()
+      .eq('id', id)
+
+    if (error) {
+      console.error('Errore eliminazione contatto:', error)
+      return NextResponse.json(
+        { error: 'Errore durante eliminazione contatto.' },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json({ success: true }, { status: 200 })
+  } catch (error) {
+    console.error('Errore API contatti DELETE:', error)
+    return NextResponse.json(
+      { error: 'Errore durante eliminazione contatto.' },
+      { status: 500 }
+    )
+  }
+}

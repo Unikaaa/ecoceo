@@ -173,6 +173,19 @@ export default function DashboardPage() {
       bgLight: 'bg-rose-50',
       iconColor: 'text-rose-600',
     },
+    {
+      href: '/dashboard/popup',
+      title: 'Pop Up',
+      description: 'Crea popup evento/sconto con scadenza',
+      icon: (
+        <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 8h10M7 12h6m-9 9h16a2 2 0 002-2V7a2 2 0 00-2-2H8l-4 4v10a2 2 0 002 2z" />
+        </svg>
+      ),
+      gradient: 'from-indigo-500 to-violet-500',
+      bgLight: 'bg-indigo-50',
+      iconColor: 'text-indigo-600',
+    },
   ]
 
   return (
@@ -263,6 +276,9 @@ export default function DashboardPage() {
             </Link>
             <Link href="/dashboard/contacts" className="px-4 py-2 bg-white rounded-full text-sm font-medium text-gray-700 hover:bg-[#663399] hover:text-white transition-colors shadow-sm">
               📬 Vedi Messaggi
+            </Link>
+            <Link href="/dashboard/popup" className="px-4 py-2 bg-white rounded-full text-sm font-medium text-gray-700 hover:bg-[#663399] hover:text-white transition-colors shadow-sm">
+              + Nuova Pop Up
             </Link>
           </div>
         </div>

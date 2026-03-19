@@ -98,7 +98,7 @@ export default function CategoryPage({ params }: PageProps) {
               return (
                 <Link
                   key={cat.id}
-                  href={`/shop/${cat.slug}`}
+                  href={`/shop/category/${cat.slug}`}
                   onClick={(e) => handleCategoryClick(e, cat.slug)}
                   className={`group block bg-white rounded-xl overflow-hidden transition-all duration-300 will-change-transform ${
                     isActive

@@ -1,7 +1,10 @@
-import { mockArticles } from '@/lib/data/mockArticles'
 import ArticleCard from '@/components/news/ArticleCard'
 import { Metadata } from 'next'
 import Link from 'next/link'
+import { getPublishedArticlesFromDb } from '@/lib/news/articlesServer'
+
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export const metadata: Metadata = {
   title: 'News - UNIKA',
@@ -12,9 +15,10 @@ export const metadata: Metadata = {
   },
 }
 
-export default function NewsPage() {
-  const featuredArticle = mockArticles[0]
-  const otherArticles = mockArticles.slice(1)
+export default async function NewsPage() {
+  const articles = await getPublishedArticlesFromDb()
+  const featuredArticle = articles.find((a: any) => a.is_featured) || articles[0]
+  const otherArticles = articles.filter((a: any) => a.id !== featuredArticle?.id)
 
   return (
     <div className="bg-site min-h-screen relative overflow-hidden">
@@ -68,11 +72,21 @@ export default function NewsPage() {
               >
                 <div className="grid md:grid-cols-2 gap-0">
                   <div className="relative aspect-[4/3] md:aspect-auto overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-ceramic-beige via-ceramic-white to-ceramic-sand" />
+                    {featuredArticle.image_url ? (
+                      <img
+                        src={featuredArticle.image_url}
+                        alt={featuredArticle.title}
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    ) : (
+                      <>
+                        <div className="absolute inset-0 bg-gradient-to-br from-ceramic-beige via-ceramic-white to-ceramic-sand" />
+                        <div className="w-full h-full flex items-center justify-center relative">
+                          <span className="text-gray-400 text-sm relative z-10">Immagine</span>
+                        </div>
+                      </>
+                    )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-                    <div className="w-full h-full flex items-center justify-center relative">
-                      <span className="text-gray-400 text-sm relative z-10">Immagine</span>
-                    </div>
                     <div className="absolute inset-0 bg-gradient-to-r from-[#663399]/0 via-[#663399]/10 to-[#663399]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                   </div>
                   <div className="p-8 md:p-12 flex flex-col justify-center relative">
@@ -83,7 +97,7 @@ export default function NewsPage() {
                     </div>
                     <div className="mb-4">
                       <time className="text-sm text-gray-500 font-medium">
-                        {new Date(featuredArticle.publishedAt).toLocaleDateString('it-IT', {
+                        {new Date(featuredArticle.published_at).toLocaleDateString('it-IT', {
                           year: 'numeric',
                           month: 'long',
                           day: 'numeric',
@@ -140,7 +154,18 @@ export default function NewsPage() {
                   style={{ animationDelay: `${index * 100}ms` }}
                   className="animate-fade-in-up-delay"
                 >
-                  <ArticleCard article={article} />
+                  <ArticleCard article={{
+                    id: article.id,
+                    slug: article.slug,
+                    title: article.title,
+                    excerpt: article.excerpt,
+                    content: article.content,
+                    author: article.author,
+                    publishedAt: new Date(article.published_at),
+                    category: article.category,
+                    image: article.image_url || '/placeholder-article.jpg',
+                    tags: article.tags || [],
+                  }} />
                 </div>
               ))}
             </div>

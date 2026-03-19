@@ -17,7 +17,7 @@ export default function Footer() {
             <div>
               <Link href="/" className="inline-block mb-4">
                 <Image
-                  src="/logo.jpg"
+                  src="/logo.png"
                   alt="UNIKA"
                   width={120}
                   height={40}
@@ -80,12 +80,29 @@ export default function Footer() {
             <div>
               <h4 className="font-semibold mb-4">Seguici</h4>
               <div className="flex space-x-4">
-                {/* Social icons placeholder */}
-                <a href="#" className="text-gray-600 hover:text-primary transition">
+                <a
+                  href="https://www.instagram.com/unika__art_ceramics?igsh=MWtyczRsaW1xOGNlNw=="
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-600 hover:text-primary transition"
+                >
                   Instagram
                 </a>
-                <a href="#" className="text-gray-600 hover:text-primary transition">
+                <a
+                  href="https://www.facebook.com/share/1H95DGpSkR/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-600 hover:text-primary transition"
+                >
                   Facebook
+                </a>
+                <a
+                  href="https://www.tiktok.com/@unika__20?_r=1&_t=ZN-94coeO4zAIw"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-600 hover:text-primary transition"
+                >
+                  TikTok
                 </a>
               </div>
             </div>

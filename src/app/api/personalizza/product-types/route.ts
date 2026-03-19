@@ -62,25 +62,36 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { category_id, name, slug, description, thumbnail_url, is_active, display_order } = body
+    const { category_id, name, slug, description, thumbnail_url, canvas_shape, is_active, display_order } = body
 
     if (!category_id || !name || !slug) {
       return NextResponse.json({ error: 'Categoria, nome e slug sono obbligatori' }, { status: 400 })
     }
 
-    const { data, error } = await supabase
+    const payload: any = {
+      category_id,
+      name,
+      slug,
+      description: description || null,
+      thumbnail_url: thumbnail_url || null,
+      is_active: is_active !== false,
+      display_order: display_order || 0,
+    }
+    if (canvas_shape) payload.canvas_shape = canvas_shape
+
+    let { data, error } = await supabase
       .from('product_types')
-      .insert({
-        category_id,
-        name,
-        slug,
-        description: description || null,
-        thumbnail_url: thumbnail_url || null,
-        is_active: is_active !== false,
-        display_order: display_order || 0,
-      })
+      .insert(payload)
       .select()
       .single()
+
+    // Backward compatibility: se la colonna non esiste, riprova senza canvas_shape
+    if (error && canvas_shape && `${error.message || ''}`.includes('canvas_shape')) {
+      const { canvas_shape: _removed, ...fallbackPayload } = payload
+      const retry = await supabase.from('product_types').insert(fallbackPayload).select().single()
+      data = retry.data
+      error = retry.error
+    }
 
     if (error) {
       console.error('Errore creazione tipo prodotto:', error)
@@ -107,12 +118,27 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: 'ID tipo prodotto richiesto' }, { status: 400 })
     }
 
-    const { data, error } = await supabase
+    const hasCanvasShapeUpdate = Object.prototype.hasOwnProperty.call(updates, 'canvas_shape')
+
+    let { data, error } = await supabase
       .from('product_types')
       .update(updates)
       .eq('id', id)
       .select()
       .single()
+
+    // Backward compatibility: se la colonna non esiste, riprova senza canvas_shape
+    if (error && hasCanvasShapeUpdate && `${error.message || ''}`.includes('canvas_shape')) {
+      const { canvas_shape: _removed, ...fallbackUpdates } = updates
+      const retry = await supabase
+        .from('product_types')
+        .update(fallbackUpdates)
+        .eq('id', id)
+        .select()
+        .single()
+      data = retry.data
+      error = retry.error
+    }
 
     if (error) {
       console.error('Errore aggiornamento tipo prodotto:', error)
@@ -139,13 +165,34 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'ID tipo prodotto richiesto' }, { status: 400 })
     }
 
-    // Prima elimina le configurazioni che referenziano questo tipo prodotto
-    await supabase
-      .from('configurations')
-      .delete()
-      .eq('product_type_id', id)
+    // Elimina in cascata tutti i figli collegati al tipo prodotto
+    const deleteSteps: Array<{ table: string; column: string; value: string }> = [
+      { table: 'configurations', column: 'product_type_id', value: id },
+      { table: 'styles', column: 'product_type_id', value: id },
+      { table: 'sizes', column: 'product_type_id', value: id },
+      { table: 'decorations', column: 'product_type_id', value: id },
+      { table: 'backgrounds', column: 'product_type_id', value: id },
+    ]
 
-    const { error } = await supabase.from('product_types').delete().eq('id', id)
+    for (const step of deleteSteps) {
+      const { error: stepError } = await supabase
+        .from(step.table)
+        .delete()
+        .eq(step.column, step.value)
+
+      if (stepError) {
+        console.error(`Errore eliminazione dipendenze ${step.table}:`, stepError)
+        return NextResponse.json(
+          { error: `Errore durante l'eliminazione degli elementi collegati (${step.table})` },
+          { status: 500 }
+        )
+      }
+    }
+
+    const { error } = await supabase
+      .from('product_types')
+      .delete()
+      .eq('id', id)
 
     if (error) {
       console.error('Errore eliminazione tipo prodotto:', error)

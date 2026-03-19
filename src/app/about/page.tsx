@@ -4,9 +4,18 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Button from '@/components/ui/Button'
 
+interface AboutSection {
+  section_key: string
+  title: string
+  subtitle: string
+  content: string
+  image_url: string
+}
+
 export default function AboutPage() {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null)
   const [scrollY, setScrollY] = useState(0)
+  const [sections, setSections] = useState<Record<string, AboutSection>>({})
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,6 +24,58 @@ export default function AboutPage() {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  useEffect(() => {
+    const fetchAboutSections = async () => {
+      try {
+        const res = await fetch('/api/about')
+        const data = await res.json()
+        if (res.ok) {
+          const map = (data.sections || []).reduce((acc: Record<string, AboutSection>, section: AboutSection) => {
+            acc[section.section_key] = section
+            return acc
+          }, {})
+          setSections(map)
+        }
+      } catch (error) {
+        console.error('Errore caricamento about:', error)
+      }
+    }
+
+    fetchAboutSections()
+  }, [])
+
+  const hero = sections.hero
+  const story = sections.story
+  const philosophy = sections.philosophy
+  const signature = sections.signature
+
+  const defaultStoryParagraphs = [
+    "UNIKA nasce dalla passione per l'arte ceramica e dalla volontà di preservare tecniche tradizionali tramandate di generazione in generazione. Ogni pezzo che creiamo porta con sé l'essenza di un sapere antico, arricchito da una visione contemporanea.",
+    "La nostra storia inizia in un piccolo atelier dove l'argilla prende forma tra le mani esperte dei nostri artigiani. Ogni ceramica è frutto di ore di lavoro manuale, di attenzione ai dettagli e di un amore profondo per questo mestiere.",
+    "Crediamo che ogni oggetto debba avere un'anima, che ogni creazione debba raccontare qualcosa di unico. Per questo ogni pezzo UNIKA è unico, irripetibile, portatore di un messaggio di bellezza e autenticità.",
+  ]
+
+  const storyParagraphs = (story?.content ?? defaultStoryParagraphs.join('\n\n'))
+    .split('\n\n')
+    .map((p) => p.trim())
+    .filter(Boolean)
+
+  const parsePhilosophyImages = (raw?: string) => {
+    if (!raw) return ['', '', '']
+    try {
+      const parsed = JSON.parse(raw)
+      if (Array.isArray(parsed)) return [parsed[0] || '', parsed[1] || '', parsed[2] || '']
+      if (parsed && Array.isArray(parsed.images)) {
+        return [parsed.images[0] || '', parsed.images[1] || '', parsed.images[2] || '']
+      }
+    } catch {
+      return [raw, '', '']
+    }
+    return ['', '', '']
+  }
+
+  const philosophyImages = parsePhilosophyImages(philosophy?.image_url)
 
   return (
     <div className="min-h-screen bg-site relative overflow-hidden">
@@ -40,17 +101,16 @@ export default function AboutPage() {
             <div className="max-w-5xl mx-auto text-center animate-fade-in-up">
               <div className="inline-block mb-8">
                 <span className="px-8 py-3 bg-gradient-to-r from-[#663399]/20 via-[#663399]/15 to-[#c45824]/20 text-[#663399] rounded-full text-sm font-semibold border-2 border-[#663399]/30 shadow-xl backdrop-blur-sm">
-                  La Nostra Essenza
+                  {hero?.subtitle ?? 'La Nostra Essenza'}
                 </span>
               </div>
               <h1 className="text-6xl md:text-8xl lg:text-9xl font-serif text-gray-900 mb-8 leading-[1.05] tracking-tight">
                 <span className="block bg-gradient-to-r from-gray-900 via-[#663399] to-gray-900 bg-clip-text text-transparent">
-                  Chi Siamo
+                  {hero?.title ?? 'Chi Siamo'}
                 </span>
               </h1>
               <p className="text-2xl md:text-3xl text-gray-700 leading-relaxed max-w-4xl mx-auto font-light">
-                Dove l'arte incontra l'artigianato, dove ogni pezzo racconta una storia, 
-                dove la tradizione si fonde con l'innovazione
+                {hero?.content ?? "Dove l'arte incontra l'artigianato, dove ogni pezzo racconta una storia, dove la tradizione si fonde con l'innovazione"}
               </p>
             </div>
           </div>
@@ -68,7 +128,18 @@ export default function AboutPage() {
                   <div className="relative aspect-square bg-gradient-to-br from-ceramic-beige via-ceramic-terracotta to-ceramic-earth rounded-artistic overflow-hidden shadow-2xl transform group-hover:scale-[1.02] transition-transform duration-500">
                     <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
                     <div className="w-full h-full flex items-center justify-center relative">
-                      <span className="text-gray-400 text-lg relative z-10">Immagine Atelier</span>
+                      {story?.image_url ? (
+                        <img
+                          src={story.image_url}
+                          alt={story?.subtitle || 'Immagine Atelier'}
+                          className="absolute inset-0 w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-gray-400 text-lg relative z-10">Immagine Atelier</span>
+                      )}
+                      {story?.image_url && (
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#663399]/20 via-[#c45824]/10 to-[#663399]/20" />
+                      )}
                     </div>
                     {/* Overlay hover */}
                     <div className="absolute inset-0 bg-gradient-to-r from-[#663399]/0 via-[#663399]/10 to-[#663399]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
@@ -87,35 +158,27 @@ export default function AboutPage() {
                   <div className="pl-0 lg:pl-8">
                     <div className="mb-6">
                       <span className="px-4 py-2 bg-gradient-to-r from-[#663399]/15 to-[#c45824]/15 text-[#663399] rounded-full text-xs font-semibold border border-[#663399]/30">
-                        La Nostra Storia
+                        {story?.subtitle ?? 'La Nostra Storia'}
                       </span>
                     </div>
                     <h2 className="text-5xl md:text-6xl font-serif text-gray-900 mb-8 leading-tight">
                       <span className="bg-gradient-to-r from-gray-900 via-[#663399] to-gray-900 bg-clip-text text-transparent">
-                        Un Viaggio nell'Arte
+                        {story?.title ?? "Un Viaggio nell'Arte"}
                       </span>
                     </h2>
                     <div className="space-y-6 text-lg md:text-xl text-gray-700 leading-relaxed">
-                      <p className="relative pl-6 border-l-4 border-[#663399]/30">
-                        <span className="absolute -left-2 top-0 w-3 h-3 bg-[#663399] rounded-full" />
-                        UNIKA nasce dalla passione per l'arte ceramica e dalla volontà di 
-                        preservare tecniche tradizionali tramandate di generazione in generazione. 
-                        Ogni pezzo che creiamo porta con sé l'essenza di un sapere antico, 
-                        arricchito da una visione contemporanea.
-                      </p>
-                      <p className="relative pl-6 border-l-4 border-[#c45824]/30">
-                        <span className="absolute -left-2 top-0 w-3 h-3 bg-[#c45824] rounded-full" />
-                        La nostra storia inizia in un piccolo atelier dove l'argilla prende forma 
-                        tra le mani esperte dei nostri artigiani. Ogni ceramica è frutto di ore 
-                        di lavoro manuale, di attenzione ai dettagli e di un amore profondo per 
-                        questo mestiere.
-                      </p>
-                      <p className="relative pl-6 border-l-4 border-[#663399]/30">
-                        <span className="absolute -left-2 top-0 w-3 h-3 bg-[#663399] rounded-full" />
-                        Crediamo che ogni oggetto debba avere un'anima, che ogni creazione debba 
-                        raccontare qualcosa di unico. Per questo ogni pezzo UNIKA è unico, 
-                        irripetibile, portatore di un messaggio di bellezza e autenticità.
-                      </p>
+                      {storyParagraphs.map((paragraph, index) => {
+                        const isAccent = index % 2 === 1
+                        return (
+                          <p
+                            key={`${index}-${paragraph.slice(0, 16)}`}
+                            className={`relative pl-6 border-l-4 ${isAccent ? 'border-[#c45824]/30' : 'border-[#663399]/30'}`}
+                          >
+                            <span className={`absolute -left-2 top-0 w-3 h-3 rounded-full ${isAccent ? 'bg-[#c45824]' : 'bg-[#663399]'}`} />
+                            {paragraph}
+                          </p>
+                        )
+                      })}
                     </div>
                   </div>
                 </div>
@@ -131,18 +194,16 @@ export default function AboutPage() {
             <div className="max-w-5xl mx-auto text-center mb-20 animate-fade-in-up-delay-3">
               <div className="inline-block mb-6">
                 <span className="px-6 py-2 bg-gradient-to-r from-[#663399]/15 to-[#c45824]/15 text-[#663399] rounded-full text-sm font-semibold border-2 border-[#663399]/30">
-                  Filosofia
+                  {philosophy?.subtitle ?? 'Filosofia'}
                 </span>
               </div>
               <h2 className="text-5xl md:text-7xl font-serif text-gray-900 mb-8 leading-tight">
                 <span className="bg-gradient-to-r from-gray-900 via-[#663399] to-gray-900 bg-clip-text text-transparent">
-                  La Nostra Filosofia
+                  {philosophy?.title ?? 'La Nostra Filosofia'}
                 </span>
               </h2>
               <p className="text-2xl md:text-3xl text-gray-700 leading-relaxed max-w-4xl mx-auto">
-                Crediamo nella bellezza della manualità, nel valore del tempo dedicato, 
-                nell'importanza di creare oggetti che durino nel tempo e che portino gioia 
-                in ogni casa che li accoglie.
+                {philosophy?.content ?? "Crediamo nella bellezza della manualità, nel valore del tempo dedicato, nell'importanza di creare oggetti che durino nel tempo e che portino gioia in ogni casa che li accoglie."}
               </p>
             </div>
 
@@ -164,6 +225,16 @@ export default function AboutPage() {
                   
                   <div className="relative aspect-square bg-gradient-to-br rounded-artistic overflow-hidden shadow-2xl transform group-hover:scale-105 transition-all duration-500">
                     <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient}`} />
+                    {philosophyImages[index] && (
+                      <img
+                        src={philosophyImages[index]}
+                        alt={item.title}
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    )}
+                    {philosophyImages[index] && (
+                      <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-25`} />
+                    )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
                     <div className="w-full h-full flex items-center justify-center relative">
                       <div className="text-center z-10">
@@ -207,9 +278,7 @@ export default function AboutPage() {
               
               <div className="space-y-8 mb-16">
                 <p className="text-2xl md:text-3xl text-gray-700 leading-relaxed font-light">
-                  Non produciamo in serie. Ogni ceramica è pensata, modellata e finita a mano, 
-                  con cura e dedizione. Ogni creazione porta con sé l'impronta dell'artigiano 
-                  che l'ha realizzata.
+                  {signature?.content ?? "Non produciamo in serie. Ogni ceramica è pensata, modellata e finita a mano, con cura e dedizione. Ogni creazione porta con sé l'impronta dell'artigiano che l'ha realizzata."}
                 </p>
                 <div className="flex items-center justify-center gap-4 my-8">
                   <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#663399] to-transparent" />

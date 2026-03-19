@@ -457,13 +457,20 @@ export default function InventorySection() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-center">
-                      <button
-                        onClick={() => handleToggleFeatured(item)}
-                        className={`text-2xl transition-all hover:scale-110 ${item.is_featured ? 'opacity-100' : 'opacity-30 hover:opacity-60'}`}
-                        title={item.is_featured ? 'Rimuovi dai favoriti' : 'Aggiungi ai favoriti'}
-                      >
-                        ⭐
-                      </button>
+                      <div className="flex flex-col items-center gap-1">
+                        <button
+                          onClick={() => handleToggleFeatured(item)}
+                          className={`text-2xl transition-all hover:scale-110 ${item.is_featured ? 'opacity-100' : 'opacity-30 hover:opacity-60'}`}
+                          title={item.is_featured ? 'Rimuovi dai favoriti' : 'Aggiungi ai favoriti'}
+                        >
+                          ⭐
+                        </button>
+                        {item.is_featured && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium text-amber-800 bg-gradient-to-r from-amber-100 to-yellow-100 border border-amber-200">
+                            <span>Favorito</span>
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="px-4 py-3 text-sm">
                       <div className="flex gap-2">

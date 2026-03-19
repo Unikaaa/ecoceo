@@ -66,7 +66,7 @@ export default function SearchBar() {
             title: product.name,
             description: product.description,
             price: product.price,
-            url: `/shop/${product.category}/${product.slug}`,
+            url: `/shop/category/${product.category}/${product.slug}`,
           })
         })
 
@@ -82,7 +82,7 @@ export default function SearchBar() {
             type: 'category',
             title: category.name,
             description: category.description,
-            url: `/shop/${category.slug}`,
+            url: `/shop/category/${category.slug}`,
           })
         })
 

@@ -35,11 +35,20 @@ export default function PersonalizzaStep1({
   }, [])
 
   const fetchCategories = async () => {
+    const cacheKey = 'personalizza_categories_cache_v1'
     try {
-      const response = await fetch('/api/personalizza/categories')
+      const cached = sessionStorage.getItem(cacheKey)
+      if (cached) {
+        setCategories(JSON.parse(cached))
+        setIsLoading(false)
+      }
+
+      const response = await fetch('/api/personalizza/categories', { cache: 'force-cache' })
       const data = await response.json()
       if (response.ok) {
-        setCategories(data.categories || [])
+        const categoriesData = data.categories || []
+        setCategories(categoriesData)
+        sessionStorage.setItem(cacheKey, JSON.stringify(categoriesData))
       }
     } catch (error) {
       console.error('Errore caricamento categorie:', error)

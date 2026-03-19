@@ -126,8 +126,41 @@ export default function ContactsKanban() {
     setSelectedContact(null)
   }
 
-  const handleModalUpdate = () => {
+  const handleModalUpdate = (updatedContact?: Contact) => {
     fetchContacts()
+    if (updatedContact) {
+      setSelectedContact((prev) => {
+        if (!prev || prev.id !== updatedContact.id) return prev
+        return { ...prev, ...updatedContact }
+      })
+    }
+  }
+
+  const handleDeleteContact = async (id: string) => {
+    const confirmed = window.confirm('Eliminare definitivamente questo messaggio?')
+    if (!confirmed) return
+
+    try {
+      const response = await fetch('/api/contacts', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      })
+
+      if (!response.ok) {
+        alert('Errore durante eliminazione messaggio')
+        return
+      }
+
+      await fetchContacts()
+      if (selectedContact?.id === id) {
+        setSelectedContact(null)
+        setIsModalOpen(false)
+      }
+    } catch (error) {
+      console.error('Errore eliminazione messaggio:', error)
+      alert('Errore durante eliminazione messaggio')
+    }
   }
 
   const columns = [
@@ -252,8 +285,9 @@ export default function ContactsKanban() {
                     </div>
 
                     {/* Footer con Assigned To o Completed Badge */}
-                    {(contact.assigned_to || contact.status === 'completed') && (
-                      <div className="pt-4 border-t border-gray-200 space-y-2">
+                    <div className="pt-4 border-t border-gray-200 space-y-2">
+                      {(contact.assigned_to || contact.status === 'completed') && (
+                        <>
                         {contact.assigned_to && contact.status === 'completed' && (
                           <p className="text-xs text-green-700 font-medium">
                             Eseguito da: <span className="font-semibold">{contact.assigned_to}</span>
@@ -272,8 +306,21 @@ export default function ContactsKanban() {
                             Risposta inviata
                           </div>
                         )}
+                        </>
+                      )}
+                      <div className="flex justify-end pt-1">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleDeleteContact(contact.id)
+                          }}
+                          className="px-2.5 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                        >
+                          Elimina
+                        </button>
                       </div>
-                    )}
+                    </div>
                   </div>
                 ))
               )}

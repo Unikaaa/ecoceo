@@ -1,8 +1,10 @@
-import { mockArticles } from '@/lib/data/mockArticles'
 import ArticleCard from '@/components/news/ArticleCard'
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { createClient } from '@supabase/supabase-js'
+import { getPublishedArticlesFromDb } from '@/lib/news/articlesServer'
+
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export const metadata: Metadata = {
   title: 'News - UNIKA',
@@ -13,46 +15,13 @@ export const metadata: Metadata = {
   },
 }
 
-// Funzione per recuperare articoli da Supabase
 async function getArticles() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
-  
-  if (!supabaseUrl || !supabaseServiceKey) {
-    // Fallback ai mock se Supabase non è configurato
-    return { articles: mockArticles.map(a => ({
-      ...a,
-      image_url: a.image,
-      published_at: a.publishedAt,
-      is_featured: false,
-      is_published: true,
-    })), useMock: true }
-  }
-  
-  const supabase = createClient(supabaseUrl, supabaseServiceKey)
-  
-  const { data, error } = await supabase
-    .from('articles')
-    .select('*')
-    .eq('is_published', true)
-    .order('published_at', { ascending: false })
-  
-  if (error || !data || data.length === 0) {
-    // Fallback ai mock se non ci sono articoli nel DB
-    return { articles: mockArticles.map(a => ({
-      ...a,
-      image_url: a.image,
-      published_at: a.publishedAt,
-      is_featured: false,
-      is_published: true,
-    })), useMock: true }
-  }
-  
-  return { articles: data, useMock: false }
+  const articles = await getPublishedArticlesFromDb()
+  return { articles }
 }
 
 export default async function NewsPage() {
-  const { articles, useMock } = await getArticles()
+  const { articles } = await getArticles()
   
   const featuredArticle = articles.find((a: any) => a.is_featured) || articles[0]
   const otherArticles = articles.filter((a: any) => a.id !== featuredArticle?.id)

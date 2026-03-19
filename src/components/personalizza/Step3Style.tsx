@@ -33,14 +33,24 @@ export default function PersonalizzaStep3({
 
   useEffect(() => {
     fetchStyles()
-  }, [])
+  }, [state.productTypeId])
 
   const fetchStyles = async () => {
     try {
-      const response = await fetch('/api/personalizza/styles')
+      const cacheKey = `personalizza_styles_${state.productTypeId || 'none'}`
+      const cached = sessionStorage.getItem(cacheKey)
+      if (cached) {
+        setStyles(JSON.parse(cached))
+        setIsLoading(false)
+      }
+
+      const query = state.productTypeId ? `?product_type_id=${state.productTypeId}` : ''
+      const response = await fetch(`/api/personalizza/styles${query}`, { cache: 'force-cache' })
       const data = await response.json()
       if (response.ok) {
-        setStyles(data.styles || [])
+        const stylesData = data.styles || []
+        setStyles(stylesData)
+        sessionStorage.setItem(cacheKey, JSON.stringify(stylesData))
       }
     } catch (error) {
       console.error('Errore caricamento stili:', error)
