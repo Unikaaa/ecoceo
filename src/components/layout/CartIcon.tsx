@@ -69,11 +69,11 @@ export default function CartIcon() {
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="relative"
+        className="relative inline-flex h-9 w-9 items-center justify-center rounded-full hover:bg-gray-100"
         aria-label="Apri mini carrello"
       >
         <svg
-          className="w-6 h-6 text-gray-700 hover:text-primary transition"
+          className="w-5 h-5 text-gray-700 hover:text-primary transition"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -93,7 +93,7 @@ export default function CartIcon() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-3 w-80 rounded-xl border border-gray-200 bg-white shadow-2xl z-50 p-3">
+        <div className="absolute right-0 mt-3 w-[min(92vw,20rem)] rounded-xl border border-gray-200 bg-white shadow-2xl z-50 p-3">
           <div className="flex items-center justify-between mb-2">
             <h4 className="text-sm font-semibold text-gray-900">Il tuo carrello</h4>
             <span className="text-xs text-gray-500">{itemCount} articoli</span>
@@ -113,7 +113,7 @@ export default function CartIcon() {
                         <button
                           type="button"
                           onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                          className="h-5 w-5 rounded border border-gray-300 text-[10px] text-gray-700 hover:bg-gray-50"
+                          className="h-7 w-7 rounded border border-gray-300 text-xs text-gray-700 hover:bg-gray-50"
                         >
                           -
                         </button>
@@ -121,7 +121,7 @@ export default function CartIcon() {
                         <button
                           type="button"
                           onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                          className="h-5 w-5 rounded border border-gray-300 text-[10px] text-gray-700 hover:bg-gray-50"
+                          className="h-7 w-7 rounded border border-gray-300 text-xs text-gray-700 hover:bg-gray-50"
                         >
                           +
                         </button>
@@ -130,7 +130,7 @@ export default function CartIcon() {
                     <button
                       type="button"
                       onClick={() => removeItem(item.id)}
-                      className="h-6 w-6 rounded-full text-xs text-gray-500 hover:bg-red-50 hover:text-red-600"
+                      className="h-8 w-8 rounded-full text-sm text-gray-500 hover:bg-red-50 hover:text-red-600"
                       aria-label="Rimuovi prodotto"
                     >
                       x
@@ -151,7 +151,7 @@ export default function CartIcon() {
                 <button
                   type="button"
                   onClick={() => clearCart()}
-                  className="w-full mb-2 px-3 py-1.5 rounded-lg border border-red-200 text-red-600 text-xs font-semibold hover:bg-red-50 transition-colors"
+                  className="w-full mb-2 px-3 py-2.5 rounded-xl border border-red-200 text-red-600 text-sm font-semibold hover:bg-red-50 transition-colors min-h-[44px]"
                 >
                   Svuota carrello
                 </button>
@@ -159,7 +159,7 @@ export default function CartIcon() {
                   <Link
                     href="/cart"
                     onClick={() => setIsOpen(false)}
-                    className="text-center px-3 py-2 rounded-lg text-white text-xs font-semibold bg-[#c45824] hover:bg-[#663399] transition-colors"
+                    className="text-center px-3 py-2.5 rounded-xl text-white text-sm font-semibold bg-[#c45824] hover:bg-[#663399] transition-colors min-h-[44px] inline-flex items-center justify-center shadow-sm"
                   >
                     Vai al carrello
                   </Link>
@@ -167,7 +167,7 @@ export default function CartIcon() {
                     type="button"
                     onClick={handleCheckout}
                     disabled={isCheckoutLoading}
-                    className="px-3 py-2 rounded-lg text-white text-xs font-semibold bg-[#663399] hover:bg-[#4c2377] transition-colors disabled:opacity-60"
+                    className="px-3 py-2.5 rounded-xl text-white text-sm font-semibold bg-[#663399] hover:bg-[#4c2377] transition-colors disabled:opacity-60 min-h-[44px] shadow-sm"
                   >
                     {isCheckoutLoading ? 'Carico...' : 'Vai al checkout'}
                   </button>

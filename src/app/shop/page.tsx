@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -18,6 +18,22 @@ interface Collection {
 }
 
 export default function ShopPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="container mx-auto px-4 py-12">
+          <div className="text-center">
+            <p className="text-gray-600">Caricamento shop...</p>
+          </div>
+        </div>
+      }
+    >
+      <ShopPageInner />
+    </Suspense>
+  )
+}
+
+function ShopPageInner() {
   const t = useTranslations('shop')
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -108,31 +124,31 @@ export default function ShopPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <h1 className="text-4xl font-serif text-gray-900 mb-8 text-center -mt-8">
+    <div className="container mx-auto px-3 sm:px-4 py-5 sm:py-10">
+      <h1 className="text-2xl sm:text-3xl font-serif text-gray-900 mb-4 sm:mb-7 text-center">
         {t('title')}
       </h1>
 
       {/* Barra Collezioni - Design Pills Minimal Luxury */}
       {!isLoadingCollections && collections.length > 0 && (
-        <div className="mb-12 -mt-4">
+        <div className="mb-5 sm:mb-10">
           {/* Container con scroll orizzontale su mobile */}
-          <div className="overflow-x-auto scrollbar-hide -mx-4 px-4">
-            <div className="flex items-center justify-center gap-3 min-w-max md:min-w-0">
+          <div className="overflow-x-auto scrollbar-hide -mx-3 px-3 sm:-mx-4 sm:px-4">
+            <div className="flex items-center justify-start md:justify-center gap-2 min-w-max md:min-w-0">
               {/* Pills Collezioni */}
               <button
                 onClick={() => router.push('/shop')}
-                className={`group relative flex items-center gap-2.5 px-5 py-2.5 rounded-full transition-all duration-500 ease-out whitespace-nowrap ${
+                className={`group relative flex items-center gap-1.5 px-3.5 py-2 rounded-full transition-all duration-300 ease-out whitespace-nowrap ${
                   !collectionSlug
-                    ? 'bg-[#6D4C97]/8 border-2 border-[#6D4C97] text-[#6D4C97] shadow-sm'
-                    : 'bg-white/60 backdrop-blur-sm border border-gray-200/60 text-gray-700 hover:bg-white hover:shadow-md hover:-translate-y-0.5'
+                    ? 'bg-[#6D4C97]/8 border border-[#6D4C97] text-[#6D4C97] shadow-sm'
+                    : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
                 }`}
               >
                 {/* Icona Grid */}
-                <svg className="w-4 h-4 transition-all duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3 h-3 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                 </svg>
-                <span className="text-sm font-medium">Tutte</span>
+                <span className="text-xs sm:text-sm font-medium">Tutte</span>
               </button>
 
               {/* Collezioni - Pills con Icone Diverse */}
@@ -212,10 +228,10 @@ export default function ShopPage() {
                   <button
                     key={collection.id}
                     onClick={() => handleCollectionClick(collection.slug)}
-                    className={`group relative flex items-center gap-2.5 px-5 py-2.5 rounded-full transition-all duration-500 ease-out whitespace-nowrap ${
+                    className={`group relative flex items-center gap-1.5 px-3.5 py-2 rounded-full transition-all duration-300 ease-out whitespace-nowrap ${
                       isActive
-                        ? 'bg-[#6D4C97]/8 border-2 border-[#6D4C97] text-[#6D4C97] shadow-sm'
-                        : 'bg-white/60 backdrop-blur-sm border border-gray-200/60 text-gray-700 hover:bg-white hover:shadow-md hover:-translate-y-0.5'
+                        ? 'bg-[#6D4C97]/8 border border-[#6D4C97] text-[#6D4C97] shadow-sm'
+                        : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
                     }`}
                   >
                     {/* Icona Collezione */}
@@ -226,7 +242,7 @@ export default function ShopPage() {
                     </span>
                     
                     {/* Nome Collezione */}
-                    <span className={`text-sm font-medium transition-all duration-300 ${
+                    <span className={`text-xs sm:text-sm font-medium transition-all duration-300 ${
                       isActive 
                         ? 'text-[#6D4C97]' 
                         : 'text-gray-700 group-hover:text-[#6D4C97]'

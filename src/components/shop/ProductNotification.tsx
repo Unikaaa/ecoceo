@@ -225,7 +225,7 @@ export default function ProductNotification({ product, onSuccess }: ProductNotif
                 ? 'border-blue-300 bg-blue-50 focus:ring-blue-300 focus:border-blue-400'
                 : 'border-gray-300 focus:ring-[#663399]/30 focus:border-[#663399]'
             } ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
-            disabled={isSubmitting || (isAlreadyRegistered && email && email.includes('@'))}
+            disabled={isSubmitting || Boolean(isAlreadyRegistered && email.includes('@'))}
             required
             autoFocus
           />

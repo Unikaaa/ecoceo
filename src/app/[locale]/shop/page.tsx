@@ -80,29 +80,29 @@ export default function ShopPage() {
   return (
     <div className="min-h-screen bg-site relative overflow-hidden">
       {/* Elementi decorativi di sfondo */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none hidden sm:block">
         <div className="absolute top-0 right-0 w-[700px] h-[700px] bg-gradient-to-bl from-primary/5 via-transparent to-transparent rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-accent/5 via-transparent to-transparent rounded-full blur-3xl" />
       </div>
 
       {/* Hero Section Elegante */}
-      <section className="py-20 md:py-28 relative z-10">
-        <div className="container mx-auto px-4">
+      <section className="py-10 sm:py-20 md:py-28 relative z-10">
+        <div className="container mx-auto px-3 sm:px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-block mb-6">
-              <span className="px-6 py-2 bg-gradient-to-r from-primary/10 via-primary/5 to-accent/10 text-primary rounded-full text-sm font-semibold border border-primary/20">
+            <div className="inline-block mb-4 sm:mb-6">
+              <span className="px-4 sm:px-6 py-1.5 sm:py-2 bg-gradient-to-r from-primary/10 via-primary/5 to-accent/10 text-primary rounded-full text-xs sm:text-sm font-semibold border border-primary/20">
                 Collezione Completa
               </span>
             </div>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif text-gray-900 mb-6 leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-serif text-gray-900 mb-4 sm:mb-6 leading-tight">
               Il Nostro Shop
             </h1>
-            <div className="flex items-center justify-center gap-4 mb-6">
+            <div className="flex items-center justify-center gap-2 sm:gap-4 mb-4 sm:mb-6">
               <span className="h-px w-16 bg-gradient-to-r from-transparent via-primary to-transparent" />
               <span className="h-px w-24 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
               <span className="h-px w-16 bg-gradient-to-r from-transparent via-primary to-transparent" />
             </div>
-            <p className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto">
+            <p className="text-sm sm:text-lg md:text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto">
               Esplora le nostre collezioni e scopri pezzi unici di ceramica artistica
             </p>
           </div>
@@ -110,14 +110,14 @@ export default function ShopPage() {
       </section>
 
       {/* Card Collezioni */}
-      <section className="py-16 md:py-20 relative z-10 bg-white">
-        <div className="container mx-auto px-4">
+      <section className="py-10 sm:py-16 md:py-20 relative z-10 bg-white">
+        <div className="container mx-auto px-3 sm:px-4">
           <div className="max-w-6xl mx-auto">
-            <div className="mb-12 text-center">
-              <h2 className="text-3xl md:text-4xl font-serif text-gray-900 mb-4">
+            <div className="mb-7 sm:mb-12 text-center">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif text-gray-900 mb-3 sm:mb-4">
                 Le Nostre Collezioni
               </h2>
-              <p className="text-lg text-gray-600">
+              <p className="text-sm sm:text-lg text-gray-600">
                 Scegli la categoria che preferisci
               </p>
             </div>
@@ -130,7 +130,7 @@ export default function ShopPage() {
                 <p className="text-gray-500">Nessuna collezione disponibile</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8 md:gap-10">
                 {collections.map((collection, index) => (
                   <div
                     key={collection.id}
@@ -139,7 +139,7 @@ export default function ShopPage() {
                   >
                     <Link
                       href={`/shop?collection=${collection.slug}`}
-                      className="group block bg-white rounded-artistic overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
+                      className="group block bg-white rounded-artistic overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2"
                     >
                       <div className="aspect-video bg-gradient-to-br from-ceramic-beige via-ceramic-white to-ceramic-sand flex items-center justify-center relative overflow-hidden">
                         {collection.image_url ? (
@@ -159,8 +159,8 @@ export default function ShopPage() {
                         <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                       </div>
                       
-                      <div className="p-6 md:p-8">
-                        <h3 className="text-xl md:text-2xl font-serif text-gray-900 mb-3 group-hover:text-primary transition-colors duration-300 leading-tight">
+                      <div className="p-4 sm:p-6 md:p-8">
+                        <h3 className="text-lg sm:text-xl md:text-2xl font-serif text-gray-900 mb-2.5 sm:mb-3 group-hover:text-primary transition-colors duration-300 leading-tight">
                           {collection.name}
                         </h3>
                         <p className="text-gray-600 text-sm md:text-base leading-relaxed">
@@ -197,17 +197,17 @@ export default function ShopPage() {
             const collectionProducts = products.filter((p) => p.category === collection.slug)
             
             return (
-              <section key={collection.id} className={`py-16 md:py-20 ${collectionIndex % 2 === 0 ? 'bg-site' : 'bg-white'}`}>
-                <div className="container mx-auto px-4">
+              <section key={collection.id} className={`py-10 sm:py-16 md:py-20 ${collectionIndex % 2 === 0 ? 'bg-site' : 'bg-white'}`}>
+                <div className="container mx-auto px-3 sm:px-4">
                   <div className="max-w-7xl mx-auto">
                     {/* Header Collezione */}
-                    <div className="mb-10 md:mb-12">
-                      <div className="flex items-center justify-between mb-6">
+                    <div className="mb-7 sm:mb-10 md:mb-12">
+                      <div className="flex items-start sm:items-center justify-between gap-4 mb-4 sm:mb-6">
                         <div>
-                          <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-gray-900 mb-3">
+                          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-gray-900 mb-2 sm:mb-3">
                             {collection.name}
                           </h2>
-                          <p className="text-lg text-gray-600 max-w-2xl">
+                          <p className="text-sm sm:text-lg text-gray-600 max-w-2xl">
                             {collection.description || 'Esplora questa collezione'}
                           </p>
                         </div>
@@ -221,9 +221,9 @@ export default function ShopPage() {
                           </svg>
                         </Link>
                       </div>
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-3 sm:gap-4">
                         <span className="h-px flex-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-                        <span className="text-sm text-gray-500 font-medium">
+                        <span className="text-xs sm:text-sm text-gray-500 font-medium">
                           {collectionProducts.length} {collectionProducts.length === 1 ? 'prodotto' : 'prodotti'}
                         </span>
                         <span className="h-px flex-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />

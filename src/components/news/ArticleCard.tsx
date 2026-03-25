@@ -16,7 +16,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
   return (
     <Link
       href={`/news/${article.slug}`}
-      className="group block bg-white rounded-artistic overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.03] relative"
+      className="group block bg-white rounded-artistic overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.01] relative"
     >
       {/* Bordo gradiente al hover */}
       <div className="absolute inset-0 rounded-artistic bg-gradient-to-r from-[#663399] via-[#c45824] to-[#663399] opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 blur-sm" />
@@ -40,7 +40,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
         </div>
 
         {/* Contenuto */}
-        <div className="p-6 md:p-8">
+        <div className="p-4 sm:p-6 md:p-8">
           {/* Data */}
           <div className="mb-3">
             <time className="text-xs text-gray-500 font-medium uppercase tracking-wide">
@@ -49,17 +49,17 @@ export default function ArticleCard({ article }: ArticleCardProps) {
           </div>
 
           {/* Titolo */}
-          <h3 className="text-2xl md:text-3xl font-serif text-gray-900 mb-4 group-hover:text-[#663399] transition-colors duration-300 leading-tight line-clamp-2">
+          <h3 className="text-xl sm:text-2xl md:text-3xl font-serif text-gray-900 mb-3 group-hover:text-[#663399] transition-colors duration-300 leading-tight line-clamp-2">
             {article.title}
           </h3>
 
           {/* Excerpt */}
-          <p className="text-gray-600 leading-relaxed mb-6 line-clamp-3">
+          <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-4 sm:mb-6 line-clamp-3">
             {article.excerpt}
           </p>
 
           {/* Footer card */}
-          <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+          <div className="flex items-center justify-between pt-3.5 border-t border-gray-100">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#663399] via-[#c45824] to-[#663399] p-0.5">
                 <div className="w-full h-full rounded-full bg-white flex items-center justify-center">

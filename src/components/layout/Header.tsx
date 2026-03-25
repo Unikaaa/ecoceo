@@ -3,21 +3,39 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { usePathname, useSearchParams } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import SearchBar from './SearchBar'
 import CartIcon from './CartIcon'
 import ContactModal from '@/components/contact/ContactModal'
 
 export default function Header() {
   const pathname = usePathname()
-  const searchParams = useSearchParams()
   const [isContactModalOpen, setIsContactModalOpen] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
 
   useEffect(() => {
-    if (searchParams.get('openContact') === 'true') {
+    // Supporta apertura modal via query param: ?openContact=true
+    // Evitiamo useSearchParams per non bloccare la build (CSR bailout).
+    if (typeof window === 'undefined') return
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('openContact') === 'true') {
       setIsContactModalOpen(true)
     }
-  }, [searchParams])
+  }, [pathname])
+
+  useEffect(() => {
+    setIsMobileMenuOpen(false)
+  }, [pathname])
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10)
+    }
+    handleScroll()
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const isActive = (path: string) => {
     if (path === '/') {
@@ -26,85 +44,67 @@ export default function Header() {
     return pathname?.includes(path)
   }
 
+  const navLinks = [
+    { href: '/shop', label: 'Shop' },
+    { href: '/personalizza', label: 'Personalizza' },
+    { href: '/news', label: 'News' },
+    { href: '/about', label: 'Chi Siamo' },
+  ]
+
   return (
-    <header className="sticky top-0 z-50 bg-site border-b border-gray-200">
+    <header
+      className={`sticky top-0 z-50 border-b transition-colors duration-300 ${
+        isScrolled
+          ? 'bg-white/80 backdrop-blur-md border-gray-200'
+          : 'bg-white/45 backdrop-blur-sm border-transparent'
+      }`}
+    >
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-12 md:h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center">
+          <Link href="/" className="flex items-center shrink-0">
             <Image
               src="/logo.png"
               alt="UNIKA"
               width={250}
               height={125}
-              className="h-20 w-auto"
+              className="h-9 sm:h-10 md:h-20 w-auto"
               priority
             />
           </Link>
 
-          {/* Navigation */}
-          <nav className="hidden md:flex items-center space-x-10">
-            <Link 
-              href="/shop" 
-              className={`text-base transition-all duration-300 ${
-                isActive('/shop')
-                  ? 'text-[#663399] text-2xl font-bold scale-110'
-                  : 'text-gray-700 hover:text-primary hover:scale-105'
-              }`}
-            >
-              Shop
-            </Link>
-            <Link 
-              href="/personalizza" 
-              className={`text-base transition-all duration-300 ${
-                isActive('/personalizza')
-                  ? 'text-[#663399] text-2xl font-bold scale-110'
-                  : 'text-gray-700 hover:text-primary hover:scale-105'
-              }`}
-            >
-              Personalizza
-            </Link>
-            <Link 
-              href="/news" 
-              className={`text-base transition-all duration-300 ${
-                isActive('/news')
-                  ? 'text-[#663399] text-2xl font-bold scale-110'
-                  : 'text-gray-700 hover:text-primary hover:scale-105'
-              }`}
-            >
-              News
-            </Link>
-            <Link 
-              href="/about" 
-              className={`text-base transition-all duration-300 ${
-                isActive('/about')
-                  ? 'text-[#663399] text-2xl font-bold scale-110'
-                  : 'text-gray-700 hover:text-primary hover:scale-105'
-              }`}
-            >
-              Chi Siamo
-            </Link>
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-7">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`text-base transition-colors ${
+                  isActive(link.href)
+                    ? 'text-[#663399] font-semibold'
+                    : 'text-gray-700 hover:text-primary'
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
             <button
               onClick={() => setIsContactModalOpen(true)}
-              className={`text-base transition-all duration-300 ${
-                isActive('/contact')
-                  ? 'text-[#663399] text-2xl font-bold scale-110'
-                  : 'text-gray-700 hover:text-primary hover:scale-105'
-              }`}
+              className="text-base text-gray-700 hover:text-primary transition-colors"
             >
               Contattaci
             </button>
           </nav>
 
           {/* Right side - Social, Search & Cart */}
-          <div className="flex items-center space-x-5">
+          <div className="flex items-center gap-0.5 md:gap-4">
             {/* Social Icons */}
-            <div className="hidden md:flex items-center space-x-4 -ml-16">
+            <div className="hidden md:flex items-center gap-3">
               <a
                 href="https://www.facebook.com/share/1H95DGpSkR/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#1877F2] hover:opacity-80 transition-opacity"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-[#1877F2] hover:bg-gray-100 transition-colors"
                 aria-label="Facebook"
               >
                 <svg
@@ -119,7 +119,7 @@ export default function Header() {
                 href="https://www.instagram.com/unika__art_ceramics?igsh=MWtyczRsaW1xOGNlNw=="
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:opacity-80 transition-opacity"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
                 aria-label="Instagram"
               >
                 <svg
@@ -143,7 +143,7 @@ export default function Header() {
                 href="https://www.tiktok.com/@unika__20?_r=1&_t=ZN-94coeO4zAIw"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-black hover:opacity-80 transition-opacity"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-black hover:bg-gray-100 transition-colors"
                 aria-label="TikTok"
               >
                 <svg
@@ -161,9 +161,57 @@ export default function Header() {
 
             {/* Cart Icon */}
             <CartIcon />
+
+            {/* Mobile menu button */}
+            <button
+              type="button"
+              className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-full text-gray-700 hover:bg-gray-100"
+              onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+              aria-label={isMobileMenuOpen ? 'Chiudi menu' : 'Apri menu'}
+              aria-expanded={isMobileMenuOpen}
+            >
+              {isMobileMenuOpen ? (
+                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
           </div>
         </div>
       </div>
+
+      {isMobileMenuOpen && (
+        <div className="md:hidden border-t border-gray-200 bg-white/95 backdrop-blur-md">
+          <nav className="container mx-auto px-3 py-3 flex flex-col gap-1.5">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`h-11 px-3 flex items-center rounded-xl text-sm ${
+                  isActive(link.href)
+                    ? 'text-[#663399] bg-[#663399]/10 font-semibold border border-[#663399]/20'
+                    : 'text-gray-800 bg-white border border-gray-100 hover:bg-gray-50'
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+            <button
+              onClick={() => {
+                setIsContactModalOpen(true)
+                setIsMobileMenuOpen(false)
+              }}
+              className="h-11 px-3 text-left rounded-xl text-sm text-gray-800 bg-white border border-gray-100 hover:bg-gray-50"
+            >
+              Contattaci
+            </button>
+          </nav>
+        </div>
+      )}
 
       {/* Contact Modal */}
       <ContactModal 

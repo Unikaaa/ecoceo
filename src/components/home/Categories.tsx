@@ -98,12 +98,12 @@ export default function Categories() {
 
   if (isLoading) {
     return (
-      <section className="py-20 bg-site">
+      <section className="py-12 md:py-20 bg-site">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-serif text-center mb-16 text-gray-900">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif text-center mb-8 md:mb-16 text-gray-900">
             Le Nostre Collezioni
           </h2>
-          <div className="relative pt-2 pb-8">
+          <div className="relative pt-1 pb-6 md:pb-8">
             <button
               type="button"
               onClick={() => scrollCollections('left')}
@@ -124,12 +124,12 @@ export default function Categories() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
               </svg>
             </button>
-            <div ref={sliderRef} className="overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-custom py-4">
-              <div className="flex gap-8 min-w-max px-4">
+            <div ref={sliderRef} className="overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-custom py-2 md:py-4">
+              <div className="flex gap-4 md:gap-8 min-w-max px-1 md:px-4">
               {[0, 1, 2].map((idx) => (
                 <div
                   key={idx}
-                  className="aspect-[3/4] w-[calc(100vw-2rem)] sm:w-[calc(50vw-1.5rem)] lg:w-[calc(25vw-1.5rem)] min-w-[270px] max-w-[350px] rounded-artistic bg-gray-200 animate-pulse"
+                  className="aspect-[3/4] w-[82vw] sm:w-[calc(50vw-1.5rem)] lg:w-[calc(25vw-1.5rem)] min-w-[230px] max-w-[350px] rounded-artistic bg-gray-200 animate-pulse"
                 />
               ))}
             </div>
@@ -141,9 +141,9 @@ export default function Categories() {
   }
 
   return (
-    <section className="py-20 bg-site">
-      <div className="container mx-auto px-4">
-        <h2 className="text-4xl font-serif text-center mb-16 text-gray-900">
+    <section className="py-7 md:py-20 lg:py-24 bg-site">
+      <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+        <h2 className="text-lg sm:text-2xl md:text-4xl font-serif text-center mb-4 md:mb-14 lg:mb-16 text-gray-900">
           Le Nostre Collezioni
         </h2>
         {collections.length === 0 ? (
@@ -151,7 +151,7 @@ export default function Categories() {
             <p className="text-gray-600">Nessuna collezione disponibile</p>
           </div>
         ) : (
-          <div className="relative pt-2 pb-10">
+          <div className="relative pt-1 pb-5 md:pb-9 lg:pb-10">
             <button
               type="button"
               onClick={() => scrollCollections('left')}
@@ -173,8 +173,8 @@ export default function Categories() {
               </svg>
             </button>
 
-            <div ref={sliderRef} className="overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-custom py-4">
-              <div className="flex gap-8 min-w-max px-4">
+            <div ref={sliderRef} className="overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-custom py-1.5 md:py-4 lg:py-5">
+              <div className="flex gap-2.5 md:gap-7 lg:gap-8 min-w-max px-1 md:px-4 lg:px-5">
               {collections.map((collection) => {
                 const isHovered = hoveredCategory === collection.id
                 const currentImageIndex = isHovered ? 1 : imageIndex[collection.id] ?? 0
@@ -183,7 +183,7 @@ export default function Categories() {
                   <Link
                     key={collection.id}
                     href={`/shop?collection=${collection.slug}`}
-                    className="group relative overflow-hidden rounded-artistic bg-gray-100 aspect-[3/4] w-[calc(100vw-2rem)] sm:w-[calc(50vw-1.5rem)] lg:w-[calc(25vw-1.5rem)] min-w-[270px] max-w-[350px] transition-transform hover:scale-105 snap-start flex-shrink-0"
+                    className="group relative overflow-hidden rounded-artistic bg-gray-100 aspect-[3/4] w-[62vw] sm:w-[calc(50vw-1.5rem)] lg:w-[calc(25vw-1.5rem)] min-w-[165px] max-w-[350px] transition-transform hover:scale-[1.01] md:hover:scale-105 snap-start flex-shrink-0"
                     onMouseEnter={() => handleMouseEnter(collection.id)}
                     onMouseLeave={() => handleMouseLeave(collection.id)}
                   >
@@ -191,8 +191,8 @@ export default function Categories() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent z-10 transition-opacity group-hover:opacity-90" />
                     
                     {/* Titolo */}
-                    <div className="absolute bottom-6 left-6 right-6 z-20">
-                      <h3 className="text-white text-2xl font-serif group-hover:translate-y-[-4px] transition-transform">
+                    <div className="absolute bottom-2.5 md:bottom-6 left-2.5 md:left-6 right-2.5 md:right-6 z-20">
+                      <h3 className="text-white text-[15px] sm:text-lg md:text-2xl font-serif leading-tight group-hover:translate-y-[-4px] transition-transform">
                         {collection.name}
                       </h3>
                     </div>

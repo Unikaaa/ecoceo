@@ -31,25 +31,25 @@ export default function FeaturedProducts() {
   }, [])
 
   return (
-    <section className="py-20 md:py-28 bg-site relative overflow-hidden">
+    <section className="py-7 md:py-20 lg:py-24 bg-site relative overflow-hidden">
       {/* Elementi decorativi di sfondo */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none hidden md:block">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-primary/5 via-transparent to-transparent rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-accent/5 via-transparent to-transparent rounded-full blur-3xl" />
       </div>
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 relative z-10">
         {/* Titolo elegante */}
-        <div className="text-center mb-16 md:mb-20">
-          <div className="inline-block mb-4">
-            <span className="px-6 py-2 bg-gradient-to-r from-primary/10 via-primary/5 to-accent/10 text-primary rounded-full text-sm font-semibold border border-primary/20">
+        <div className="text-center mb-5 md:mb-14 lg:mb-16">
+          <div className="inline-block mb-2.5 md:mb-4">
+            <span className="px-3 py-1.5 bg-gradient-to-r from-primary/10 via-primary/5 to-accent/10 text-primary rounded-full text-xs sm:text-sm font-semibold border border-primary/20">
               Selezione Esclusiva
             </span>
           </div>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-gray-900 mb-4 leading-tight">
+          <h2 className="text-lg sm:text-2xl md:text-5xl lg:text-6xl font-serif text-gray-900 mb-2 md:mb-4 leading-tight">
           {t('featuredProducts')}
         </h2>
-          <div className="flex items-center justify-center gap-4 mt-6">
+          <div className="flex items-center justify-center gap-3 md:gap-4 mt-4 md:mt-6">
             <span className="h-px w-16 bg-gradient-to-r from-transparent via-primary to-transparent" />
             <span className="h-px w-24 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
             <span className="h-px w-16 bg-gradient-to-r from-transparent via-primary to-transparent" />
@@ -57,7 +57,7 @@ export default function FeaturedProducts() {
         </div>
 
         {/* Griglia elegante con 3 prodotti grandi */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-10 lg:gap-12 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 md:gap-8 lg:gap-10 xl:gap-12 max-w-7xl mx-auto">
           {isLoading && [0, 1, 2].map((idx) => (
             <div key={`skeleton-${idx}`} className="bg-white rounded-artistic overflow-hidden shadow-md animate-pulse">
               <div className="aspect-[4/5] bg-gray-200" />
@@ -118,15 +118,15 @@ export default function FeaturedProducts() {
               </div>
 
               {/* Contenuto prodotto */}
-              <div className="p-6 md:p-8">
-                <h3 className="text-xl md:text-2xl font-serif text-gray-900 mb-3 group-hover:text-primary transition-colors duration-300 leading-tight">
+              <div className="p-4 md:p-7">
+                <h3 className="text-base sm:text-xl md:text-2xl font-serif text-gray-900 mb-2 group-hover:text-primary transition-colors duration-300 leading-tight">
                   {product.name}
                 </h3>
-                <p className="text-gray-600 text-sm mb-4 line-clamp-2 leading-relaxed">
+                <p className="text-gray-600 text-xs sm:text-sm mb-2.5 line-clamp-2 leading-relaxed">
                   {product.description}
                 </p>
-                <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                  <p className="text-2xl md:text-3xl font-serif font-semibold text-primary">
+                <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                  <p className="text-lg sm:text-2xl md:text-3xl font-serif font-semibold text-primary">
                   {formatPrice(product.price)}
                 </p>
                   <div className="flex items-center gap-2 text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -142,9 +142,9 @@ export default function FeaturedProducts() {
         </div>
 
         {/* CTA centrale */}
-        <div className="text-center mt-16 md:mt-20">
+        <div className="text-center mt-8 md:mt-16 lg:mt-20">
           <Link href="/shop">
-            <Button variant="primary" size="lg" className="text-lg px-10 py-4 shadow-lg hover:shadow-xl transition-shadow">
+            <Button variant="primary" size="lg" className="w-full sm:w-auto text-sm md:text-lg px-6 md:px-10 shadow-lg hover:shadow-xl transition-shadow">
               {t('viewAll')}
             </Button>
           </Link>

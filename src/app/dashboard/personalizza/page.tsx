@@ -493,9 +493,9 @@ export default function PersonalizzaPage() {
     const formType = showAddForm.type
 
     return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-3 sm:p-4">
         <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-          <div className="p-6 border-b border-gray-200">
+          <div className="p-4 sm:p-6 border-b border-gray-200">
             <div className="flex items-center justify-between">
               <h3 className="text-xl font-semibold text-gray-900">
                 Aggiungi {formType === 'categories' ? 'Categoria' : formType === 'product-types' ? 'Tipo Prodotto' : formType === 'styles' ? 'Stile' : formType === 'sizes' ? 'Dimensione' : formType === 'decorations' ? 'Decorazione' : 'Sfondo'}
@@ -513,7 +513,7 @@ export default function PersonalizzaPage() {
               </button>
             </div>
           </div>
-          <div className="p-6 space-y-4">
+          <div className="p-4 sm:p-6 space-y-4">
             {formType === 'categories' && (
               <>
                 <div>
@@ -864,9 +864,9 @@ export default function PersonalizzaPage() {
     if (!editingItem) return null
 
     return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-3 sm:p-4">
         <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-          <div className="p-6 border-b border-gray-200">
+          <div className="p-4 sm:p-6 border-b border-gray-200">
             <div className="flex items-center justify-between">
               <h3 className="text-xl font-semibold text-gray-900">Modifica</h3>
               <button
@@ -882,7 +882,7 @@ export default function PersonalizzaPage() {
               </button>
             </div>
           </div>
-          <div className="p-6 space-y-4">
+          <div className="p-4 sm:p-6 space-y-4">
             {editingItem.type === 'categories' && (
               <>
                 <div>
@@ -1181,22 +1181,22 @@ export default function PersonalizzaPage() {
 
   return (
     <DashboardLayout onLogout={handleLogout}>
-      <div>
+      <div className="space-y-4 sm:space-y-6 lg:space-y-8">
         {/* Header */}
-        <div className="border-b border-gray-200 pb-6 mb-8">
-          <h1 className="text-4xl font-serif text-gray-900 mb-2">Personalizza</h1>
-          <p className="text-gray-600">Configura le opzioni disponibili per la personalizzazione</p>
+        <div className="border-b border-gray-200 pb-4 sm:pb-6 lg:pb-7 mb-5 sm:mb-8 lg:mb-10">
+          <h1 className="text-2xl sm:text-4xl font-serif text-gray-900 mb-1.5 sm:mb-2">Personalizza</h1>
+          <p className="text-sm sm:text-base text-gray-600">Configura le opzioni disponibili per la personalizzazione</p>
           <p className="text-sm text-gray-500 mt-2">Le immagini e il testo vengono inseriti dal cliente nel configuratore</p>
         </div>
 
         {!selectedCategory ? (
           /* Livello 1: Vista Categorie - Grid di card */
           <div>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-semibold text-gray-900">Categorie</h2>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5 sm:mb-6">
+              <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">Categorie</h2>
               <button
                 onClick={() => setShowAddForm({ type: 'categories' })}
-                className="px-4 py-2 bg-[#663399] text-white rounded-lg hover:bg-[#552288] transition-colors font-medium"
+                className="w-full sm:w-auto px-4 py-2.5 bg-[#663399] text-white rounded-lg hover:bg-[#552288] transition-colors font-medium"
               >
                 + Aggiungi Categoria
               </button>
@@ -1208,11 +1208,11 @@ export default function PersonalizzaPage() {
                 <p className="text-sm text-gray-500">Clicca su "Aggiungi Categoria" per iniziare.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-6">
                 {categories.map((cat) => (
                   <div
                     key={cat.id}
-                    className="bg-white rounded-lg shadow-sm border-2 border-gray-200 hover:border-[#663399] p-6 transition-all hover:shadow-md"
+                    className="bg-white rounded-lg shadow-sm border-2 border-gray-200 hover:border-[#663399] p-4 sm:p-6 transition-all hover:shadow-md"
                   >
                     <div
                       onClick={() => setSelectedCategory(cat.id)}
@@ -1266,11 +1266,11 @@ export default function PersonalizzaPage() {
               <h2 className="text-3xl font-semibold text-gray-900">{selectedCategoryData?.name}</h2>
             </div>
 
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-semibold text-gray-900">Tipi Prodotto</h3>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5 sm:mb-6">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900">Tipi Prodotto</h3>
               <button
                 onClick={() => setShowAddForm({ type: 'product-types', categoryId: selectedCategory })}
-                className="px-4 py-2 bg-[#663399] text-white rounded-lg hover:bg-[#552288] transition-colors text-sm font-medium"
+                className="w-full sm:w-auto px-4 py-2.5 bg-[#663399] text-white rounded-lg hover:bg-[#552288] transition-colors text-sm font-medium"
               >
                 + Aggiungi Tipo Prodotto
               </button>
@@ -1282,12 +1282,12 @@ export default function PersonalizzaPage() {
                 <p className="text-sm text-gray-500">Clicca su "Aggiungi Tipo Prodotto" per iniziare.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-6">
                 {getCategoryProductTypes().map((pt) => (
                   <div
                     key={pt.id}
                     onClick={() => setSelectedProductType(pt.id)}
-                    className="bg-white rounded-lg shadow-sm border-2 border-gray-200 hover:border-[#663399] p-6 cursor-pointer transition-all hover:shadow-md"
+                    className="bg-white rounded-lg shadow-sm border-2 border-gray-200 hover:border-[#663399] p-4 sm:p-6 cursor-pointer transition-all hover:shadow-md"
                   >
                     <h4 className="text-lg font-semibold text-gray-900 mb-2">{pt.name}</h4>
                     <p className="text-sm text-gray-600 mb-4">{pt.slug}</p>
@@ -1345,9 +1345,9 @@ export default function PersonalizzaPage() {
               <h2 className="text-3xl font-semibold text-gray-900">{selectedProductTypeData?.name}</h2>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3.5 sm:gap-6">
               {/* Stili */}
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold text-gray-900">Stili</h3>
                   <button
@@ -1388,7 +1388,7 @@ export default function PersonalizzaPage() {
               </div>
 
               {/* Dimensioni */}
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold text-gray-900">Dimensioni</h3>
                   <button
@@ -1431,7 +1431,7 @@ export default function PersonalizzaPage() {
               </div>
 
               {/* Decorazioni */}
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold text-gray-900">Decorazioni</h3>
                   <button
@@ -1472,7 +1472,7 @@ export default function PersonalizzaPage() {
               </div>
 
               {/* Sfondi */}
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold text-gray-900">Sfondi</h3>
                   <button

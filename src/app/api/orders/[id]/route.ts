@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { OrderStatus } from '@/types/order'
 import { z } from 'zod'
 
 // In-memory store (replace with database)
@@ -48,7 +47,7 @@ export async function PATCH(
     const validation = updateOrderSchema.safeParse(body)
     if (!validation.success) {
       return NextResponse.json(
-        { error: 'Dati non validi', details: validation.error.errors },
+        { error: 'Dati non validi', details: validation.error.issues },
         { status: 400 }
       )
     }

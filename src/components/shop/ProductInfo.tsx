@@ -26,26 +26,26 @@ export default function ProductInfo({ product, onAddToCart }: ProductInfoProps) 
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div>
-        <h1 className="text-3xl md:text-4xl font-serif text-gray-900 mb-4">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif text-gray-900 mb-3">
           {product.name}
         </h1>
-        <p className="text-3xl font-semibold text-primary mb-4">
+        <p className="text-2xl sm:text-3xl font-semibold text-primary mb-3">
           {formatPrice(product.price)}
         </p>
         {product.inStock ? (
-          <p className="text-green-600 font-medium">{tShop('inStock')}</p>
+          <p className="text-sm sm:text-base text-green-600 font-medium">{tShop('inStock')}</p>
         ) : (
           <div className="flex items-center gap-2">
-            <p className="text-red-600 font-bold uppercase tracking-wide text-lg">ESAURITO</p>
+            <p className="text-red-600 font-bold uppercase tracking-wide text-base sm:text-lg">ESAURITO</p>
           </div>
         )}
       </div>
 
       <div>
-        <h2 className="text-xl font-serif mb-2">{t('description')}</h2>
-        <p className="text-gray-700 leading-relaxed">{product.description}</p>
+        <h2 className="text-lg sm:text-xl font-serif mb-2">{t('description')}</h2>
+        <p className="text-sm sm:text-base text-gray-700 leading-relaxed">{product.description}</p>
       </div>
 
       {product.inStock ? (
@@ -60,7 +60,7 @@ export default function ProductInfo({ product, onAddToCart }: ProductInfoProps) 
               max="10"
               value={quantity}
               onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-              className="w-24"
+              className="w-24 h-11"
             />
           </div>
           <Button

@@ -4,7 +4,7 @@ import { customCheckoutSchema } from '@/lib/validations/checkout'
 import { rateLimit, getClientIP } from '@/lib/rateLimit'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-06-20.acacia',
+  apiVersion: '2026-01-28.clover',
 })
 
 export async function POST(request: NextRequest) {
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     const validation = customCheckoutSchema.safeParse(body)
     if (!validation.success) {
       return NextResponse.json(
-        { error: 'Dati non validi', details: validation.error.errors },
+        { error: 'Dati non validi', details: validation.error.issues },
         { status: 400 }
       )
     }

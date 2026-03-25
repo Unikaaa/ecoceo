@@ -11,12 +11,12 @@ const createOrderSchema = z.object({
     price: z.number().positive(),
     quantity: z.number().int().positive(),
     type: z.enum(['standard', 'custom']),
-    configuration: z.record(z.any()).optional(),
+    configuration: z.record(z.string(), z.any()).optional(),
     imageUrls: z.array(z.string()).optional(),
   })),
   total: z.number().positive(),
   paymentIntentId: z.string(),
-  customProductConfig: z.record(z.any()).optional(),
+  customProductConfig: z.record(z.string(), z.any()).optional(),
 })
 
 // In-memory store for development (replace with database in production)
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     const validation = createOrderSchema.safeParse(body)
     if (!validation.success) {
       return NextResponse.json(
-        { error: 'Dati non validi', details: validation.error.errors },
+        { error: 'Dati non validi', details: validation.error.issues },
         { status: 400 }
       )
     }

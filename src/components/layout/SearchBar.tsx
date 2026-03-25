@@ -189,11 +189,11 @@ export default function SearchBar() {
       {/* Icona lente */}
       <button
         onClick={() => setIsOpen(true)}
-        className="p-2 text-gray-700 hover:text-[#663399] transition-colors"
+        className="inline-flex h-9 w-9 items-center justify-center rounded-full text-gray-700 hover:text-[#663399] hover:bg-gray-100 transition-colors"
         aria-label="Cerca"
       >
         <svg
-          className="w-6 h-6"
+          className="w-5 h-5"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -209,11 +209,11 @@ export default function SearchBar() {
 
       {/* Banner ricerca */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-start justify-center pt-20 px-4">
-          <div className="w-full max-w-2xl bg-white rounded-artistic shadow-2xl">
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-start justify-center pt-12 md:pt-20 px-3 md:px-4">
+          <div className="w-full max-w-2xl bg-white rounded-xl shadow-2xl">
             {/* Barra ricerca */}
-            <div className="p-6 border-b border-gray-200">
-              <div className="flex items-center gap-4">
+            <div className="p-4 md:p-6 border-b border-gray-200">
+              <div className="flex items-center gap-3 md:gap-4">
                 <svg
                   className="w-6 h-6 text-[#663399]"
                   fill="none"
@@ -234,7 +234,7 @@ export default function SearchBar() {
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Cerca prodotti, categorie, pagine..."
-                  className="flex-1 text-lg outline-none text-gray-900 placeholder-gray-400"
+                  className="flex-1 text-base md:text-lg outline-none text-gray-900 placeholder-gray-400"
                 />
                 <button
                   onClick={() => {
@@ -247,7 +247,7 @@ export default function SearchBar() {
                       setIsOpen(false)
                     }
                   }}
-                  className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
+                  className="inline-flex h-11 w-11 items-center justify-center rounded-full text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors"
                   aria-label={query.trim().length > 0 ? "Cancella" : "Chiudi"}
                 >
                   <svg
@@ -271,15 +271,15 @@ export default function SearchBar() {
             {query.trim().length > 0 && (
               <div
                 ref={resultsRef}
-                className="max-h-96 overflow-y-auto"
+                className="max-h-[60vh] md:max-h-96 overflow-y-auto"
               >
                 {results.length > 0 ? (
-                  <div className="p-2">
+                  <div className="p-2 md:p-3">
                     {results.map((result, index) => (
                       <button
                         key={`${result.type}-${result.url}-${index}`}
                         onClick={() => handleSelectResult(result)}
-                        className={`w-full text-left p-4 rounded-lg transition-all ${
+                        className={`w-full text-left p-3.5 md:p-4 rounded-lg transition-all ${
                           selectedIndex === index
                             ? 'bg-[#663399]/10 border-2 border-[#663399]'
                             : 'bg-white hover:bg-gray-50 border-2 border-transparent'
@@ -329,7 +329,7 @@ export default function SearchBar() {
                     <button
                       key={suggestion}
                       onClick={() => setQuery(suggestion)}
-                      className="px-3 py-1 bg-gray-100 hover:bg-[#663399] hover:text-white rounded-full text-sm transition-colors"
+                      className="px-3 py-2 min-h-[44px] bg-gray-100 hover:bg-[#663399] hover:text-white rounded-full text-sm transition-colors"
                     >
                       {suggestion}
                     </button>

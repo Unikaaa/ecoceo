@@ -80,7 +80,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-site relative overflow-hidden">
       {/* Elementi decorativi di sfondo spettacolari */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none hidden sm:block">
         <div className="absolute top-0 left-0 w-[1000px] h-[1000px] bg-gradient-to-br from-[#663399]/10 via-[#663399]/5 to-transparent rounded-full blur-3xl" />
         <div className="absolute top-1/3 right-0 w-[900px] h-[900px] bg-gradient-to-bl from-[#c45824]/10 via-[#c45824]/5 to-transparent rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-1/3 w-[1100px] h-[1100px] bg-gradient-to-tr from-[#663399]/8 via-[#c45824]/8 to-transparent rounded-full blur-3xl" />
@@ -89,9 +89,9 @@ export default function AboutPage() {
 
       <div className="relative z-10">
         {/* Hero Spettacolare */}
-        <section className="relative py-32 md:py-40 bg-gradient-to-br from-ceramic-beige via-ceramic-white to-ceramic-sand overflow-hidden">
+        <section className="relative py-14 sm:py-32 md:py-40 bg-gradient-to-br from-ceramic-beige via-ceramic-white to-ceramic-sand overflow-hidden">
           {/* Pattern decorativo */}
-          <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0 opacity-10 hidden sm:block">
             <div className="absolute top-20 left-20 w-32 h-32 border-2 border-[#663399] rounded-full" />
             <div className="absolute top-40 right-32 w-24 h-24 border-2 border-[#c45824] rounded-full" />
             <div className="absolute bottom-32 left-1/3 w-40 h-40 border-2 border-[#663399] rounded-full" />
@@ -99,17 +99,17 @@ export default function AboutPage() {
           
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-5xl mx-auto text-center animate-fade-in-up">
-              <div className="inline-block mb-8">
-                <span className="px-8 py-3 bg-gradient-to-r from-[#663399]/20 via-[#663399]/15 to-[#c45824]/20 text-[#663399] rounded-full text-sm font-semibold border-2 border-[#663399]/30 shadow-xl backdrop-blur-sm">
+              <div className="inline-block mb-5 sm:mb-8">
+                <span className="px-5 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-[#663399]/20 via-[#663399]/15 to-[#c45824]/20 text-[#663399] rounded-full text-xs sm:text-sm font-semibold border border-[#663399]/30 shadow-sm backdrop-blur-sm">
                   {hero?.subtitle ?? 'La Nostra Essenza'}
                 </span>
               </div>
-              <h1 className="text-6xl md:text-8xl lg:text-9xl font-serif text-gray-900 mb-8 leading-[1.05] tracking-tight">
+              <h1 className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-serif text-gray-900 mb-5 sm:mb-8 leading-[1.05] tracking-tight">
                 <span className="block bg-gradient-to-r from-gray-900 via-[#663399] to-gray-900 bg-clip-text text-transparent">
                   {hero?.title ?? 'Chi Siamo'}
                 </span>
               </h1>
-              <p className="text-2xl md:text-3xl text-gray-700 leading-relaxed max-w-4xl mx-auto font-light">
+              <p className="text-base sm:text-2xl md:text-3xl text-gray-700 leading-relaxed max-w-4xl mx-auto font-light">
                 {hero?.content ?? "Dove l'arte incontra l'artigianato, dove ogni pezzo racconta una storia, dove la tradizione si fonde con l'innovazione"}
               </p>
             </div>
@@ -118,13 +118,13 @@ export default function AboutPage() {
 
 
         {/* Storia Spettacolare */}
-        <section className="py-24 md:py-32 bg-site relative">
-          <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center max-w-7xl mx-auto">
+        <section className="py-12 sm:py-24 md:py-32 bg-site relative">
+          <div className="container mx-auto px-3 sm:px-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-16 items-center max-w-7xl mx-auto">
               {/* Immagine Atelier con effetti */}
               <div className="order-2 lg:order-1 animate-fade-in-up-delay">
                 <div className="relative group">
-                  <div className="absolute -inset-4 bg-gradient-to-r from-[#663399] via-[#c45824] to-[#663399] rounded-artistic opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-500" />
+                  <div className="absolute -inset-4 bg-gradient-to-r from-[#663399] via-[#c45824] to-[#663399] rounded-artistic opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-500 hidden sm:block" />
                   <div className="relative aspect-square bg-gradient-to-br from-ceramic-beige via-ceramic-terracotta to-ceramic-earth rounded-artistic overflow-hidden shadow-2xl transform group-hover:scale-[1.02] transition-transform duration-500">
                     <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
                     <div className="w-full h-full flex items-center justify-center relative">
@@ -156,17 +156,17 @@ export default function AboutPage() {
                   <div className="absolute -left-8 top-0 bottom-0 w-1 bg-gradient-to-b from-[#663399] via-[#c45824] to-transparent rounded-full hidden lg:block" />
                   
                   <div className="pl-0 lg:pl-8">
-                    <div className="mb-6">
-                      <span className="px-4 py-2 bg-gradient-to-r from-[#663399]/15 to-[#c45824]/15 text-[#663399] rounded-full text-xs font-semibold border border-[#663399]/30">
+                    <div className="mb-4 sm:mb-6">
+                      <span className="px-4 py-1.5 sm:py-2 bg-gradient-to-r from-[#663399]/15 to-[#c45824]/15 text-[#663399] rounded-full text-xs font-semibold border border-[#663399]/30">
                         {story?.subtitle ?? 'La Nostra Storia'}
                       </span>
                     </div>
-                    <h2 className="text-5xl md:text-6xl font-serif text-gray-900 mb-8 leading-tight">
+                    <h2 className="text-3xl sm:text-5xl md:text-6xl font-serif text-gray-900 mb-5 sm:mb-8 leading-tight">
                       <span className="bg-gradient-to-r from-gray-900 via-[#663399] to-gray-900 bg-clip-text text-transparent">
                         {story?.title ?? "Un Viaggio nell'Arte"}
                       </span>
                     </h2>
-                    <div className="space-y-6 text-lg md:text-xl text-gray-700 leading-relaxed">
+                    <div className="space-y-4 sm:space-y-6 text-sm sm:text-lg md:text-xl text-gray-700 leading-relaxed">
                       {storyParagraphs.map((paragraph, index) => {
                         const isAccent = index % 2 === 1
                         return (
@@ -189,25 +189,25 @@ export default function AboutPage() {
 
 
         {/* Filosofia Spettacolare */}
-        <section className="py-24 md:py-32 bg-gradient-to-b from-gray-50 to-white relative">
-          <div className="container mx-auto px-4">
-            <div className="max-w-5xl mx-auto text-center mb-20 animate-fade-in-up-delay-3">
-              <div className="inline-block mb-6">
-                <span className="px-6 py-2 bg-gradient-to-r from-[#663399]/15 to-[#c45824]/15 text-[#663399] rounded-full text-sm font-semibold border-2 border-[#663399]/30">
+        <section className="py-12 sm:py-24 md:py-32 bg-gradient-to-b from-gray-50 to-white relative">
+          <div className="container mx-auto px-3 sm:px-4">
+            <div className="max-w-5xl mx-auto text-center mb-8 sm:mb-20 animate-fade-in-up-delay-3">
+              <div className="inline-block mb-4 sm:mb-6">
+                <span className="px-4 sm:px-6 py-1.5 sm:py-2 bg-gradient-to-r from-[#663399]/15 to-[#c45824]/15 text-[#663399] rounded-full text-xs sm:text-sm font-semibold border border-[#663399]/30">
                   {philosophy?.subtitle ?? 'Filosofia'}
                 </span>
               </div>
-              <h2 className="text-5xl md:text-7xl font-serif text-gray-900 mb-8 leading-tight">
+              <h2 className="text-3xl sm:text-5xl md:text-7xl font-serif text-gray-900 mb-4 sm:mb-8 leading-tight">
                 <span className="bg-gradient-to-r from-gray-900 via-[#663399] to-gray-900 bg-clip-text text-transparent">
                   {philosophy?.title ?? 'La Nostra Filosofia'}
                 </span>
               </h2>
-              <p className="text-2xl md:text-3xl text-gray-700 leading-relaxed max-w-4xl mx-auto">
+              <p className="text-base sm:text-2xl md:text-3xl text-gray-700 leading-relaxed max-w-4xl mx-auto">
                 {philosophy?.content ?? "Crediamo nella bellezza della manualità, nel valore del tempo dedicato, nell'importanza di creare oggetti che durino nel tempo e che portino gioia in ogni casa che li accoglie."}
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-8 max-w-7xl mx-auto">
               {[
                 { title: 'Atelier', gradient: 'from-ceramic-beige to-ceramic-sand', delay: 0 },
                 { title: 'Dettagli', gradient: 'from-ceramic-terracotta to-ceramic-earth', delay: 100 },
@@ -256,28 +256,28 @@ export default function AboutPage() {
         </section>
 
         {/* Firma Spettacolare */}
-        <section className="py-32 md:py-40 bg-gradient-to-br from-white via-gray-50 to-white relative overflow-hidden">
+        <section className="py-14 sm:py-32 md:py-40 bg-gradient-to-br from-white via-gray-50 to-white relative overflow-hidden">
           {/* Elementi decorativi */}
-          <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+          <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none hidden sm:block">
             <div className="absolute top-20 left-20 w-64 h-64 border-2 border-[#663399]/20 rounded-full" />
             <div className="absolute bottom-20 right-20 w-80 h-80 border-2 border-[#c45824]/20 rounded-full" />
           </div>
 
-          <div className="container mx-auto px-4 relative z-10">
+          <div className="container mx-auto px-3 sm:px-4 relative z-10">
             <div className="max-w-4xl mx-auto text-center animate-fade-in-up-delay-4">
-              <div className="mb-12">
-                <h2 className="text-6xl md:text-8xl font-serif text-gray-900 mb-8 leading-[1.1]">
+              <div className="mb-7 sm:mb-12">
+                <h2 className="text-4xl sm:text-6xl md:text-8xl font-serif text-gray-900 mb-5 sm:mb-8 leading-[1.1]">
                   <span className="block bg-gradient-to-r from-gray-900 via-[#663399] to-gray-900 bg-clip-text text-transparent">
                     Ogni Pezzo
                   </span>
-                  <span className="block text-5xl md:text-7xl mt-2">
+                  <span className="block text-3xl sm:text-5xl md:text-7xl mt-2">
                     è Unico
                   </span>
                 </h2>
               </div>
               
-              <div className="space-y-8 mb-16">
-                <p className="text-2xl md:text-3xl text-gray-700 leading-relaxed font-light">
+              <div className="space-y-5 sm:space-y-8 mb-9 sm:mb-16">
+                <p className="text-base sm:text-2xl md:text-3xl text-gray-700 leading-relaxed font-light">
                   {signature?.content ?? "Non produciamo in serie. Ogni ceramica è pensata, modellata e finita a mano, con cura e dedizione. Ogni creazione porta con sé l'impronta dell'artigiano che l'ha realizzata."}
                 </p>
                 <div className="flex items-center justify-center gap-4 my-8">
@@ -285,12 +285,12 @@ export default function AboutPage() {
                   <div className="w-3 h-3 bg-[#663399] rounded-full" />
                   <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#c45824] to-transparent" />
                 </div>
-                <p className="text-3xl md:text-4xl font-serif text-gray-900 leading-tight">
+                <p className="text-2xl sm:text-3xl md:text-4xl font-serif text-gray-900 leading-tight">
                   <span className="bg-gradient-to-r from-[#663399] via-[#c45824] to-[#663399] bg-clip-text text-transparent">
                     Questo è il nostro modo di fare arte.
                   </span>
                   <br />
-                  <span className="text-4xl md:text-5xl mt-2 block">
+                  <span className="text-3xl sm:text-4xl md:text-5xl mt-2 block">
                     Questo è UNIKA.
                   </span>
                 </p>
@@ -300,7 +300,7 @@ export default function AboutPage() {
                 <Button 
                   size="lg" 
                   variant="primary" 
-                  className="text-xl px-12 py-6 shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300"
+                  className="text-sm sm:text-xl px-7 sm:px-12 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
                 >
                   <span className="flex items-center gap-3">
                     Crea la Tua Ceramica

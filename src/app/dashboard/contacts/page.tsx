@@ -61,13 +61,13 @@ export default function ContactsPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-site flex items-center justify-center px-4">
+      <div className="min-h-screen bg-site flex items-center justify-center px-3 sm:px-4">
         <div className="w-full max-w-md">
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            <h1 className="text-3xl font-serif text-gray-900 mb-2 text-center">
+          <div className="bg-white rounded-lg shadow-lg p-5 sm:p-8">
+            <h1 className="text-2xl sm:text-3xl font-serif text-gray-900 mb-2 text-center">
               Dashboard UNIKA
             </h1>
-            <p className="text-gray-600 text-center mb-8">
+            <p className="text-sm sm:text-base text-gray-600 text-center mb-6 sm:mb-8">
               Inserisci la password per accedere
             </p>
             
@@ -81,7 +81,7 @@ export default function ContactsPage() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#663399] focus:border-transparent"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#663399] focus:border-transparent"
                   placeholder="Password"
                   required
                 />
@@ -95,7 +95,7 @@ export default function ContactsPage() {
 
               <button
                 type="submit"
-                className="w-full bg-[#663399] text-white py-2 px-4 rounded-lg hover:bg-[#552288] transition-colors font-medium"
+                className="w-full bg-[#663399] text-white py-2.5 px-4 rounded-lg hover:bg-[#552288] transition-colors font-medium"
               >
                 Accedi
               </button>
@@ -108,13 +108,13 @@ export default function ContactsPage() {
 
   return (
     <DashboardLayout onLogout={handleLogout} activeSection="contacts">
-      <div className="space-y-8">
+      <div className="space-y-5 sm:space-y-8 lg:space-y-10">
         {/* Header */}
-        <div className="border-b border-gray-200 pb-6">
-          <h1 className="text-4xl font-serif text-gray-900 mb-2">
+        <div className="border-b border-gray-200 pb-4 sm:pb-6 lg:pb-7">
+          <h1 className="text-2xl sm:text-4xl font-serif text-gray-900 mb-1.5 sm:mb-2">
             Contatti
           </h1>
-          <p className="text-gray-600">
+          <p className="text-sm sm:text-base text-gray-600">
             Gestisci i messaggi ricevuti dai clienti
           </p>
         </div>

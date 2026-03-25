@@ -13,10 +13,10 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-3 sm:px-4 py-8 sm:py-12">
         <div className="max-w-2xl mx-auto text-center">
-          <h1 className="text-3xl font-serif mb-4">{t('title')}</h1>
-          <p className="text-gray-600 mb-8">{t('empty')}</p>
+          <h1 className="text-2xl sm:text-3xl font-serif mb-3">{t('title')}</h1>
+          <p className="text-sm sm:text-base text-gray-600 mb-6">{t('empty')}</p>
           <Link href="/shop">
             <Button variant="primary" size="lg">
               {t('continueShopping')}
@@ -28,12 +28,12 @@ export default function CartPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <h1 className="text-3xl font-serif mb-8">{t('title')}</h1>
+    <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-10">
+      <h1 className="text-2xl sm:text-3xl font-serif mb-5 sm:mb-7">{t('title')}</h1>
       
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-7">
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-artistic p-6">
+          <div className="bg-white rounded-artistic p-4 sm:p-6">
             {items.map((item) => (
               <CartItem key={item.id} item={item} />
             ))}

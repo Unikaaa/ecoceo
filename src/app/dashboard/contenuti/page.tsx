@@ -514,7 +514,6 @@ export default function ContenutiPage() {
                   <ImageUploadField
                     value={articleFormData.image_url}
                     onChange={(url) => setArticleFormData({ ...articleFormData, image_url: url as string })}
-                    folder="articles"
                     label="Immagine Articolo"
                   />
 
@@ -682,19 +681,16 @@ export default function ContenutiPage() {
                     <ImageUploadField
                       value={parsePhilosophyImages(aboutFormData.image_url)[0]}
                       onChange={(url) => updatePhilosophyImageAt(0, (url as string) || '')}
-                      folder="about"
                       label="Immagine casella 1 (Atelier)"
                     />
                     <ImageUploadField
                       value={parsePhilosophyImages(aboutFormData.image_url)[1]}
                       onChange={(url) => updatePhilosophyImageAt(1, (url as string) || '')}
-                      folder="about"
                       label="Immagine casella 2 (Dettagli)"
                     />
                     <ImageUploadField
                       value={parsePhilosophyImages(aboutFormData.image_url)[2]}
                       onChange={(url) => updatePhilosophyImageAt(2, (url as string) || '')}
-                      folder="about"
                       label="Immagine casella 3 (Materia)"
                     />
                   </div>
@@ -702,7 +698,6 @@ export default function ContenutiPage() {
                   <ImageUploadField
                     value={aboutFormData.image_url || ''}
                     onChange={(url) => setAboutFormData({ ...aboutFormData, image_url: url as string })}
-                    folder="about"
                     label="Immagine (opzionale)"
                   />
                 )}

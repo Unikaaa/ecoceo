@@ -40,7 +40,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   }
 
   return (
-    <div className={`group bg-white rounded-artistic overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col ${
+    <div className={`group bg-white rounded-artistic overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col ${
       !product.inStock ? 'opacity-95' : ''
     } ${
       product.featured
@@ -68,15 +68,15 @@ export default function ProductCard({ product }: ProductCardProps) {
 
           {product.featured && (
             <div className="absolute top-4 left-4 z-20">
-              <div className="inline-flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-amber-50/95 to-yellow-50/95 backdrop-blur-sm text-amber-900 rounded-xl shadow-lg border border-amber-200/90">
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-sm">
-                  <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-gradient-to-r from-amber-50/95 to-yellow-50/95 backdrop-blur-sm text-amber-900 rounded-lg shadow border border-amber-200/90">
+                <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-sm">
+                  <svg className="w-3 h-3" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.922-.755 1.688-1.539 1.118l-2.8-2.034a1 1 0 00-1.176 0l-2.8 2.034c-.783.57-1.838-.196-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81H7.03a1 1 0 00.95-.69l1.07-3.292z" />
                   </svg>
                 </span>
                 <div className="leading-tight">
-                  <p className="text-[11px] font-bold uppercase tracking-wider">Favorito</p>
-                  <p className="text-[10px] text-amber-700 font-medium">Piu venduto</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider">Favorito</p>
+                  <p className="text-[9px] text-amber-700 font-medium">Piu venduto</p>
                 </div>
               </div>
             </div>
@@ -96,12 +96,12 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
 
-        <div className="p-6 md:p-8">
-          <h3 className="text-lg md:text-xl font-serif text-gray-900 mb-3 group-hover:text-primary transition-colors duration-300 text-center leading-tight">
+        <div className="p-3.5 sm:p-6 md:p-8">
+          <h3 className="text-sm sm:text-lg md:text-xl font-serif text-gray-900 mb-2 group-hover:text-primary transition-colors duration-300 text-center leading-tight">
             {product.name}
           </h3>
           <div className="text-center space-y-2 pt-3 border-t border-gray-100">
-            <p className="text-2xl md:text-3xl font-serif font-semibold text-primary">
+            <p className="text-base sm:text-xl md:text-2xl font-serif font-semibold text-primary">
               {formatPrice(product.price)}
             </p>
             {product.inStock ? (
@@ -118,14 +118,14 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
       </Link>
 
-      <div className="px-6 md:px-8 pb-6 md:pb-8 pt-1 mt-auto">
-        <div className="grid grid-cols-2 gap-2">
+      <div className="px-3.5 sm:px-6 md:px-8 pb-3.5 sm:pb-6 md:pb-8 pt-1 mt-auto">
+        <div className="grid grid-cols-2 gap-2.5">
           {product.inStock ? (
             <button
               type="button"
               onClick={handleAddToCart}
               disabled={isAddingToCart}
-              className="px-3 py-2 rounded-lg bg-[#c45824] text-white text-xs font-semibold hover:bg-[#663399] transition-colors disabled:opacity-70"
+              className="px-3 py-2.5 rounded-xl bg-[#c45824] text-white text-sm font-semibold hover:bg-[#663399] transition-colors disabled:opacity-70 min-h-[44px] shadow-sm"
             >
               {isAddingToCart ? 'Aggiungo...' : 'Aggiungi al carrello'}
             </button>
@@ -133,14 +133,14 @@ export default function ProductCard({ product }: ProductCardProps) {
             <button
               type="button"
               onClick={() => setIsNotificationModalOpen(true)}
-              className="px-3 py-2 rounded-lg bg-[#663399] text-white text-xs font-semibold hover:bg-[#552288] transition-colors"
+              className="px-3 py-2.5 rounded-xl bg-[#663399] text-white text-sm font-semibold hover:bg-[#552288] transition-colors min-h-[44px] shadow-sm"
             >
               Avvisami
             </button>
           )}
           <Link
             href={`/shop/${product.slug}`}
-            className="px-3 py-2 rounded-lg bg-white border border-[#663399] text-[#663399] text-xs font-semibold hover:bg-[#663399] hover:text-white transition-colors text-center"
+            className="px-3 py-2.5 rounded-xl bg-white border border-[#663399] text-[#663399] text-sm font-semibold hover:bg-[#663399] hover:text-white transition-colors text-center min-h-[44px] inline-flex items-center justify-center shadow-sm"
           >
             Dettagli
           </Link>

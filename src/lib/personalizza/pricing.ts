@@ -39,10 +39,10 @@ export async function calculatePrice(
         : Promise.resolve({ ok: false, json: () => ({ decorations: [] }) }),
     ])
 
-    const size = await sizeRes.json()
-    const style = await styleRes.json()
-    const background = input.backgroundId ? await backgroundRes.json() : null
-    const decorations = await decorationsRes.json()
+    const size: any = await sizeRes.json()
+    const style: any = await styleRes.json()
+    const background: any = input.backgroundId ? await backgroundRes.json() : null
+    const decorations: any = await decorationsRes.json()
 
     const basePrice = parseFloat(size.size?.base_price || 0)
     const stylePrice = parseFloat(style.style?.price_extra || 0)

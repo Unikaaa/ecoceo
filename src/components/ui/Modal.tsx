@@ -81,34 +81,34 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md' }:
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        {(title || onClose) && (
-          <div className="flex items-center justify-between p-6 border-b border-gray-200">
-            {title && (
-              <h2 id="modal-title" className="text-xl font-serif text-gray-900 font-semibold">
-                {title}
-              </h2>
-            )}
-            <button
-              onClick={onClose}
-              className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-700 transition-all duration-200 flex items-center justify-center"
-              aria-label="Close modal"
+        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+          {title ? (
+            <h2 id="modal-title" className="text-xl font-serif text-gray-900 font-semibold">
+              {title}
+            </h2>
+          ) : (
+            <div />
+          )}
+          <button
+            onClick={onClose}
+            className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-700 transition-all duration-200 flex items-center justify-center"
+            aria-label="Close modal"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
-        )}
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
 
         {/* Content */}
         <div className="p-6">{children}</div>

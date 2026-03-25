@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { rateLimit } from '@/lib/rateLimit'
+import { getClientIP, rateLimit } from '@/lib/rateLimit'
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
@@ -10,8 +10,11 @@ const supabase = supabaseServiceKey ? createClient(supabaseUrl, supabaseServiceK
 export async function POST(request: NextRequest) {
   try {
     // Rate limiting
-    const identifier = request.ip || 'anonymous'
-    const { success } = await rateLimit(identifier, 'contact', 5, 60) // 5 richieste per minuto
+    const identifier = `${getClientIP(request)}:contact`
+    const { success } = await rateLimit(identifier, {
+      maxRequests: 5,
+      windowMs: 60_000,
+    }) // 5 richieste per minuto
 
     if (!success) {
       return NextResponse.json(

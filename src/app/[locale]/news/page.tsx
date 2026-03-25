@@ -23,7 +23,7 @@ export default async function NewsPage() {
   return (
     <div className="bg-site min-h-screen relative overflow-hidden">
       {/* Elementi decorativi di sfondo - più grandi e visibili */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none hidden sm:block">
         <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-gradient-to-br from-[#663399]/12 via-[#663399]/8 to-transparent rounded-full blur-3xl" />
         <div className="absolute top-1/3 right-0 w-[700px] h-[700px] bg-gradient-to-bl from-[#c45824]/12 via-[#c45824]/8 to-transparent rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-1/3 w-[900px] h-[900px] bg-gradient-to-tr from-[#663399]/10 via-[#c45824]/10 to-transparent rounded-full blur-3xl" />
@@ -34,22 +34,22 @@ export default async function NewsPage() {
 
       <div className="relative z-10">
         {/* Hero Section Spettacolare */}
-        <section className="container mx-auto px-4 pt-20 md:pt-32 pb-16">
+        <section className="container mx-auto px-3 sm:px-4 pt-12 sm:pt-20 md:pt-32 pb-10 sm:pb-16">
           <div className="max-w-6xl mx-auto text-center animate-fade-in-up">
-            <div className="inline-block mb-6">
-              <span className="px-6 py-2 bg-gradient-to-r from-[#663399]/15 via-[#663399]/10 to-[#c45824]/15 text-[#663399] rounded-full text-sm font-semibold border-2 border-[#663399]/30 shadow-lg backdrop-blur-sm">
+            <div className="inline-block mb-4 sm:mb-6">
+              <span className="px-4 sm:px-6 py-1.5 sm:py-2 bg-gradient-to-r from-[#663399]/15 via-[#663399]/10 to-[#c45824]/15 text-[#663399] rounded-full text-xs sm:text-sm font-semibold border border-[#663399]/30 shadow-sm backdrop-blur-sm">
                 News & Blog
               </span>
             </div>
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif text-gray-900 mb-6 leading-[1.1] tracking-tight">
+            <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-serif text-gray-900 mb-4 sm:mb-6 leading-[1.1] tracking-tight">
               <span className="block bg-gradient-to-r from-gray-900 via-[#663399] to-gray-900 bg-clip-text text-transparent">
                 Storie di Arte
               </span>
-              <span className="block text-4xl md:text-6xl lg:text-7xl mt-2">
+              <span className="block text-2xl sm:text-4xl md:text-6xl lg:text-7xl mt-1.5 sm:mt-2">
                 e Ceramica
               </span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-sm sm:text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
               Esplora le nostre storie, scopri le tecniche artigianali e immergiti nel mondo della ceramica artistica
             </p>
           </div>
@@ -57,10 +57,10 @@ export default async function NewsPage() {
 
         {/* Featured Article */}
         {featuredArticle && (
-          <section className="container mx-auto px-4 pb-20 animate-fade-in-up-delay">
+          <section className="container mx-auto px-3 sm:px-4 pb-10 sm:pb-20 animate-fade-in-up-delay">
             <div className="max-w-6xl mx-auto">
-              <div className="mb-8">
-                <h2 className="text-3xl md:text-4xl font-serif text-gray-900 flex items-center gap-4">
+              <div className="mb-5 sm:mb-8">
+                <h2 className="text-xl sm:text-3xl md:text-4xl font-serif text-gray-900 flex items-center gap-2 sm:gap-4">
                   <span className="h-px flex-1 bg-gradient-to-r from-transparent via-[#663399] to-transparent" />
                   <span>In Evidenza</span>
                   <span className="h-px flex-1 bg-gradient-to-r from-transparent via-[#663399] to-transparent" />
@@ -68,7 +68,7 @@ export default async function NewsPage() {
               </div>
               <Link
                 href={`/news/${featuredArticle.slug}`}
-                className="group block bg-white rounded-artistic overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-[1.02]"
+                className="group block bg-white rounded-artistic overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01]"
               >
                 <div className="grid md:grid-cols-2 gap-0">
                   <div className="relative aspect-[4/3] md:aspect-auto overflow-hidden">
@@ -89,9 +89,9 @@ export default async function NewsPage() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
                     <div className="absolute inset-0 bg-gradient-to-r from-[#663399]/0 via-[#663399]/10 to-[#663399]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                   </div>
-                  <div className="p-8 md:p-12 flex flex-col justify-center relative">
-                    <div className="absolute top-8 right-8">
-                      <span className="px-4 py-1.5 bg-gradient-to-r from-[#663399]/15 to-[#c45824]/15 text-[#663399] rounded-full text-xs font-semibold border border-[#663399]/30">
+                  <div className="p-4 sm:p-8 md:p-12 flex flex-col justify-center relative">
+                    <div className="absolute top-4 sm:top-8 right-4 sm:right-8">
+                      <span className="px-3 py-1 bg-gradient-to-r from-[#663399]/15 to-[#c45824]/15 text-[#663399] rounded-full text-[11px] sm:text-xs font-semibold border border-[#663399]/30">
                         {featuredArticle.category}
                       </span>
                     </div>
@@ -104,10 +104,10 @@ export default async function NewsPage() {
                         })}
                       </time>
                     </div>
-                    <h3 className="text-3xl md:text-4xl font-serif text-gray-900 mb-4 group-hover:text-[#663399] transition-colors duration-300 leading-tight">
+                    <h3 className="text-xl sm:text-3xl md:text-4xl font-serif text-gray-900 mb-3 sm:mb-4 group-hover:text-[#663399] transition-colors duration-300 leading-tight">
                       {featuredArticle.title}
                     </h3>
-                    <p className="text-gray-600 text-lg leading-relaxed mb-6 line-clamp-3">
+                    <p className="text-gray-600 text-sm sm:text-lg leading-relaxed mb-4 sm:mb-6 line-clamp-3">
                       {featuredArticle.excerpt}
                     </p>
                     <div className="flex items-center justify-between">
@@ -136,18 +136,18 @@ export default async function NewsPage() {
         )}
 
         {/* Grid Articoli */}
-        <section className="container mx-auto px-4 pb-20 md:pb-32 animate-fade-in-up-delay-2">
+          <section className="container mx-auto px-3 sm:px-4 pb-12 sm:pb-20 md:pb-32 animate-fade-in-up-delay-2">
           <div className="max-w-7xl mx-auto">
             {otherArticles.length > 0 && (
-              <div className="mb-12">
-                <h2 className="text-3xl md:text-4xl font-serif text-gray-900 flex items-center gap-4">
+              <div className="mb-6 sm:mb-12">
+                <h2 className="text-xl sm:text-3xl md:text-4xl font-serif text-gray-900 flex items-center gap-2 sm:gap-4">
                   <span className="h-px flex-1 bg-gradient-to-r from-transparent via-[#663399] to-transparent" />
                   <span>Altri Articoli</span>
                   <span className="h-px flex-1 bg-gradient-to-r from-transparent via-[#663399] to-transparent" />
                 </h2>
               </div>
             )}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
               {otherArticles.map((article, index) => (
                 <div
                   key={article.id}

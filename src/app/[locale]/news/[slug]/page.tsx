@@ -58,15 +58,15 @@ export default async function ArticlePage({ params }: PageProps) {
   return (
     <article className="bg-site min-h-screen relative overflow-hidden">
       {/* Elementi decorativi di sfondo */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none hidden sm:block">
         <div className="absolute top-20 left-0 w-96 h-96 bg-gradient-to-br from-[#663399]/5 to-transparent rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-0 w-96 h-96 bg-gradient-to-tl from-[#c45824]/5 to-transparent rounded-full blur-3xl" />
       </div>
 
-      <div className="container mx-auto px-4 py-20 md:py-28 relative z-10">
+      <div className="container mx-auto px-3 sm:px-4 py-10 sm:py-20 md:py-28 relative z-10">
         <div className="max-w-5xl mx-auto">
           {/* Breadcrumb elegante con animazione */}
-          <nav className="mb-12 text-sm animate-fade-in-up">
+          <nav className="mb-6 sm:mb-12 text-xs sm:text-sm animate-fade-in-up">
             <div className="flex items-center gap-2 text-gray-500">
               <Link 
                 href="/" 
@@ -87,10 +87,10 @@ export default async function ArticlePage({ params }: PageProps) {
           </nav>
 
           {/* Header spettacolare */}
-          <header className="mb-16 animate-fade-in-up-delay">
+          <header className="mb-8 sm:mb-16 animate-fade-in-up-delay">
             {/* Categoria e Tag con animazione */}
-            <div className="flex flex-wrap items-center gap-3 mb-8">
-              <span className="px-5 py-2 bg-gradient-to-r from-[#663399]/15 via-[#663399]/10 to-[#c45824]/15 text-[#663399] rounded-full text-sm font-semibold border-2 border-[#663399]/30 shadow-lg backdrop-blur-sm hover:scale-110 transition-transform duration-300">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-5 sm:mb-8">
+              <span className="px-4 py-1.5 bg-gradient-to-r from-[#663399]/15 via-[#663399]/10 to-[#c45824]/15 text-[#663399] rounded-full text-xs sm:text-sm font-semibold border border-[#663399]/30 shadow-sm backdrop-blur-sm transition-transform duration-300">
                 {article.category}
               </span>
               {article.tags && article.tags.map((tag: string, idx: number) => (
@@ -105,7 +105,7 @@ export default async function ArticlePage({ params }: PageProps) {
             </div>
 
             {/* Titolo principale drammatico */}
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif text-gray-900 mb-8 leading-[1.1] tracking-tight">
+            <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-serif text-gray-900 mb-5 sm:mb-8 leading-[1.1] tracking-tight">
               <span className="block bg-gradient-to-r from-gray-900 via-[#663399] to-gray-900 bg-clip-text text-transparent">
                 {article.title}
               </span>
@@ -113,10 +113,10 @@ export default async function ArticlePage({ params }: PageProps) {
 
             {/* Meta informazioni eleganti con decorazioni */}
             <div className="relative">
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[#663399] via-[#c45824] to-transparent rounded-full" />
-              <div className="flex flex-wrap items-center gap-6 text-sm text-gray-600 pl-6 pb-8 border-b-2 border-gray-100">
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[#663399] via-[#c45824] to-transparent rounded-full hidden sm:block" />
+              <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-xs sm:text-sm text-gray-600 pl-0 sm:pl-6 pb-5 sm:pb-8 border-b border-gray-100">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#663399] via-[#c45824] to-[#663399] p-0.5 shadow-lg hover:scale-110 transition-transform duration-300">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-[#663399] via-[#c45824] to-[#663399] p-0.5 shadow-lg transition-transform duration-300">
                     <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
                       <span className="text-[#663399] font-bold text-sm">
                         {article.author.charAt(0).toUpperCase()}
@@ -147,7 +147,7 @@ export default async function ArticlePage({ params }: PageProps) {
           </header>
 
           {/* Featured Image spettacolare */}
-          <div className="mb-16 group animate-fade-in-up-delay-2">
+          <div className="mb-8 sm:mb-16 group animate-fade-in-up-delay-2">
             <div className="relative aspect-[21/9] rounded-artistic overflow-hidden shadow-2xl">
               <div className="absolute inset-0 bg-gradient-to-br from-ceramic-beige via-ceramic-white to-ceramic-sand" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
@@ -162,14 +162,14 @@ export default async function ArticlePage({ params }: PageProps) {
           </div>
 
           {/* Content con tipografia spettacolare */}
-          <div className="prose prose-lg prose-slate max-w-none mb-20 animate-fade-in-delay-3">
-            <div className="text-gray-700 leading-relaxed text-lg md:text-xl">
+          <div className="prose prose-lg prose-slate max-w-none mb-10 sm:mb-20 animate-fade-in-delay-3">
+            <div className="text-gray-700 leading-relaxed text-base sm:text-lg md:text-xl">
               {article.content.split('\n').map((paragraph, index) => {
                 if (paragraph.startsWith('# ')) {
                   return (
                     <h2 
                       key={index} 
-                      className="text-4xl md:text-5xl font-serif text-gray-900 mt-16 mb-8 first:mt-0 relative pl-6 border-l-4 border-gradient-to-b from-[#663399] to-[#c45824]"
+                      className="text-2xl sm:text-4xl md:text-5xl font-serif text-gray-900 mt-10 sm:mt-16 mb-5 sm:mb-8 first:mt-0 relative sm:pl-6 sm:border-l-4 border-gradient-to-b from-[#663399] to-[#c45824]"
                       style={{
                         borderImage: 'linear-gradient(to bottom, #663399, #c45824) 1'
                       }}
@@ -184,7 +184,7 @@ export default async function ArticlePage({ params }: PageProps) {
                   return (
                     <h3 
                       key={index} 
-                      className="text-3xl md:text-4xl font-serif text-gray-900 mt-12 mb-6 relative"
+                      className="text-xl sm:text-3xl md:text-4xl font-serif text-gray-900 mt-8 sm:mt-12 mb-4 sm:mb-6 relative"
                     >
                       <span className="relative">
                         {paragraph.replace('## ', '')}
@@ -199,7 +199,7 @@ export default async function ArticlePage({ params }: PageProps) {
                 return (
                   <p 
                     key={index} 
-                    className="mb-8 leading-9 text-gray-700 first-letter:text-6xl first-letter:font-serif first-letter:text-[#663399] first-letter:float-left first-letter:mr-3 first-letter:leading-none"
+                    className="mb-5 sm:mb-8 leading-7 sm:leading-9 text-gray-700 first-letter:text-4xl sm:first-letter:text-6xl first-letter:font-serif first-letter:text-[#663399] first-letter:float-left first-letter:mr-2 sm:first-letter:mr-3 first-letter:leading-none"
                   >
                     {paragraph}
                   </p>
@@ -209,13 +209,13 @@ export default async function ArticlePage({ params }: PageProps) {
           </div>
 
           {/* Footer spettacolare */}
-          <footer className="pt-16 border-t-2 border-gray-200 animate-fade-in-up-delay-4">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
+          <footer className="pt-8 sm:pt-16 border-t border-gray-200 animate-fade-in-up-delay-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-8">
               <Link
                 href="/news"
-                className="group flex items-center gap-3 text-[#663399] hover:text-[#c45824] transition-all duration-300 font-semibold text-lg"
+                className="group flex items-center gap-2.5 text-[#663399] hover:text-[#c45824] transition-all duration-300 font-semibold text-base sm:text-lg"
               >
-                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#663399] to-[#c45824] flex items-center justify-center transform group-hover:-translate-x-2 transition-transform duration-300 shadow-lg">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-r from-[#663399] to-[#c45824] flex items-center justify-center transform group-hover:-translate-x-2 transition-transform duration-300 shadow-lg">
                   <svg 
                     className="w-6 h-6 text-white" 
                     fill="none" 
@@ -227,7 +227,7 @@ export default async function ArticlePage({ params }: PageProps) {
                 </div>
                 <span>Torna alle News</span>
               </Link>
-              <div className="flex items-center gap-3 text-sm text-gray-500 bg-gray-50 px-6 py-3 rounded-full">
+              <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-500 bg-gray-50 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full">
                 <svg className="w-5 h-5 text-[#663399]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>

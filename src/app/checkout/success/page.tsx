@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Button from '@/components/ui/Button'
@@ -8,6 +8,23 @@ import { Order } from '@/types/order'
 import { formatPrice } from '@/lib/utils'
 
 export default function CheckoutSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="container mx-auto px-4 py-12">
+          <div className="max-w-2xl mx-auto text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-4 text-gray-600">Caricamento ordine...</p>
+          </div>
+        </div>
+      }
+    >
+      <CheckoutSuccessInner />
+    </Suspense>
+  )
+}
+
+function CheckoutSuccessInner() {
   const searchParams = useSearchParams()
   const sessionId = searchParams.get('session_id')
   const [order, setOrder] = useState<Order | null>(null)

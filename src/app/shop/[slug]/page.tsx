@@ -45,7 +45,7 @@ export default function ProductPage({ params }: PageProps) {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-3 sm:px-4 py-8 sm:py-12">
         <div className="text-center">
           <p className="text-gray-600">Caricamento prodotto...</p>
         </div>
@@ -64,8 +64,8 @@ export default function ProductPage({ params }: PageProps) {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+    <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-12">
         <ProductGallery images={product.images} productName={product.name} />
         <ProductInfo product={product} onAddToCart={handleAddToCart} />
       </div>

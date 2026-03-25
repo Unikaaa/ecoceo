@@ -1,5 +1,6 @@
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
+import { Suspense } from 'react'
 
 export default function LocaleLayout({
   children,
@@ -8,7 +9,9 @@ export default function LocaleLayout({
 }) {
   return (
     <div className="flex flex-col min-h-screen bg-site">
-      <Header />
+      <Suspense fallback={<div className="h-12 md:h-20" />}>
+        <Header />
+      </Suspense>
       <main className="flex-grow bg-site">
         {children}
       </main>

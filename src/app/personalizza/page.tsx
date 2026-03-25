@@ -173,7 +173,7 @@ export default function PersonalizzaPage() {
   return (
     <div className="min-h-screen bg-site relative overflow-hidden">
       {/* Elementi decorativi di sfondo */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none hidden sm:block">
         <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-gradient-to-br from-[#663399]/8 via-[#663399]/4 to-transparent rounded-full blur-3xl" />
         <div className="absolute top-1/3 right-0 w-[700px] h-[700px] bg-gradient-to-bl from-[#c45824]/8 via-[#c45824]/4 to-transparent rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-1/3 w-[900px] h-[900px] bg-gradient-to-tr from-[#663399]/6 via-[#c45824]/6 to-transparent rounded-full blur-3xl" />
@@ -181,23 +181,23 @@ export default function PersonalizzaPage() {
 
       <div className="relative z-10">
       {/* Header stile Chi Siamo */}
-      <section className="relative py-24 md:py-32 bg-gradient-to-br from-ceramic-beige via-ceramic-white to-ceramic-sand overflow-hidden">
+      <section className="relative py-12 sm:py-24 md:py-32 bg-gradient-to-br from-ceramic-beige via-ceramic-white to-ceramic-sand overflow-hidden">
         {/* Pattern decorativo cerchi */}
-        <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0 opacity-10 hidden sm:block">
           <div className="absolute top-20 left-20 w-32 h-32 border-2 border-[#663399] rounded-full" />
           <div className="absolute top-40 right-32 w-24 h-24 border-2 border-[#c45824] rounded-full" />
           <div className="absolute bottom-32 left-1/3 w-40 h-40 border-2 border-[#663399] rounded-full" />
           <div className="absolute bottom-20 right-20 w-28 h-28 border-2 border-[#c45824] rounded-full" />
         </div>
 
-        <div className="container mx-auto px-4 relative z-10">
+        <div className="container mx-auto px-3 sm:px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-5xl md:text-7xl font-serif font-bold mb-6 leading-tight">
+            <h1 className="text-3xl sm:text-5xl md:text-7xl font-serif font-bold mb-4 sm:mb-6 leading-tight">
               <span className="bg-gradient-to-r from-[#663399] via-[#552288] to-[#663399] bg-clip-text text-transparent">
                 Crea la tua ceramica personalizzata
               </span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto font-light leading-relaxed">
+            <p className="text-sm sm:text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto font-light leading-relaxed">
               Personalizza ogni dettaglio della tua ceramica in pochi semplici passaggi
             </p>
           </div>
@@ -205,12 +205,12 @@ export default function PersonalizzaPage() {
       </section>
 
       {/* Layout Step-by-Step con sidebar elegante */}
-      <div className="container mx-auto px-4 py-16">
-        <div className="flex flex-col lg:flex-row gap-12">
+      <div className="container mx-auto px-3 sm:px-4 py-8 sm:py-16">
+        <div className="flex flex-col lg:flex-row gap-5 sm:gap-12">
           {/* Sidebar elegante con numeri step */}
           <aside className="lg:w-80 flex-shrink-0">
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 sticky top-8">
-              <h2 className="text-xl font-serif font-bold text-gray-900 mb-8 pb-4 border-b border-gray-200">
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 sm:p-8 lg:sticky lg:top-8">
+              <h2 className="text-base sm:text-xl font-serif font-bold text-gray-900 mb-4 sm:mb-8 pb-2 sm:pb-4 border-b border-gray-200">
                 I Tuoi Passaggi
               </h2>
               <nav className="space-y-1">
@@ -226,15 +226,15 @@ export default function PersonalizzaPage() {
                       {index < 5 && (
                         <div className={`absolute left-4 top-12 w-0.5 h-12 transition-all duration-300 ${
                           isCompleted ? 'bg-green-400' : 'bg-gray-200'
-                        }`} />
+                        } hidden lg:block`} />
                       )}
                       
                       <button
                         onClick={() => goToStep(step)}
                         disabled={!isReachable}
-                        className={`w-full flex items-center gap-4 px-5 py-4 rounded-xl transition-all duration-300 text-left relative z-10 ${
+                        className={`w-full flex items-center gap-3 sm:gap-4 px-3 sm:px-5 py-2.5 sm:py-4 rounded-xl transition-all duration-300 text-left relative z-10 ${
                           isActive
-                            ? 'bg-gradient-to-r from-[#663399] to-[#552288] text-white shadow-lg scale-105'
+                            ? 'bg-gradient-to-r from-[#663399] to-[#552288] text-white shadow-md lg:shadow-lg'
                             : isCompleted
                             ? 'bg-green-50 text-green-700 hover:bg-green-100 border border-green-200 cursor-pointer'
                             : isReachable
@@ -242,7 +242,7 @@ export default function PersonalizzaPage() {
                             : 'bg-gray-50 text-gray-400 border border-gray-100 cursor-not-allowed opacity-60'
                         }`}
                       >
-                        <div className={`flex items-center justify-center w-10 h-10 rounded-full font-bold text-base transition-all duration-300 ${
+                        <div className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full font-bold text-sm sm:text-base transition-all duration-300 ${
                           isActive
                             ? 'bg-white text-[#663399] shadow-md'
                             : isCompleted
@@ -258,10 +258,10 @@ export default function PersonalizzaPage() {
                           )}
                         </div>
                         <div className="flex-1">
-                          <div className="text-xs font-semibold uppercase tracking-wider opacity-70 mb-1">
+                          <div className="hidden sm:block text-xs font-semibold uppercase tracking-wider opacity-70 mb-1">
                             Passo {step}
                           </div>
-                          <div className="text-sm font-semibold">
+                          <div className="text-xs sm:text-sm font-semibold">
                             {stepLabels[step - 1]}
                           </div>
                         </div>
@@ -280,8 +280,8 @@ export default function PersonalizzaPage() {
 
           {/* Contenuto principale elegante */}
           <main className="flex-1 min-w-0">
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-              <div className="p-8 md:p-12">
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+              <div className="p-4 sm:p-8 md:p-12">
                 {/* Step 1-3: Auto-avanzamento al click della selezione */}
                 {currentStep === 1 && (
                   <PersonalizzaStep1

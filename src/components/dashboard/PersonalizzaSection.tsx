@@ -244,8 +244,7 @@ export default function PersonalizzaSection() {
                   <label className="block text-sm font-medium text-gray-700">Immagine</label>
                   <ImageUploadField
                     value={wizardData.image_url}
-                    onChange={(url) => setWizardData({ ...wizardData, image_url: url || '' })}
-                    folder="personalizza/categories"
+                    onChange={(url) => setWizardData({ ...wizardData, image_url: (url as string) || '' })}
                   />
                 </div>
               )}

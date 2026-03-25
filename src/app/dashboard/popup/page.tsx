@@ -294,21 +294,21 @@ export default function PopupDashboardPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-site flex items-center justify-center px-4">
+      <div className="min-h-screen bg-site flex items-center justify-center px-3 sm:px-4">
         <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
-          <h1 className="text-3xl font-serif text-gray-900 mb-2 text-center">Dashboard UNIKA</h1>
-          <p className="text-gray-600 text-center mb-8">Inserisci la password per accedere</p>
+          <h1 className="text-2xl sm:text-3xl font-serif text-gray-900 mb-2 text-center">Dashboard UNIKA</h1>
+          <p className="text-sm sm:text-base text-gray-600 text-center mb-6 sm:mb-8">Inserisci la password per accedere</p>
           <form onSubmit={handleLogin} className="space-y-4">
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#663399]"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#663399]"
               placeholder="Password"
               required
             />
             {error && <div className="text-sm text-red-600">{error}</div>}
-            <button className="w-full bg-[#663399] text-white py-2 px-4 rounded-lg hover:bg-[#552288] transition-colors font-medium">
+            <button className="w-full bg-[#663399] text-white py-2.5 px-4 rounded-lg hover:bg-[#552288] transition-colors font-medium">
               Accedi
             </button>
           </form>
@@ -319,13 +319,13 @@ export default function PopupDashboardPage() {
 
   return (
     <DashboardLayout onLogout={handleLogout}>
-      <div className="space-y-8">
-        <div className="border-b border-gray-200 pb-6">
-          <h1 className="text-4xl font-serif text-gray-900 mb-2">Pop Up</h1>
-          <p className="text-gray-600">Crea e gestisci popup del sito.</p>
+      <div className="space-y-5 sm:space-y-8 lg:space-y-10">
+        <div className="border-b border-gray-200 pb-4 sm:pb-6 lg:pb-7">
+          <h1 className="text-2xl sm:text-4xl font-serif text-gray-900 mb-1.5 sm:mb-2">Pop Up</h1>
+          <p className="text-sm sm:text-base text-gray-600">Crea e gestisci popup del sito.</p>
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex justify-stretch sm:justify-end">
           <button
             onClick={() => {
               setShowForm(true)
@@ -333,14 +333,14 @@ export default function PopupDashboardPage() {
               setShowImageEditor(false)
               setFormData(EMPTY_FORM)
             }}
-            className="px-4 py-2 bg-[#663399] text-white rounded-lg hover:bg-[#552288] transition-colors"
+            className="w-full sm:w-auto px-4 py-2.5 bg-[#663399] text-white rounded-lg hover:bg-[#552288] transition-colors"
           >
             + Nuova Pop Up
           </button>
         </div>
 
         {showForm && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 space-y-4">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8 space-y-4">
             <h2 className="text-xl font-semibold text-gray-900">{editingPopup ? 'Modifica Pop Up' : 'Nuova Pop Up'}</h2>
             <input
               value={formData.title}
@@ -487,7 +487,7 @@ export default function PopupDashboardPage() {
                 })}
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <label className="flex items-center gap-2 text-sm text-gray-700">
                 <input
                   type="checkbox"
@@ -504,11 +504,11 @@ export default function PopupDashboardPage() {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg"
               />
             </div>
-            <div className="flex gap-3 pt-2">
-              <button onClick={handleSave} className="px-5 py-2 bg-[#663399] text-white rounded-lg hover:bg-[#552288] transition-colors">
+            <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 pt-2">
+              <button onClick={handleSave} className="w-full sm:w-auto px-5 py-2.5 bg-[#663399] text-white rounded-lg hover:bg-[#552288] transition-colors">
                 {editingPopup ? 'Aggiorna' : 'Pubblica'}
               </button>
-              <button onClick={resetForm} className="px-5 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
+              <button onClick={resetForm} className="w-full sm:w-auto px-5 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
                 Annulla
               </button>
             </div>
@@ -522,7 +522,7 @@ export default function PopupDashboardPage() {
             </div>
           ) : (
             popups.map((popup) => (
-              <div key={popup.id} className="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 hover:shadow-md transition-shadow">
+              <div key={popup.id} className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-5 hover:shadow-md transition-shadow">
                 <div className="flex flex-col lg:flex-row lg:items-start gap-4">
                   <div className="flex gap-4 flex-1">
                     <div className="w-24 h-24 rounded-xl overflow-hidden bg-gray-100 shrink-0 border border-gray-200">
@@ -568,7 +568,7 @@ export default function PopupDashboardPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 lg:pt-1">
+                  <div className="flex flex-wrap items-center gap-2 lg:pt-1">
                     <button
                       onClick={() => setPreviewPopup(popup)}
                       className="px-3 py-1 bg-emerald-600 text-white rounded text-sm hover:bg-emerald-700"

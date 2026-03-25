@@ -62,13 +62,13 @@ export default function DashboardPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-site flex items-center justify-center px-4">
+      <div className="min-h-screen bg-site flex items-center justify-center px-3 sm:px-4">
         <div className="w-full max-w-md">
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            <h1 className="text-3xl font-serif text-gray-900 mb-2 text-center">
+          <div className="bg-white rounded-lg shadow-lg p-5 sm:p-8">
+            <h1 className="text-2xl sm:text-3xl font-serif text-gray-900 mb-2 text-center">
               Dashboard UNIKA
             </h1>
-            <p className="text-gray-600 text-center mb-8">
+            <p className="text-sm sm:text-base text-gray-600 text-center mb-6 sm:mb-8">
               Inserisci la password per accedere
             </p>
             
@@ -82,7 +82,7 @@ export default function DashboardPage() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#663399] focus:border-transparent"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#663399] focus:border-transparent"
                   placeholder="Password"
                   required
                 />
@@ -96,7 +96,7 @@ export default function DashboardPage() {
 
               <button
                 type="submit"
-                className="w-full bg-[#663399] text-white py-2 px-4 rounded-lg hover:bg-[#552288] transition-colors font-medium"
+                className="w-full bg-[#663399] text-white py-2.5 px-4 rounded-lg hover:bg-[#552288] transition-colors font-medium"
               >
                 Accedi
               </button>
@@ -190,20 +190,20 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout onLogout={handleLogout}>
-      <div className="space-y-10">
+      <div className="space-y-6 sm:space-y-10 lg:space-y-12">
         {/* Header */}
         <div className="relative">
           <div className="absolute inset-0 bg-gradient-to-r from-[#663399]/5 via-transparent to-[#c45824]/5 rounded-2xl" />
-          <div className="relative bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-100 shadow-sm p-8">
+          <div className="relative bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-8 lg:p-10">
             <div className="flex items-center gap-4 mb-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-[#663399] to-[#c45824] rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white text-2xl font-serif font-bold">U</span>
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-[#663399] to-[#c45824] rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-white text-xl sm:text-2xl font-serif font-bold">U</span>
               </div>
               <div>
-                <h1 className="text-4xl font-serif text-gray-900">
+                <h1 className="text-2xl sm:text-4xl font-serif text-gray-900">
                   Dashboard UNIKA
                 </h1>
-                <p className="text-gray-500 mt-1">
+                <p className="text-sm sm:text-base text-gray-500 mt-1">
                   Benvenuto nel pannello di controllo
                 </p>
               </div>
@@ -213,13 +213,13 @@ export default function DashboardPage() {
 
         {/* Sezione principale */}
         <div>
-          <h2 className="text-lg font-semibold text-gray-700 mb-6 flex items-center gap-2">
+          <h2 className="text-base sm:text-lg font-semibold text-gray-700 mb-4 sm:mb-6 lg:mb-8 flex items-center gap-2">
             <span className="w-2 h-2 bg-[#663399] rounded-full"></span>
             Seleziona una sezione
           </h2>
 
           {/* Menu Sezioni - Grid 2x3 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-6 lg:gap-7">
             {menuItems.map((item, index) => (
               <Link
                 key={item.href}
@@ -229,16 +229,16 @@ export default function DashboardPage() {
                 {/* Gradient bar top */}
                 <div className={`h-1.5 w-full bg-gradient-to-r ${item.gradient}`} />
                 
-                <div className="p-6">
+                <div className="p-4 sm:p-6 lg:p-7">
                   {/* Icon */}
-                  <div className={`w-14 h-14 ${item.bgLight} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                  <div className={`w-12 h-12 sm:w-14 sm:h-14 ${item.bgLight} rounded-xl flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300`}>
                     <div className={item.iconColor}>
                       {item.icon}
                     </div>
                   </div>
 
                   {/* Content */}
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2 group-hover:text-[#663399] transition-colors">
+                  <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 group-hover:text-[#663399] transition-colors">
                     {item.title}
                   </h3>
                   <p className="text-gray-500 text-sm leading-relaxed">
@@ -262,7 +262,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Quick Stats (opzionale) */}
-        <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6">
+        <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-4 sm:p-6 lg:p-8">
           <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Accesso Rapido</h3>
           <div className="flex flex-wrap gap-3">
             <Link href="/dashboard/magazzino" className="px-4 py-2 bg-white rounded-full text-sm font-medium text-gray-700 hover:bg-[#663399] hover:text-white transition-colors shadow-sm">

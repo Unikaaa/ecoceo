@@ -122,52 +122,53 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[90]">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
         onClick={handleClose}
         aria-hidden="true"
         style={{ animation: 'fadeIn 0.3s ease-out' }}
       />
 
       {/* Modal */}
-      <div 
-        className="relative bg-white rounded-artistic shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
-        style={{ animation: 'slideUp 0.3s ease-out' }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-10">
-          <h2 className="text-3xl font-serif text-gray-900">Contattaci</h2>
-          <button
-            onClick={handleClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-100 rounded-full"
-            aria-label="Chiudi"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+      <div className="relative min-h-dvh w-full flex items-center justify-center px-3 py-4 sm:px-4 sm:py-8">
+        <div
+          className="relative bg-white rounded-artistic shadow-2xl w-full max-w-2xl max-h-[88vh] overflow-y-auto"
+          style={{ animation: 'slideUp 0.3s ease-out' }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div className="sticky top-0 bg-white border-b border-gray-200 px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between z-10">
+            <h2 className="text-2xl sm:text-3xl font-serif text-gray-900">Contattaci</h2>
+            <button
+              onClick={handleClose}
+              className="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-100 rounded-full"
+              aria-label="Chiudi"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </div>
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
 
-        {/* Content */}
-        <div className="p-6 md:p-8">
-          <p className="text-gray-700 mb-6">
-            Compila il form qui sotto e ti risponderemo il prima possibile.
-          </p>
+          {/* Content */}
+          <div className="p-4 sm:p-6 md:p-8">
+            <p className="text-sm sm:text-base text-gray-700 mb-4 sm:mb-6">
+              Compila il form qui sotto e ti risponderemo il prima possibile.
+            </p>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
             {/* Nome */}
             <Input
               type="text"
@@ -231,13 +232,13 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
             )}
 
             {/* Submit Button */}
-            <div className="pt-4 flex gap-3">
+            <div className="pt-2 sm:pt-4 flex flex-col sm:flex-row gap-2.5 sm:gap-3">
               <Button
                 type="submit"
                 size="lg"
                 variant="primary"
                 disabled={isSubmitting}
-                className="flex-1 md:flex-none min-w-[180px] text-lg px-8 py-4"
+                className="w-full sm:flex-1 md:flex-none min-w-[180px] text-sm sm:text-lg px-6 sm:px-8"
               >
                 {isSubmitting ? 'Invio in corso...' : 'Contattaci'}
               </Button>
@@ -246,12 +247,13 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                 size="lg"
                 variant="outline"
                 onClick={handleClose}
-                className="px-6 py-4"
+                className="w-full sm:w-auto px-6"
               >
                 Annulla
               </Button>
             </div>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
     </div>

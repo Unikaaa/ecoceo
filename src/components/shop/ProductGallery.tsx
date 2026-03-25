@@ -13,7 +13,7 @@ export default function ProductGallery({ images, productName }: ProductGalleryPr
   const displayImages = images.length > 0 ? images : ['/placeholder-product.jpg']
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Main Image */}
       <div className="aspect-square bg-gradient-to-br from-ceramic-beige to-ceramic-sand rounded-artistic overflow-hidden relative">
         {displayImages[selectedImage] && displayImages[selectedImage] !== '/placeholder-product.jpg' ? (
@@ -34,7 +34,7 @@ export default function ProductGallery({ images, productName }: ProductGalleryPr
 
       {/* Thumbnails */}
       {displayImages.length > 1 && (
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-4 gap-2.5 sm:gap-4">
           {displayImages.map((image, index) => (
             <button
               key={index}
