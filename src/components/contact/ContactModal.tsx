@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import ErrorMessage from '@/components/ui/ErrorMessage'
@@ -11,6 +12,7 @@ interface ContactModalProps {
 }
 
 export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
+  const [mounted, setMounted] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -30,6 +32,10 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
   }, [isOpen, submitStatus])
 
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -97,13 +103,44 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
   }
 
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = 'unset'
+    // Lock scroll senza "saltare" (no shift) e senza scroll interno.
+    if (typeof window === 'undefined') return
+    const body = document.body
+    const html = document.documentElement
+
+    if (!isOpen) return
+
+    const scrollY = window.scrollY || 0
+    const prevBody = {
+      position: body.style.position,
+      top: body.style.top,
+      left: body.style.left,
+      right: body.style.right,
+      width: body.style.width,
+      overflow: body.style.overflow,
     }
+    const prevHtmlOverflow = html.style.overflow
+
+    body.style.position = 'fixed'
+    body.style.top = `-${scrollY}px`
+    body.style.left = '0'
+    body.style.right = '0'
+    body.style.width = '100%'
+    body.style.overflow = 'hidden'
+    html.style.overflow = 'hidden'
+
     return () => {
-      document.body.style.overflow = 'unset'
+      const top = body.style.top
+      body.style.position = prevBody.position
+      body.style.top = prevBody.top
+      body.style.left = prevBody.left
+      body.style.right = prevBody.right
+      body.style.width = prevBody.width
+      body.style.overflow = prevBody.overflow
+      html.style.overflow = prevHtmlOverflow
+
+      const y = top ? Math.abs(parseInt(top, 10)) : scrollY
+      window.scrollTo(0, y || 0)
     }
   }, [isOpen])
 
@@ -119,28 +156,31 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
     return () => document.removeEventListener('keydown', handleEscape)
   }, [isOpen])
 
-  if (!isOpen) return null
+  if (!mounted || !isOpen) return null
 
-  return (
-    <div className="fixed inset-0 z-[90]">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] overflow-hidden">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
+        className="absolute inset-0 bg-black/55 backdrop-blur-sm transition-opacity duration-300"
         onClick={handleClose}
         aria-hidden="true"
         style={{ animation: 'fadeIn 0.3s ease-out' }}
       />
 
       {/* Modal */}
-      <div className="relative min-h-dvh w-full flex items-center justify-center px-3 py-4 sm:px-4 sm:py-8">
+      <div className="relative h-[100dvh] w-full flex items-center justify-center px-3 py-4">
         <div
-          className="relative bg-white rounded-artistic shadow-2xl w-full max-w-2xl max-h-[88vh] overflow-y-auto"
+          className="relative w-full max-w-[40rem] overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5"
           style={{ animation: 'slideUp 0.3s ease-out' }}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="sticky top-0 bg-white border-b border-gray-200 px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between z-10">
-            <h2 className="text-2xl sm:text-3xl font-serif text-gray-900">Contattaci</h2>
+          <div className="border-b border-gray-200 bg-gradient-to-b from-gray-50 to-white px-4 py-3.5 sm:px-5 flex items-center justify-between">
+            <div className="min-w-0">
+              <h2 className="text-lg sm:text-xl font-serif text-gray-900 leading-tight">Contattaci</h2>
+              <p className="text-xs sm:text-sm text-gray-600 mt-0.5">Scrivici e ti rispondiamo al più presto.</p>
+            </div>
             <button
               onClick={handleClose}
               className="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-100 rounded-full"
@@ -163,12 +203,9 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
           </div>
 
           {/* Content */}
-          <div className="p-4 sm:p-6 md:p-8">
-            <p className="text-sm sm:text-base text-gray-700 mb-4 sm:mb-6">
-              Compila il form qui sotto e ti risponderemo il prima possibile.
-            </p>
+          <div className="p-4 sm:p-5 overflow-hidden">
 
-            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-3.5">
             {/* Nome */}
             <Input
               type="text"
@@ -209,11 +246,11 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
               </label>
               <textarea
                 name="message"
-                rows={5}
+                rows={6}
                 value={formData.message}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-artistic focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none transition-all"
+                className="w-full px-3.5 py-3 border border-gray-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none transition-all text-sm sm:text-base min-h-[160px]"
                 placeholder="Scrivi qui il tuo messaggio..."
               />
             </div>
@@ -232,22 +269,22 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
             )}
 
             {/* Submit Button */}
-            <div className="pt-2 sm:pt-4 flex flex-col sm:flex-row gap-2.5 sm:gap-3">
+            <div className="pt-1.5 flex gap-2.5">
               <Button
                 type="submit"
                 size="lg"
                 variant="primary"
                 disabled={isSubmitting}
-                className="w-full sm:flex-1 md:flex-none min-w-[180px] text-sm sm:text-lg px-6 sm:px-8"
+                className="flex-1 min-w-0 text-sm sm:text-base px-4"
               >
-                {isSubmitting ? 'Invio in corso...' : 'Contattaci'}
+                {isSubmitting ? 'Invio in corso...' : 'Invia'}
               </Button>
               <Button
                 type="button"
                 size="lg"
                 variant="outline"
                 onClick={handleClose}
-                className="w-full sm:w-auto px-6"
+                className="flex-1 min-w-0 text-sm sm:text-base px-4"
               >
                 Annulla
               </Button>
@@ -257,5 +294,5 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
         </div>
       </div>
     </div>
-  )
+  , document.body)
 }

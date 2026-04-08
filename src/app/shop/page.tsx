@@ -138,7 +138,7 @@ function ShopPageInner() {
               {/* Pills Collezioni */}
               <button
                 onClick={() => router.push('/shop')}
-                className={`group relative flex items-center gap-1.5 px-3.5 py-2 rounded-full transition-all duration-300 ease-out whitespace-nowrap ${
+                className={`group relative flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all duration-300 ease-out whitespace-nowrap ${
                   !collectionSlug
                     ? 'bg-[#6D4C97]/8 border border-[#6D4C97] text-[#6D4C97] shadow-sm'
                     : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
@@ -228,7 +228,7 @@ function ShopPageInner() {
                   <button
                     key={collection.id}
                     onClick={() => handleCollectionClick(collection.slug)}
-                    className={`group relative flex items-center gap-1.5 px-3.5 py-2 rounded-full transition-all duration-300 ease-out whitespace-nowrap ${
+                    className={`group relative flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all duration-300 ease-out whitespace-nowrap ${
                       isActive
                         ? 'bg-[#6D4C97]/8 border border-[#6D4C97] text-[#6D4C97] shadow-sm'
                         : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'

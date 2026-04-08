@@ -130,19 +130,19 @@ export default function PersonalizzaStep5({
 
       {/* Canvas + colonna modifiche a destra */}
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_340px] gap-6 items-start">
-          <div className="w-full bg-white border border-gray-200 rounded-3xl p-4 md:p-6 shadow-sm">
-            <CanvasEditor
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_340px] gap-4 sm:gap-6 items-start">
+          <div className="w-full bg-white border border-gray-200 rounded-3xl p-3.5 sm:p-4 md:p-6 shadow-sm">
+        <CanvasEditor
               ref={editorRef}
-              state={state}
-              onUpdate={handleCanvasUpdate}
+          state={state}
+          onUpdate={handleCanvasUpdate}
               canvasShape={state.ceramicShape}
               bgColor={bgColor}
               onSelectionChange={handleSelectionChange}
             />
           </div>
 
-          <div className="w-full lg:w-[340px] lg:min-h-[620px] lg:sticky lg:top-24">
+          <div className="w-full lg:w-[340px] lg:min-h-[620px] lg:sticky lg:top-24 order-2 lg:order-none">
             {selection.type !== 'none' ? (
               <aside className="rounded-3xl border border-[#663399]/15 bg-white shadow-[0_10px_40px_rgba(17,24,39,0.08)] overflow-hidden animate-[fadeIn_.2s_ease-out]">
                 <div className="px-5 py-4 bg-gradient-to-r from-[#663399]/10 via-[#7d48b6]/10 to-[#a06cd5]/10 border-b border-[#663399]/15">
@@ -438,8 +438,8 @@ export default function PersonalizzaStep5({
         </div>
       </div>
 
-      {/* Foto caricate — grandi e cliccabili */}
-      <div className="mt-6 bg-gray-50 rounded-2xl border border-gray-200 p-5 max-w-7xl mx-auto">
+      {/* Foto caricate — mobile più compatto */}
+      <div className="mt-4 sm:mt-6 bg-gray-50 rounded-2xl border border-gray-200 p-4 sm:p-5 max-w-7xl mx-auto">
           <div className="flex items-center justify-between gap-3 mb-3">
             <h4 className="text-base font-semibold text-gray-800">
               📷 Le tue foto
@@ -461,12 +461,12 @@ export default function PersonalizzaStep5({
             className="hidden"
           />
           {state.userImages.length > 0 ? (
-            <div className="flex gap-4 overflow-x-auto pb-2">
+            <div className="flex gap-3 overflow-x-auto pb-2">
               {state.userImages.map((img) => (
                 <button
                   key={img.id}
                   onClick={() => (editorRef.current as any)?.addImage?.(img.url)}
-                  className="flex-shrink-0 w-24 h-24 rounded-xl overflow-hidden border-3 border-gray-200 hover:border-[#663399] transition-all hover:scale-105 hover:shadow-lg active:scale-95"
+                  className="flex-shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden border-3 border-gray-200 hover:border-[#663399] transition-all hover:scale-105 hover:shadow-lg active:scale-95"
                 >
                   <img src={img.url} alt="Foto" className="w-full h-full object-cover" />
                 </button>
@@ -479,40 +479,40 @@ export default function PersonalizzaStep5({
           )}
         </div>
 
-      {/* Azioni — bottoni GRANDI e CHIARI */}
-      <div className="mt-6 max-w-7xl mx-auto bg-white border border-gray-200 rounded-2xl p-5">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      {/* Azioni — mobile più ordinato/compatto */}
+      <div className="mt-4 sm:mt-6 max-w-7xl mx-auto bg-white border border-gray-200 rounded-2xl p-4 sm:p-5">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
           {/* Aggiungi testo */}
           <button
             onClick={() => (editorRef.current as any)?.addText?.('Testo')}
-            className="flex flex-col items-center gap-2 p-4 bg-white border-2 border-gray-200 rounded-2xl hover:border-[#663399] hover:bg-[#663399]/5 transition-all active:scale-95"
+            className="flex flex-col items-center gap-1.5 p-3.5 sm:p-4 bg-white border-2 border-gray-200 rounded-2xl hover:border-[#663399] hover:bg-[#663399]/5 transition-all active:scale-95"
           >
-            <svg className="w-7 h-7 text-[#663399]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 sm:w-7 sm:h-7 text-[#663399]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
             </svg>
-            <span className="text-sm font-medium text-gray-700">Aggiungi testo</span>
+            <span className="text-[13px] sm:text-sm font-medium text-gray-700">Testo</span>
           </button>
 
           {/* Elimina selezionato */}
           <button
             onClick={() => (editorRef.current as any)?.deleteSelected?.()}
-            className="flex flex-col items-center gap-2 p-4 bg-white border-2 border-gray-200 rounded-2xl hover:border-red-400 hover:bg-red-50 transition-all active:scale-95"
+            className="flex flex-col items-center gap-1.5 p-3.5 sm:p-4 bg-white border-2 border-gray-200 rounded-2xl hover:border-red-400 hover:bg-red-50 transition-all active:scale-95"
           >
-            <svg className="w-7 h-7 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 sm:w-7 sm:h-7 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
             </svg>
-            <span className="text-sm font-medium text-gray-700">Elimina</span>
+            <span className="text-[13px] sm:text-sm font-medium text-gray-700">Elimina</span>
           </button>
 
           {/* Annulla */}
           <button
             onClick={() => (editorRef.current as any)?.undo?.()}
-            className="flex flex-col items-center gap-2 p-4 bg-white border-2 border-gray-200 rounded-2xl hover:border-gray-400 hover:bg-gray-50 transition-all active:scale-95"
+            className="flex flex-col items-center gap-1.5 p-3.5 sm:p-4 bg-white border-2 border-gray-200 rounded-2xl hover:border-gray-400 hover:bg-gray-50 transition-all active:scale-95"
           >
-            <svg className="w-7 h-7 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 sm:w-7 sm:h-7 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a5 5 0 015 5v2M3 10l4-4m-4 4l4 4" />
             </svg>
-            <span className="text-sm font-medium text-gray-700">Annulla</span>
+            <span className="text-[13px] sm:text-sm font-medium text-gray-700">Annulla</span>
           </button>
 
           {/* Scarica bozza */}

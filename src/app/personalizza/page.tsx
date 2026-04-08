@@ -170,6 +170,17 @@ export default function PersonalizzaPage() {
     'Checkout',
   ]
 
+  const mobileStepperRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    // Mantieni lo step attivo centrato (o quasi) nello stepper mobile
+    const container = mobileStepperRef.current
+    if (!container) return
+    const active = container.querySelector<HTMLButtonElement>(`button[data-step="${currentStep}"]`)
+    if (!active) return
+    active.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
+  }, [currentStep])
+
   return (
     <div className="min-h-screen bg-site relative overflow-hidden">
       {/* Elementi decorativi di sfondo */}
@@ -181,7 +192,7 @@ export default function PersonalizzaPage() {
 
       <div className="relative z-10">
       {/* Header stile Chi Siamo */}
-      <section className="relative py-12 sm:py-24 md:py-32 bg-gradient-to-br from-ceramic-beige via-ceramic-white to-ceramic-sand overflow-hidden">
+      <section className="relative py-10 sm:py-24 md:py-32 bg-gradient-to-br from-ceramic-beige via-ceramic-white to-ceramic-sand overflow-hidden">
         {/* Pattern decorativo cerchi */}
         <div className="absolute inset-0 opacity-10 hidden sm:block">
           <div className="absolute top-20 left-20 w-32 h-32 border-2 border-[#663399] rounded-full" />
@@ -192,7 +203,7 @@ export default function PersonalizzaPage() {
 
         <div className="container mx-auto px-3 sm:px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-3xl sm:text-5xl md:text-7xl font-serif font-bold mb-4 sm:mb-6 leading-tight">
+            <h1 className="text-2xl sm:text-5xl md:text-7xl font-serif font-bold mb-3 sm:mb-6 leading-tight">
               <span className="bg-gradient-to-r from-[#663399] via-[#552288] to-[#663399] bg-clip-text text-transparent">
                 Crea la tua ceramica personalizzata
               </span>
@@ -205,10 +216,61 @@ export default function PersonalizzaPage() {
       </section>
 
       {/* Layout Step-by-Step con sidebar elegante */}
-      <div className="container mx-auto px-3 sm:px-4 py-8 sm:py-16">
+      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-16">
         <div className="flex flex-col lg:flex-row gap-5 sm:gap-12">
+          {/* Stepper compatto mobile (secondario) */}
+          <div className="lg:hidden -mx-3 px-3">
+            <div className="rounded-2xl border border-gray-200 bg-white/80 backdrop-blur-sm shadow-sm px-3 py-2">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-[11px] font-semibold text-gray-700">Passaggi</p>
+                <p className="text-[11px] text-gray-500">
+                  {currentStep}/6
+                </p>
+              </div>
+              <div ref={mobileStepperRef} className="mt-2 flex gap-1.5 overflow-x-auto scrollbar-hide pb-1">
+                {[1, 2, 3, 4, 5, 6].map((step) => {
+                  const maxStep = getMaxReachableStep()
+                  const isReachable = step <= maxStep
+                  const isCompleted = step < currentStep
+                  const isActive = step === currentStep
+                  return (
+                    <button
+                      key={step}
+                      data-step={step}
+                      type="button"
+                      onClick={() => goToStep(step)}
+                      disabled={!isReachable}
+                      className={`flex-shrink-0 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-colors ${
+                        isActive
+                          ? 'border-[#663399] bg-[#663399]/10 text-[#663399]'
+                          : isCompleted
+                          ? 'border-green-200 bg-green-50 text-green-700'
+                          : isReachable
+                          ? 'border-gray-200 bg-white text-gray-700'
+                          : 'border-gray-100 bg-gray-50 text-gray-400'
+                      }`}
+                    >
+                      <span
+                        className={`inline-flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold ${
+                          isActive
+                            ? 'bg-[#663399] text-white'
+                            : isCompleted
+                            ? 'bg-green-500 text-white'
+                            : 'bg-gray-200 text-gray-700'
+                        }`}
+                      >
+                        {step}
+                      </span>
+                      <span className="whitespace-nowrap">{stepLabels[step - 1]}</span>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+
           {/* Sidebar elegante con numeri step */}
-          <aside className="lg:w-80 flex-shrink-0">
+          <aside className="hidden lg:block lg:w-80 flex-shrink-0">
             <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 sm:p-8 lg:sticky lg:top-8">
               <h2 className="text-base sm:text-xl font-serif font-bold text-gray-900 mb-4 sm:mb-8 pb-2 sm:pb-4 border-b border-gray-200">
                 I Tuoi Passaggi

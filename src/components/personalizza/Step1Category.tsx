@@ -74,19 +74,19 @@ export default function PersonalizzaStep1({
   return (
     <div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
         {categories.map((category) => (
           <button
             key={category.id}
             onClick={() => handleSelectCategory(category.id)}
-            className={`group relative p-8 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border-2 ${
+            className={`group relative p-3.5 sm:p-8 bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border-2 ${
               state.categoryId === category.id
                 ? 'border-[#663399] scale-105'
                 : 'border-transparent hover:border-[#663399]/30'
             }`}
           >
             {category.image_url ? (
-              <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden">
+              <div className="relative w-full h-28 sm:h-48 mb-3 sm:mb-4 rounded-xl overflow-hidden">
                 <Image
                   src={category.image_url}
                   alt={category.name}
@@ -95,18 +95,18 @@ export default function PersonalizzaStep1({
                 />
               </div>
             ) : (
-              <div className="w-full h-48 mb-4 rounded-xl bg-gradient-to-br from-[#663399] to-[#552288] flex items-center justify-center">
-                <span className="text-6xl text-white opacity-50">
+              <div className="w-full h-28 sm:h-48 mb-3 sm:mb-4 rounded-xl bg-gradient-to-br from-[#663399] to-[#552288] flex items-center justify-center">
+                <span className="text-3xl sm:text-6xl text-white opacity-50">
                   {category.name.charAt(0).toUpperCase()}
                 </span>
               </div>
             )}
 
-            <h3 className="text-2xl font-serif font-bold text-gray-900 mb-2">
+            <h3 className="text-base sm:text-2xl font-serif font-bold text-gray-900 mb-1.5 sm:mb-2 leading-tight">
               {category.name}
             </h3>
             {category.description && (
-              <p className="text-gray-600 text-sm">{category.description}</p>
+              <p className="text-gray-600 text-xs sm:text-sm line-clamp-2">{category.description}</p>
             )}
 
             {state.categoryId === category.id && (
@@ -132,7 +132,7 @@ export default function PersonalizzaStep1({
 
       {/* Indicazione selezione */}
       {!state.categoryId && (
-        <p className="text-center text-gray-500 mt-8 pt-6 border-t border-gray-200 text-sm">
+        <p className="text-center text-gray-500 mt-6 pt-5 border-t border-gray-200 text-sm">
           Seleziona una categoria per continuare
         </p>
       )}

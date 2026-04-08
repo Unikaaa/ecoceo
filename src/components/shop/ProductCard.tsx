@@ -48,7 +48,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         : ''
     }`}>
       <Link href={product.inStock ? `/shop/${product.slug}` : '#'} onClick={handleCardClick}>
-        <div className="aspect-[4/5] bg-gradient-to-br from-ceramic-beige via-ceramic-white to-ceramic-sand relative overflow-hidden">
+        <div className="aspect-[1/1] sm:aspect-[4/5] bg-gradient-to-br from-ceramic-beige via-ceramic-white to-ceramic-sand relative overflow-hidden">
           {product.images && product.images[0] && product.images[0] !== '/placeholder-product.jpg' ? (
             <Image
               src={product.images[0]}

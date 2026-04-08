@@ -10,7 +10,7 @@ export default function CTA() {
 
   return (
     <>
-      <section className="py-9 sm:py-12 md:py-20 lg:py-24 bg-gradient-to-br from-ceramic-beige via-ceramic-white to-ceramic-sand text-gray-900">
+      <section className="py-7 sm:py-12 md:py-20 lg:py-24 bg-gradient-to-br from-ceramic-beige via-ceramic-white to-ceramic-sand text-gray-900">
         <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 text-center">
           <h2 className="text-xl sm:text-2xl md:text-5xl font-serif mb-3 sm:mb-5 md:mb-6 lg:mb-7 text-gray-900">
             Inizia il Tuo Viaggio nell'Arte

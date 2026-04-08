@@ -62,7 +62,7 @@ export default function PersonalizzaStep6({
   return (
     <div>
 
-      <div className="bg-white rounded-lg shadow-xl p-8">
+      <div className="bg-white rounded-lg shadow-xl p-4 sm:p-8">
         {/* Riepilogo configurazione */}
         <div className="mb-8">
           <h3 className="text-2xl font-semibold mb-4">Riepilogo configurazione</h3>
@@ -86,12 +86,12 @@ export default function PersonalizzaStep6({
         </div>
 
         {/* Bottoni Navigazione */}
-        <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mt-6 sm:mt-8 pt-5 sm:pt-6 border-t border-gray-200">
           <Button
             onClick={onPrev}
             variant="outline"
             disabled={isProcessing}
-            className="px-6 py-3"
+            className="w-full sm:w-auto px-6"
           >
             ← Indietro
           </Button>
@@ -99,7 +99,7 @@ export default function PersonalizzaStep6({
             variant="primary"
             onClick={handleCheckout}
             disabled={isProcessing}
-            className="px-8 py-3"
+            className="w-full sm:w-auto px-8"
           >
             {isProcessing ? 'Elaborazione...' : 'Procedi al pagamento'}
           </Button>

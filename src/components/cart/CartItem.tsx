@@ -24,6 +24,9 @@ export default function CartItem({ item }: CartItemProps) {
     }
   }
 
+  const canIncrement =
+    typeof item.maxQuantity === 'number' ? item.quantity < item.maxQuantity : true
+
   return (
     <div className="flex flex-col sm:flex-row gap-4 py-5 sm:py-6 border-b border-gray-200">
       <Link href={`/shop/${item.slug}`} className="flex-shrink-0">
@@ -66,6 +69,7 @@ export default function CartItem({ item }: CartItemProps) {
             </span>
             <button
               onClick={() => handleQuantityChange(item.quantity + 1)}
+              disabled={!canIncrement}
               className="px-3 py-2.5 min-h-[44px] hover:bg-gray-100 transition text-sm font-semibold"
             >
               +
@@ -75,6 +79,7 @@ export default function CartItem({ item }: CartItemProps) {
           <input
             type="number"
             min={1}
+            max={typeof item.maxQuantity === 'number' ? item.maxQuantity : undefined}
             value={item.quantity}
             onChange={(e) => handleQuantityChange(Number(e.target.value) || 1)}
             className="w-24 px-3 py-2.5 min-h-[44px] border border-gray-300 rounded-xl text-sm"

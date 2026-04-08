@@ -107,7 +107,7 @@ export default function CategoryPage({ params }: PageProps) {
                   }`}
                   style={{ width: cardWidth, minWidth: cardWidth, height: 'auto' }}
                 >
-                  <div className="h-[62px] bg-gradient-to-br from-ceramic-beige via-ceramic-white to-ceramic-sand flex items-center justify-center relative overflow-hidden">
+                  <div className="h-[56px] sm:h-[62px] bg-gradient-to-br from-ceramic-beige via-ceramic-white to-ceramic-sand flex items-center justify-center relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     <span className="text-gray-400 text-[10px] relative z-10">Img</span>

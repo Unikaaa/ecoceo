@@ -25,6 +25,11 @@ export default function ProductInfo({ product, onAddToCart }: ProductInfoProps) 
     onAddToCart(product, quantity)
   }
 
+  const maxQty =
+    typeof product.maxQuantity === 'number' && Number.isFinite(product.maxQuantity)
+      ? Math.max(1, Math.floor(product.maxQuantity))
+      : undefined
+
   return (
     <div className="space-y-5">
       <div>
@@ -57,9 +62,12 @@ export default function ProductInfo({ product, onAddToCart }: ProductInfoProps) 
             <Input
               type="number"
               min="1"
-              max="10"
+              max={maxQty}
               value={quantity}
-              onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+              onChange={(e) => {
+                const n = Math.max(1, parseInt(e.target.value) || 1)
+                setQuantity(typeof maxQty === 'number' ? Math.min(n, maxQty) : n)
+              }}
               className="w-24 h-11"
             />
           </div>
@@ -68,6 +76,7 @@ export default function ProductInfo({ product, onAddToCart }: ProductInfoProps) 
             size="lg"
             onClick={handleAddToCart}
             className="w-full"
+            disabled={typeof maxQty === 'number' ? quantity > maxQty : false}
           >
             {t('addToCart')}
           </Button>

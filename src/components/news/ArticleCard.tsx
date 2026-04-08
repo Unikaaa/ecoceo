@@ -33,14 +33,14 @@ export default function ArticleCard({ article }: ArticleCardProps) {
           
           {/* Badge categoria */}
           <div className="absolute top-4 left-4 z-20">
-            <span className="px-3 py-1.5 bg-white/90 backdrop-blur-sm text-[#663399] rounded-full text-xs font-semibold shadow-lg">
+            <span className="px-2.5 py-1.5 bg-white/90 backdrop-blur-sm text-[#663399] rounded-full text-[11px] font-semibold shadow-lg">
               {article.category}
             </span>
           </div>
         </div>
 
         {/* Contenuto */}
-        <div className="p-4 sm:p-6 md:p-8">
+        <div className="p-3.5 sm:p-6 md:p-8">
           {/* Data */}
           <div className="mb-3">
             <time className="text-xs text-gray-500 font-medium uppercase tracking-wide">
@@ -49,12 +49,12 @@ export default function ArticleCard({ article }: ArticleCardProps) {
           </div>
 
           {/* Titolo */}
-          <h3 className="text-xl sm:text-2xl md:text-3xl font-serif text-gray-900 mb-3 group-hover:text-[#663399] transition-colors duration-300 leading-tight line-clamp-2">
+          <h3 className="text-lg sm:text-2xl md:text-3xl font-serif text-gray-900 mb-2.5 group-hover:text-[#663399] transition-colors duration-300 leading-tight line-clamp-2">
             {article.title}
           </h3>
 
           {/* Excerpt */}
-          <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-4 sm:mb-6 line-clamp-3">
+          <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-3.5 sm:mb-6 line-clamp-3">
             {article.excerpt}
           </p>
 

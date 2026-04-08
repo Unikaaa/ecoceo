@@ -57,7 +57,7 @@ export default function PersonalizzaStep4({
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <div>
         <h3 className="text-xl font-serif font-bold text-gray-900 mb-2">Scegli la dimensione</h3>
         <p className="text-gray-500 text-sm mb-4">
@@ -65,11 +65,11 @@ export default function PersonalizzaStep4({
         </p>
 
         {isLoading && (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
             {Array.from({ length: 6 }).map((_, index) => (
               <div
                 key={index}
-                className="p-5 rounded-2xl border-2 border-gray-200 bg-gray-50 animate-pulse h-[132px]"
+                className="p-4 sm:p-5 rounded-2xl border-2 border-gray-200 bg-gray-50 animate-pulse h-[118px] sm:h-[132px]"
               />
             ))}
           </div>
@@ -81,12 +81,12 @@ export default function PersonalizzaStep4({
           </div>
         )}
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
           {sizes.map((size) => (
             <button
               key={size.id}
               onClick={() => updateState({ sizeId: size.id })}
-              className={`relative p-5 rounded-2xl border-2 transition-all duration-200 text-left ${
+              className={`relative p-4 sm:p-5 rounded-2xl border-2 transition-all duration-200 text-left ${
                 state.sizeId === size.id
                   ? 'border-[#663399] bg-[#663399]/5 shadow-lg'
                   : 'border-gray-200 hover:border-[#663399]/40 hover:bg-gray-50'
@@ -112,11 +112,11 @@ export default function PersonalizzaStep4({
       </div>
 
       {/* Bottoni Navigazione */}
-      <div className="flex justify-between items-center pt-6 border-t border-gray-200">
+      <div className="flex justify-between items-center pt-5 border-t border-gray-200">
         <Button
           onClick={onPrev}
           variant="outline"
-          className="px-6 py-3"
+          className="px-4 sm:px-6"
         >
           ← Indietro
         </Button>
@@ -124,7 +124,7 @@ export default function PersonalizzaStep4({
           onClick={onNext}
           disabled={!state.sizeId}
           variant="primary"
-          className="px-8 py-3"
+          className="px-6 sm:px-8"
         >
           Avanti →
         </Button>

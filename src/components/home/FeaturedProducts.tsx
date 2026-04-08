@@ -31,7 +31,7 @@ export default function FeaturedProducts() {
   }, [])
 
   return (
-    <section className="py-7 md:py-20 lg:py-24 bg-site relative overflow-hidden">
+    <section className="py-6 md:py-20 lg:py-24 bg-site relative overflow-hidden">
       {/* Elementi decorativi di sfondo */}
       <div className="absolute inset-0 pointer-events-none hidden md:block">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-primary/5 via-transparent to-transparent rounded-full blur-3xl" />
@@ -40,7 +40,7 @@ export default function FeaturedProducts() {
 
       <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 relative z-10">
         {/* Titolo elegante */}
-        <div className="text-center mb-5 md:mb-14 lg:mb-16">
+        <div className="text-center mb-4 md:mb-14 lg:mb-16">
           <div className="inline-block mb-2.5 md:mb-4">
             <span className="px-3 py-1.5 bg-gradient-to-r from-primary/10 via-primary/5 to-accent/10 text-primary rounded-full text-xs sm:text-sm font-semibold border border-primary/20">
               Selezione Esclusiva
@@ -56,8 +56,8 @@ export default function FeaturedProducts() {
           </div>
         </div>
 
-        {/* Griglia elegante con 3 prodotti grandi */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 md:gap-8 lg:gap-10 xl:gap-12 max-w-7xl mx-auto">
+        {/* Griglia: su mobile più simile allo Shop (2 colonne) */}
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6 md:gap-8 lg:gap-10 xl:gap-12 max-w-7xl mx-auto">
           {isLoading && [0, 1, 2].map((idx) => (
             <div key={`skeleton-${idx}`} className="bg-white rounded-artistic overflow-hidden shadow-md animate-pulse">
               <div className="aspect-[4/5] bg-gray-200" />
@@ -81,7 +81,7 @@ export default function FeaturedProducts() {
               style={{ animationDelay: `${index * 100}ms` }}
             >
               {/* Immagine prodotto */}
-              <div className="aspect-[4/5] bg-gradient-to-br from-ceramic-beige via-ceramic-white to-ceramic-sand relative overflow-hidden">
+              <div className="aspect-[1/1] sm:aspect-[4/5] bg-gradient-to-br from-ceramic-beige via-ceramic-white to-ceramic-sand relative overflow-hidden">
                 {product.images && product.images[0] && product.images[0] !== '/placeholder-product.jpg' ? (
                   <Image
                     src={product.images[0]}
@@ -101,10 +101,10 @@ export default function FeaturedProducts() {
                 
                 {/* Badge favorito (allineato allo Shop) */}
                 {product.featured && (
-                  <div className="absolute top-4 left-4 z-20">
-                    <div className="inline-flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-amber-50/95 to-yellow-50/95 backdrop-blur-sm text-amber-900 rounded-xl shadow-lg border border-amber-200/90">
-                      <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-sm">
-                        <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <div className="absolute top-3 left-3 z-20">
+                    <div className="inline-flex items-center gap-2 px-2.5 py-1.5 bg-gradient-to-r from-amber-50/95 to-yellow-50/95 backdrop-blur-sm text-amber-900 rounded-xl shadow-lg border border-amber-200/90">
+                      <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-sm">
+                        <svg className="w-3 h-3" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.922-.755 1.688-1.539 1.118l-2.8-2.034a1 1 0 00-1.176 0l-2.8 2.034c-.783.57-1.838-.196-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81H7.03a1 1 0 00.95-.69l1.07-3.292z" />
                         </svg>
                       </span>
@@ -118,7 +118,7 @@ export default function FeaturedProducts() {
               </div>
 
               {/* Contenuto prodotto */}
-              <div className="p-4 md:p-7">
+              <div className="p-3.5 sm:p-4 md:p-7">
                 <h3 className="text-base sm:text-xl md:text-2xl font-serif text-gray-900 mb-2 group-hover:text-primary transition-colors duration-300 leading-tight">
                   {product.name}
                 </h3>

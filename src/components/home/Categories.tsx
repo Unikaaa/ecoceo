@@ -141,7 +141,7 @@ export default function Categories() {
   }
 
   return (
-    <section className="py-7 md:py-20 lg:py-24 bg-site">
+    <section className="py-6 md:py-20 lg:py-24 bg-site">
       <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
         <h2 className="text-lg sm:text-2xl md:text-4xl font-serif text-center mb-4 md:mb-14 lg:mb-16 text-gray-900">
           Le Nostre Collezioni
@@ -183,7 +183,7 @@ export default function Categories() {
                   <Link
                     key={collection.id}
                     href={`/shop?collection=${collection.slug}`}
-                    className="group relative overflow-hidden rounded-artistic bg-gray-100 aspect-[3/4] w-[62vw] sm:w-[calc(50vw-1.5rem)] lg:w-[calc(25vw-1.5rem)] min-w-[165px] max-w-[350px] transition-transform hover:scale-[1.01] md:hover:scale-105 snap-start flex-shrink-0"
+                    className="group relative overflow-hidden rounded-artistic bg-gray-100 aspect-[5/8] w-[52vw] sm:aspect-[3/4] sm:w-[calc(50vw-1.5rem)] lg:w-[calc(25vw-1.5rem)] min-w-[140px] max-w-[350px] transition-transform hover:scale-[1.01] md:hover:scale-105 snap-start flex-shrink-0"
                     onMouseEnter={() => handleMouseEnter(collection.id)}
                     onMouseLeave={() => handleMouseLeave(collection.id)}
                   >
@@ -191,8 +191,8 @@ export default function Categories() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent z-10 transition-opacity group-hover:opacity-90" />
                     
                     {/* Titolo */}
-                    <div className="absolute bottom-2.5 md:bottom-6 left-2.5 md:left-6 right-2.5 md:right-6 z-20">
-                      <h3 className="text-white text-[15px] sm:text-lg md:text-2xl font-serif leading-tight group-hover:translate-y-[-4px] transition-transform">
+                    <div className="absolute bottom-2 md:bottom-6 left-2 md:left-6 right-2 md:right-6 z-20">
+                      <h3 className="text-white text-[14px] sm:text-lg md:text-2xl font-serif leading-tight group-hover:translate-y-[-4px] transition-transform">
                         {collection.name}
                       </h3>
                     </div>

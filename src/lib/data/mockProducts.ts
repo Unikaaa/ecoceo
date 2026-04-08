@@ -7,6 +7,7 @@ export interface Product {
   images: string[]
   category: string
   inStock: boolean
+  maxQuantity?: number
   slug: string
   featured?: boolean
 }

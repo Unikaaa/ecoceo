@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { useRouter } from 'next/navigation'
-import { categories } from '@/lib/data/mockProducts'
 import { Product } from '@/lib/data/mockProducts'
 import { formatPrice } from '@/lib/utils'
 
@@ -21,8 +21,18 @@ const pages = [
   { title: 'Chi Siamo', url: '/about', description: 'La nostra storia' },
 ]
 
+function slugify(input: string): string {
+  return (input || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
+}
+
 export default function SearchBar() {
   const [isOpen, setIsOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<SearchResult[]>([])
   const [selectedIndex, setSelectedIndex] = useState(-1)
@@ -30,6 +40,10 @@ export default function SearchBar() {
   const router = useRouter()
   const inputRef = useRef<HTMLInputElement>(null)
   const resultsRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Carica prodotti all'apertura della search bar
   useEffect(() => {
@@ -49,6 +63,47 @@ export default function SearchBar() {
     }
   }, [isOpen, products.length])
 
+  // Lock scroll quando la tendina è aperta (come ContactModal)
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const body = document.body
+    const html = document.documentElement
+    if (!isOpen) return
+
+    const scrollY = window.scrollY || 0
+    const prevBody = {
+      position: body.style.position,
+      top: body.style.top,
+      left: body.style.left,
+      right: body.style.right,
+      width: body.style.width,
+      overflow: body.style.overflow,
+    }
+    const prevHtmlOverflow = html.style.overflow
+
+    body.style.position = 'fixed'
+    body.style.top = `-${scrollY}px`
+    body.style.left = '0'
+    body.style.right = '0'
+    body.style.width = '100%'
+    body.style.overflow = 'hidden'
+    html.style.overflow = 'hidden'
+
+    return () => {
+      const top = body.style.top
+      body.style.position = prevBody.position
+      body.style.top = prevBody.top
+      body.style.left = prevBody.left
+      body.style.right = prevBody.right
+      body.style.width = prevBody.width
+      body.style.overflow = prevBody.overflow
+      html.style.overflow = prevHtmlOverflow
+
+      const y = top ? Math.abs(parseInt(top, 10)) : scrollY
+      window.scrollTo(0, y || 0)
+    }
+  }, [isOpen])
+
   useEffect(() => {
     if (query.trim().length > 0) {
       const searchResults: SearchResult[] = []
@@ -66,23 +121,31 @@ export default function SearchBar() {
             title: product.name,
             description: product.description,
             price: product.price,
-            url: `/shop/category/${product.category}/${product.slug}`,
+            // Link sempre valido: la categoria (section) può non essere uno slug route-safe.
+            url: `/shop/${product.slug}`,
           })
         })
 
-      // Cerca nelle categorie
-      categories
-        .filter((category) =>
-          category.name.toLowerCase().includes(query.toLowerCase()) ||
-          category.description.toLowerCase().includes(query.toLowerCase())
+      // Categorie live: deriviamo le "sezioni" dai prodotti Supabase (sempre aggiornate)
+      const sections = Array.from(
+        new Set(
+          (products || [])
+            .map((p) => (p.category || '').trim())
+            .filter(Boolean)
         )
-        .slice(0, 3)
-        .forEach((category) => {
+      )
+      sections
+        .filter((section) => section.toLowerCase().includes(query.toLowerCase()))
+        .slice(0, 4)
+        .forEach((section) => {
+          const sectionSlug = slugify(section)
+          // Se non possiamo creare uno slug valido, evitiamo link rotti e mandiamo allo shop.
+          const url = sectionSlug ? `/shop/category/${sectionSlug}` : '/shop'
           searchResults.push({
             type: 'category',
-            title: category.name,
-            description: category.description,
-            url: `/shop/category/${category.slug}`,
+            title: section,
+            description: 'Vai alla categoria',
+            url,
           })
         })
 
@@ -208,11 +271,11 @@ export default function SearchBar() {
       </button>
 
       {/* Banner ricerca */}
-      {isOpen && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-start justify-center pt-12 md:pt-20 px-3 md:px-4">
-          <div className="w-full max-w-2xl bg-white rounded-xl shadow-2xl">
+      {mounted && isOpen && createPortal(
+        <div className="fixed inset-0 z-[9999] bg-black/50 backdrop-blur-sm flex items-start justify-center pt-12 md:pt-20 px-3 md:px-4 overflow-hidden">
+          <div className="w-full max-w-2xl bg-white rounded-2xl shadow-2xl ring-1 ring-black/5 overflow-hidden">
             {/* Barra ricerca */}
-            <div className="p-4 md:p-6 border-b border-gray-200">
+            <div className="p-4 md:p-6 border-b border-gray-200 bg-gradient-to-b from-gray-50 to-white">
               <div className="flex items-center gap-3 md:gap-4">
                 <svg
                   className="w-6 h-6 text-[#663399]"
@@ -325,13 +388,22 @@ export default function SearchBar() {
               <div className="p-6 text-center text-gray-500">
                 <p className="mb-4">Inizia a digitare per cercare...</p>
                 <div className="flex flex-wrap gap-2 justify-center mt-4">
-                  {['ceramica', 'piatti', 'gioielli', 'regali'].map((suggestion) => (
+                  {[
+                    { label: 'ceramica', url: '/shop' },
+                    { label: 'piatti', url: '/shop/category/piatti' },
+                    { label: 'gioielli', url: '/shop/category/gioielleria' },
+                    { label: 'regali', url: '/shop/category/eventi-e-regali' },
+                  ].map((s) => (
                     <button
-                      key={suggestion}
-                      onClick={() => setQuery(suggestion)}
+                      key={s.label}
+                      onClick={() => {
+                        router.push(s.url)
+                        setIsOpen(false)
+                        setQuery('')
+                      }}
                       className="px-3 py-2 min-h-[44px] bg-gray-100 hover:bg-[#663399] hover:text-white rounded-full text-sm transition-colors"
                     >
-                      {suggestion}
+                      {s.label}
                     </button>
                   ))}
                 </div>
@@ -339,7 +411,7 @@ export default function SearchBar() {
             )}
           </div>
         </div>
-      )}
+      , document.body)}
     </>
   )
 }

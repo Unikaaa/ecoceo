@@ -40,18 +40,18 @@ export default async function NewsPage() {
 
       <div className="relative z-10">
         {/* Hero Section Spettacolare */}
-        <section className="container mx-auto px-3 sm:px-4 pt-12 sm:pt-20 md:pt-32 pb-10 sm:pb-16">
+        <section className="container mx-auto px-3 sm:px-4 pt-10 sm:pt-20 md:pt-32 pb-9 sm:pb-16">
           <div className="max-w-6xl mx-auto text-center animate-fade-in-up">
             <div className="inline-block mb-4 sm:mb-6">
               <span className="px-4 sm:px-6 py-1.5 sm:py-2 bg-gradient-to-r from-[#663399]/15 via-[#663399]/10 to-[#c45824]/15 text-[#663399] rounded-full text-xs sm:text-sm font-semibold border border-[#663399]/30 shadow-sm backdrop-blur-sm">
           News & Blog
               </span>
             </div>
-            <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-serif text-gray-900 mb-4 sm:mb-6 leading-[1.1] tracking-tight">
+            <h1 className="text-2xl sm:text-5xl md:text-7xl lg:text-8xl font-serif text-gray-900 mb-4 sm:mb-6 leading-[1.1] tracking-tight">
               <span className="block bg-gradient-to-r from-gray-900 via-[#663399] to-gray-900 bg-clip-text text-transparent">
                 Storie di Arte
               </span>
-              <span className="block text-2xl sm:text-4xl md:text-6xl lg:text-7xl mt-1.5 sm:mt-2">
+              <span className="block text-xl sm:text-4xl md:text-6xl lg:text-7xl mt-1.5 sm:mt-2">
                 e Ceramica
               </span>
         </h1>

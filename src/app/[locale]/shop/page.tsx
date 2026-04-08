@@ -130,7 +130,7 @@ export default function ShopPage() {
                 <p className="text-gray-500">Nessuna collezione disponibile</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8 md:gap-10">
+              <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-8 md:gap-10">
                 {collections.map((collection, index) => (
                   <div
                     key={collection.id}
@@ -141,7 +141,7 @@ export default function ShopPage() {
                       href={`/shop?collection=${collection.slug}`}
                       className="group block bg-white rounded-artistic overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2"
                     >
-                      <div className="aspect-video bg-gradient-to-br from-ceramic-beige via-ceramic-white to-ceramic-sand flex items-center justify-center relative overflow-hidden">
+                      <div className="aspect-[3/2] sm:aspect-video bg-gradient-to-br from-ceramic-beige via-ceramic-white to-ceramic-sand flex items-center justify-center relative overflow-hidden">
                         {collection.image_url ? (
                           <Image
                             src={collection.image_url}
@@ -159,11 +159,11 @@ export default function ShopPage() {
                         <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                       </div>
                       
-                      <div className="p-4 sm:p-6 md:p-8">
-                        <h3 className="text-lg sm:text-xl md:text-2xl font-serif text-gray-900 mb-2.5 sm:mb-3 group-hover:text-primary transition-colors duration-300 leading-tight">
+                      <div className="p-3.5 sm:p-6 md:p-8">
+                        <h3 className="text-base sm:text-xl md:text-2xl font-serif text-gray-900 mb-2 sm:mb-3 group-hover:text-primary transition-colors duration-300 leading-tight">
                           {collection.name}
                         </h3>
-                        <p className="text-gray-600 text-sm md:text-base leading-relaxed">
+                        <p className="text-gray-600 text-xs sm:text-sm md:text-base leading-relaxed line-clamp-2">
                           {collection.description || 'Esplora questa collezione'}
                         </p>
                         <div className="flex items-center gap-2 mt-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300">

@@ -11,16 +11,26 @@ const supabase = supabaseUrl && supabaseServiceKey
   : null
 
 // Helper per generare slug
-function generateSlug(name: string): string {
-  return name
+function generateSlugBase(input: string): string {
+  return (input || '')
     .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // rimuove accenti/diacritics
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)/g, '')
 }
 
+function generateProductSlug(item: any): string {
+  const base = generateSlugBase(item?.product_name || '')
+  if (base) return base
+  const idPart =
+    typeof item?.id === 'string' && item.id.length >= 8 ? item.id.slice(0, 8) : 'item'
+  return `prodotto-${idPart}`
+}
+
 // Helper per trasformare item Supabase in Product
 function transformInventoryToProduct(item: any) {
-  const slug = generateSlug(item.product_name)
+  const slug = generateProductSlug(item)
   
   // Gestisci immagini: usa image_url se presente, altrimenti placeholder
   const images: string[] = item.image_url 
@@ -36,6 +46,7 @@ function transformInventoryToProduct(item: any) {
     images: images,
     category: item.section,
     inStock: item.quantity > 0,
+    maxQuantity: typeof item.quantity === 'number' ? item.quantity : parseInt(item.quantity, 10) || 0,
     slug: slug,
     featured: false,
   }

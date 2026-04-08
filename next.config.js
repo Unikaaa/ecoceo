@@ -1,6 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  webpack: (config, { dev }) => {
+    // In cartelle syncate (es. iCloud) la cache filesystem di webpack può rompersi
+    // e causare freeze/404 dei chunk. In dev la disattiviamo per stabilità.
+    if (dev) {
+      config.cache = false
+    }
+    return config
+  },
   images: {
     domains: ['localhost'],
     remotePatterns: [

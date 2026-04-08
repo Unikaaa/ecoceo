@@ -121,6 +121,7 @@ export default function CartIcon() {
                         <button
                           type="button"
                           onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          disabled={typeof item.maxQuantity === 'number' ? item.quantity >= item.maxQuantity : false}
                           className="h-7 w-7 rounded border border-gray-300 text-xs text-gray-700 hover:bg-gray-50"
                         >
                           +

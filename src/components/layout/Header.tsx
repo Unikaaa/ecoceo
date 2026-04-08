@@ -191,7 +191,7 @@ export default function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`h-11 px-3 flex items-center rounded-xl text-sm ${
+                className={`h-10 px-3 flex items-center rounded-xl text-[13px] ${
                   isActive(link.href)
                     ? 'text-[#663399] bg-[#663399]/10 font-semibold border border-[#663399]/20'
                     : 'text-gray-800 bg-white border border-gray-100 hover:bg-gray-50'
@@ -205,7 +205,7 @@ export default function Header() {
                 setIsContactModalOpen(true)
                 setIsMobileMenuOpen(false)
               }}
-              className="h-11 px-3 text-left rounded-xl text-sm text-gray-800 bg-white border border-gray-100 hover:bg-gray-50"
+              className="h-10 px-3 text-left rounded-xl text-[13px] text-gray-800 bg-white border border-gray-100 hover:bg-gray-50"
             >
               Contattaci
             </button>

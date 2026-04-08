@@ -85,19 +85,19 @@ export default function PersonalizzaStep2({
   return (
     <div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
         {productTypes.map((productType) => (
           <button
             key={productType.id}
             onClick={() => handleSelectProductType(productType)}
-            className={`group relative p-6 bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border-2 ${
+            className={`group relative p-3.5 sm:p-6 bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border-2 ${
               state.productTypeId === productType.id
                 ? 'border-[#663399] scale-105'
                 : 'border-transparent hover:border-[#663399]/30'
             }`}
           >
             {productType.thumbnail_url ? (
-              <div className="relative w-full h-40 mb-4 rounded-lg overflow-hidden">
+              <div className="relative w-full h-24 sm:h-40 mb-3 sm:mb-4 rounded-lg overflow-hidden">
                 <Image
                   src={productType.thumbnail_url}
                   alt={productType.name}
@@ -106,18 +106,18 @@ export default function PersonalizzaStep2({
                 />
               </div>
             ) : (
-              <div className="w-full h-40 mb-4 rounded-lg bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                <span className="text-4xl text-gray-500">
+              <div className="w-full h-24 sm:h-40 mb-3 sm:mb-4 rounded-lg bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                <span className="text-2xl sm:text-4xl text-gray-500">
                   {productType.name.charAt(0).toUpperCase()}
                 </span>
               </div>
             )}
 
-            <h3 className="text-xl font-serif font-bold text-gray-900 mb-2">
+            <h3 className="text-sm sm:text-xl font-serif font-bold text-gray-900 mb-1.5 sm:mb-2 leading-tight">
               {productType.name}
             </h3>
             {productType.description && (
-              <p className="text-gray-600 text-sm">{productType.description}</p>
+              <p className="text-gray-600 text-xs sm:text-sm line-clamp-2">{productType.description}</p>
             )}
 
             {state.productTypeId === productType.id && (
@@ -142,11 +142,11 @@ export default function PersonalizzaStep2({
       </div>
 
       {/* Navigazione */}
-      <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
+      <div className="flex justify-between items-center mt-6 pt-5 border-t border-gray-200">
         <Button
           onClick={onPrev}
           variant="outline"
-          className="px-6 py-3"
+          className="px-4 sm:px-6"
         >
           ← Indietro
         </Button>

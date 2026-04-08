@@ -76,19 +76,19 @@ export default function PersonalizzaStep3({
   return (
     <div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
         {styles.map((style) => (
           <button
             key={style.id}
             onClick={() => handleSelectStyle(style.id)}
-            className={`group relative p-6 bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border-2 ${
+            className={`group relative p-3.5 sm:p-6 bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border-2 ${
               state.styleId === style.id
                 ? 'border-[#663399] scale-105'
                 : 'border-transparent hover:border-[#663399]/30'
             }`}
           >
             {style.preview_url ? (
-              <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden">
+              <div className="relative w-full h-24 sm:h-48 mb-3 sm:mb-4 rounded-lg overflow-hidden">
                 <Image
                   src={style.preview_url}
                   alt={style.name}
@@ -97,18 +97,18 @@ export default function PersonalizzaStep3({
                 />
               </div>
             ) : (
-              <div className="w-full h-48 mb-4 rounded-lg bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                <span className="text-4xl text-gray-500">
+              <div className="w-full h-24 sm:h-48 mb-3 sm:mb-4 rounded-lg bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                <span className="text-2xl sm:text-4xl text-gray-500">
                   {style.name.charAt(0).toUpperCase()}
                 </span>
               </div>
             )}
 
-            <h3 className="text-lg font-serif font-bold text-gray-900 mb-2">
+            <h3 className="text-sm sm:text-lg font-serif font-bold text-gray-900 mb-1.5 sm:mb-2 leading-tight">
               {style.name}
             </h3>
             {style.description && (
-              <p className="text-gray-600 text-xs mb-2">{style.description}</p>
+              <p className="text-gray-600 text-xs mb-2 line-clamp-2">{style.description}</p>
             )}
             {style.price_extra > 0 && (
               <p className="text-sm font-semibold text-[#663399]">
@@ -138,11 +138,11 @@ export default function PersonalizzaStep3({
       </div>
 
       {/* Navigazione */}
-      <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
+      <div className="flex justify-between items-center mt-6 pt-5 border-t border-gray-200">
         <Button
           onClick={onPrev}
           variant="outline"
-          className="px-6 py-3"
+          className="px-4 sm:px-6"
         >
           ← Indietro
         </Button>
