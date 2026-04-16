@@ -182,15 +182,15 @@ export default function CollectionsSection() {
   }
 
   return (
-    <section id="collections" className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <div className="flex items-center justify-between mb-6">
+    <section id="collections" className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5 sm:mb-6">
         <div>
-          <h2 className="text-2xl font-serif text-gray-900 mb-1">Collezioni</h2>
-          <p className="text-sm text-gray-600">Gestisci le collezioni prodotti</p>
+          <h2 className="text-xl sm:text-2xl font-serif text-gray-900 mb-1">Collezioni</h2>
+          <p className="text-xs sm:text-sm text-gray-600">Gestisci le collezioni prodotti</p>
         </div>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="px-4 py-2 bg-[#663399] text-white rounded-lg hover:bg-[#552288] transition-colors text-sm font-medium"
+          className="w-full sm:w-auto px-4 py-2 bg-[#663399] text-white rounded-xl hover:bg-[#552288] transition-colors text-sm font-medium"
         >
           {isOpen ? 'Chiudi' : 'Aggiungi Collezione'}
         </button>
@@ -321,8 +321,80 @@ export default function CollectionsSection() {
             <p className="text-gray-500">Nessuna collezione creata</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
+          <>
+            {/* Mobile: card list (no scroll orizzontale) */}
+            <div className="sm:hidden space-y-3">
+              {collections.map((collection) => (
+                <div
+                  key={collection.id}
+                  className="rounded-2xl border border-gray-200 bg-white p-3.5 shadow-sm"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="flex gap-2 shrink-0">
+                      {collection.image_url ? (
+                        <img
+                          src={collection.image_url}
+                          alt={collection.name}
+                          className="w-14 h-14 object-cover rounded-xl border border-gray-200"
+                        />
+                      ) : (
+                        <div className="w-14 h-14 bg-gray-100 rounded-xl flex items-center justify-center">
+                          <span className="text-[11px] text-gray-400">No img</span>
+                        </div>
+                      )}
+                      {collection.hover_image_url ? (
+                        <img
+                          src={collection.hover_image_url}
+                          alt={`${collection.name} hover`}
+                          className="w-14 h-14 object-cover rounded-xl border border-gray-200"
+                        />
+                      ) : null}
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-gray-900 truncate">{collection.name}</p>
+                          <p className="text-[12px] text-gray-500 mt-0.5 truncate">/{collection.slug}</p>
+                        </div>
+                        <span className={`px-2 py-1 rounded-full text-[11px] font-medium ${
+                          collection.is_active
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-gray-100 text-gray-800'
+                        }`}>
+                          {collection.is_active ? 'Attiva' : 'Inattiva'}
+                        </span>
+                      </div>
+
+                      <div className="mt-2 flex items-center justify-between gap-2">
+                        <div className="rounded-xl bg-gray-50 border border-gray-200 px-2.5 py-2 text-[12px] text-gray-700">
+                          <p className="text-[10px] text-gray-500">Ordine</p>
+                          <p className="font-semibold">{collection.display_order}</p>
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleEdit(collection)}
+                            className="px-3 py-2 bg-[#663399] text-white rounded-xl hover:bg-[#552288] transition-colors text-[12px] font-medium"
+                          >
+                            Modifica
+                          </button>
+                          <button
+                            onClick={() => handleDelete(collection.id)}
+                            className="px-3 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors text-[12px] font-medium"
+                          >
+                            Elimina
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop/tablet: table */}
+            <div className="hidden sm:block overflow-x-auto">
+              <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-gray-50 border-b border-gray-200">
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Immagine</th>
@@ -390,7 +462,8 @@ export default function CollectionsSection() {
                 ))}
               </tbody>
             </table>
-          </div>
+            </div>
+          </>
         )}
       </div>
     </section>

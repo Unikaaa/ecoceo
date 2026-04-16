@@ -250,15 +250,15 @@ export default function InventorySection() {
   }
 
   return (
-    <section id="inventory" className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <div className="flex items-center justify-between mb-6">
+    <section id="inventory" className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5 sm:mb-6">
         <div>
-          <h2 className="text-2xl font-serif text-gray-900 mb-1">Magazzino</h2>
-          <p className="text-sm text-gray-600">Gestisci prodotti e quantità</p>
+          <h2 className="text-xl sm:text-2xl font-serif text-gray-900 mb-1">Magazzino</h2>
+          <p className="text-xs sm:text-sm text-gray-600">Gestisci prodotti e quantità</p>
         </div>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="px-4 py-2 bg-[#663399] text-white rounded-lg hover:bg-[#552288] transition-colors text-sm font-medium"
+          className="w-full sm:w-auto px-4 py-2 bg-[#663399] text-white rounded-xl hover:bg-[#552288] transition-colors text-sm font-medium"
         >
           {isOpen ? 'Chiudi' : 'Aggiungi Prodotto'}
         </button>
@@ -415,8 +415,87 @@ export default function InventorySection() {
             <p className="text-gray-500">Nessun prodotto nel magazzino</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
+          <>
+            {/* Mobile: card list (no scroll orizzontale) */}
+            <div className="sm:hidden space-y-3">
+              {inventory.map((item) => (
+                <div
+                  key={item.id}
+                  className="rounded-2xl border border-gray-200 bg-white p-3.5 shadow-sm"
+                >
+                  <div className="flex items-start gap-3">
+                    {item.image_url ? (
+                      <img
+                        src={item.image_url}
+                        alt={item.product_name}
+                        className="w-14 h-14 object-cover rounded-xl border border-gray-200 shrink-0"
+                      />
+                    ) : (
+                      <div className="w-14 h-14 bg-gray-100 rounded-xl flex items-center justify-center shrink-0">
+                        <span className="text-[11px] text-gray-400">No img</span>
+                      </div>
+                    )}
+
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-gray-900 truncate">{item.product_name}</p>
+                          <p className="text-[12px] text-gray-500 mt-0.5 truncate">{item.product_code} • {item.section}</p>
+                        </div>
+                        <span className={`px-2 py-1 rounded-full text-[11px] font-medium ${getQuantityColor(item.quantity)}`}>
+                          {getQuantityStatus(item.quantity)}
+                        </span>
+                      </div>
+
+                      <div className="mt-2 grid grid-cols-2 gap-2 text-[12px] text-gray-700">
+                        <div className="rounded-xl bg-gray-50 border border-gray-200 px-2.5 py-2">
+                          <p className="text-[10px] text-gray-500">Quantità</p>
+                          <p className="font-semibold">{item.quantity}</p>
+                        </div>
+                        <div className="rounded-xl bg-gray-50 border border-gray-200 px-2.5 py-2">
+                          <p className="text-[10px] text-gray-500">Prezzo</p>
+                          <p className="font-semibold">€{item.price.toFixed(2)}</p>
+                        </div>
+                      </div>
+
+                      <div className="mt-3 flex items-center justify-between gap-2">
+                        <button
+                          onClick={() => handleToggleFeatured(item)}
+                          className={`inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-[12px] font-medium transition-colors ${
+                            item.is_featured
+                              ? 'border-amber-200 bg-amber-50 text-amber-900'
+                              : 'border-gray-200 bg-white text-gray-700'
+                          }`}
+                          title={item.is_featured ? 'Rimuovi dai favoriti' : 'Aggiungi ai favoriti'}
+                        >
+                          <span className={`text-base leading-none ${item.is_featured ? 'opacity-100' : 'opacity-40'}`}>⭐</span>
+                          {item.is_featured ? 'Favorito' : 'Metti favorito'}
+                        </button>
+
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleEdit(item)}
+                            className="px-3 py-2 bg-[#663399] text-white rounded-xl hover:bg-[#552288] transition-colors text-[12px] font-medium"
+                          >
+                            Modifica
+                          </button>
+                          <button
+                            onClick={() => handleDelete(item.id)}
+                            className="px-3 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors text-[12px] font-medium"
+                          >
+                            Elimina
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop/tablet: table (ok) */}
+            <div className="hidden sm:block overflow-x-auto">
+              <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-gray-50 border-b border-gray-200">
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Immagine</th>
@@ -492,7 +571,8 @@ export default function InventorySection() {
                 ))}
               </tbody>
             </table>
-          </div>
+            </div>
+          </>
         )}
       </div>
     </section>

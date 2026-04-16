@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { PersonalizzaState } from '@/app/personalizza/page'
 import Button from '@/components/ui/Button'
+import { type CeramicShape } from '@/lib/personalizza/productShape'
 
 interface Size {
   id: string
@@ -63,6 +64,35 @@ export default function PersonalizzaStep4({
         <p className="text-gray-500 text-sm mb-4">
           Questo passaggio e' dedicato solo alla dimensione della ceramica.
         </p>
+
+        {state.personalizationType === 'GEOMETRIC_SUPPORT' && (
+          <div className="mb-5 rounded-2xl border border-[#663399]/15 bg-white p-4 shadow-sm">
+            <p className="text-sm font-semibold text-gray-900 mb-2">Scegli la forma</p>
+            <div className="flex flex-wrap gap-2">
+              {(state.allowedShapes || []).map((shape: CeramicShape) => (
+                <button
+                  key={shape}
+                  type="button"
+                  onClick={() => updateState({ ceramicShape: shape })}
+                  className={`px-3 py-2 rounded-xl border text-sm transition-colors ${
+                    state.ceramicShape === shape
+                      ? 'border-[#663399] bg-[#663399]/10 text-[#663399] font-semibold'
+                      : 'border-gray-200 bg-white text-gray-700 hover:border-[#663399]/40 hover:bg-gray-50'
+                  }`}
+                >
+                  {shape === 'oval' ? 'Ovale' :
+                    shape === 'square' ? 'Quadrata' :
+                    shape === 'rectangle' ? 'Rettangolare' :
+                    shape === 'circle' ? 'Rotonda' :
+                    'Triangolare'}
+                </button>
+              ))}
+            </div>
+            <p className="mt-2 text-xs text-gray-500">
+              La forma influisce solo sul supporto geometrico (es. targhe/mosaici). Per tazze/piatti la forma è fissa.
+            </p>
+          </div>
+        )}
 
         {isLoading && (
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">

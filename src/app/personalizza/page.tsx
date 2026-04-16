@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import { CeramicShape } from '@/lib/personalizza/productShape'
+import { type PersonalizationType } from '@/lib/personalizza/personalizationProfiles'
 
 const StepLoading = () => (
   <div className="min-h-[320px] flex items-center justify-center">
@@ -20,6 +21,8 @@ const PersonalizzaStep6 = dynamic(() => import('@/components/personalizza/Step6C
 export interface PersonalizzaState {
   categoryId: string | null
   productTypeId: string | null
+  personalizationType: PersonalizationType
+  allowedShapes: CeramicShape[]
   styleId: string | null
   sizeId: string | null
   backgroundId: string | null
@@ -37,6 +40,8 @@ export interface PersonalizzaState {
 const INITIAL_STATE: PersonalizzaState = {
   categoryId: null,
   productTypeId: null,
+  personalizationType: 'FIXED_SHAPE',
+  allowedShapes: ['oval'],
   styleId: null,
   sizeId: null,
   backgroundId: null,
@@ -123,6 +128,8 @@ export default function PersonalizzaPage() {
         newState.customTextColor = '#000000'
         newState.customTextSize = 24
         newState.ceramicShape = 'oval'
+        newState.personalizationType = 'FIXED_SHAPE'
+        newState.allowedShapes = ['oval']
         newState.userImages = []
       }
       if (fromStep <= 5) {

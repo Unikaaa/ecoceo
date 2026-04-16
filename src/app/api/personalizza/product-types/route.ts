@@ -62,7 +62,18 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { category_id, name, slug, description, thumbnail_url, canvas_shape, is_active, display_order } = body
+    const {
+      category_id,
+      name,
+      slug,
+      description,
+      thumbnail_url,
+      canvas_shape,
+      personalization_type,
+      allowed_shapes,
+      is_active,
+      display_order,
+    } = body
 
     if (!category_id || !name || !slug) {
       return NextResponse.json({ error: 'Categoria, nome e slug sono obbligatori' }, { status: 400 })
@@ -78,6 +89,8 @@ export async function POST(request: NextRequest) {
       display_order: display_order || 0,
     }
     if (canvas_shape) payload.canvas_shape = canvas_shape
+    if (personalization_type) payload.personalization_type = personalization_type
+    if (Array.isArray(allowed_shapes)) payload.allowed_shapes = allowed_shapes
 
     let { data, error } = await supabase
       .from('product_types')
@@ -86,8 +99,14 @@ export async function POST(request: NextRequest) {
       .single()
 
     // Backward compatibility: se la colonna non esiste, riprova senza canvas_shape
-    if (error && canvas_shape && `${error.message || ''}`.includes('canvas_shape')) {
-      const { canvas_shape: _removed, ...fallbackPayload } = payload
+    if (
+      error &&
+      (canvas_shape || personalization_type || Array.isArray(allowed_shapes)) &&
+      (`${error.message || ''}`.includes('canvas_shape') ||
+        `${error.message || ''}`.includes('personalization_type') ||
+        `${error.message || ''}`.includes('allowed_shapes'))
+    ) {
+      const { canvas_shape: _removed1, personalization_type: _removed2, allowed_shapes: _removed3, ...fallbackPayload } = payload
       const retry = await supabase.from('product_types').insert(fallbackPayload).select().single()
       data = retry.data
       error = retry.error
@@ -119,6 +138,9 @@ export async function PATCH(request: NextRequest) {
     }
 
     const hasCanvasShapeUpdate = Object.prototype.hasOwnProperty.call(updates, 'canvas_shape')
+    const hasProfileUpdate =
+      Object.prototype.hasOwnProperty.call(updates, 'personalization_type') ||
+      Object.prototype.hasOwnProperty.call(updates, 'allowed_shapes')
 
     let { data, error } = await supabase
       .from('product_types')
@@ -128,8 +150,14 @@ export async function PATCH(request: NextRequest) {
       .single()
 
     // Backward compatibility: se la colonna non esiste, riprova senza canvas_shape
-    if (error && hasCanvasShapeUpdate && `${error.message || ''}`.includes('canvas_shape')) {
-      const { canvas_shape: _removed, ...fallbackUpdates } = updates
+    if (
+      error &&
+      (hasCanvasShapeUpdate || hasProfileUpdate) &&
+      (`${error.message || ''}`.includes('canvas_shape') ||
+        `${error.message || ''}`.includes('personalization_type') ||
+        `${error.message || ''}`.includes('allowed_shapes'))
+    ) {
+      const { canvas_shape: _removed1, personalization_type: _removed2, allowed_shapes: _removed3, ...fallbackUpdates } = updates
       const retry = await supabase
         .from('product_types')
         .update(fallbackUpdates)

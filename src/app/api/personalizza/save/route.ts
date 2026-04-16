@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { inferCeramicShapeFromProduct } from '@/lib/personalizza/productShape'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
@@ -22,6 +23,7 @@ export async function POST(request: NextRequest) {
       sessionId,
       categoryId,
       productTypeId,
+      ceramicShape,
       styleId,
       sizeId,
       backgroundId,
@@ -60,6 +62,31 @@ export async function POST(request: NextRequest) {
       })
     }
 
+    // Server-side validation (profilo): se il prodotto è FIXED_SHAPE, scarta input di shape geometrica.
+    let safeShape = (ceramicShape || null) as string | null
+    if (productTypeId) {
+      const { data: pt } = await supabase
+        .from('product_types')
+        .select('id, slug, name, canvas_shape, personalization_type')
+        .eq('id', productTypeId)
+        .single()
+
+      if (pt && (pt.personalization_type || 'FIXED_SHAPE') !== 'GEOMETRIC_SUPPORT') {
+        safeShape = inferCeramicShapeFromProduct(pt)
+      }
+    }
+
+    const enrichedCanvasData =
+      canvasData && typeof canvasData === 'object'
+        ? {
+            ...canvasData,
+            __meta: {
+              ...(canvasData.__meta || {}),
+              ceramicShape: safeShape,
+            },
+          }
+        : canvasData
+
     const configData = {
       user_session_id: sessionId,
       category_id: categoryId,
@@ -73,7 +100,7 @@ export async function POST(request: NextRequest) {
       custom_text_color: customTextColor || '#000000',
       custom_text_size: customTextSize || 24,
       user_images: userImages || [],
-      canvas_data: canvasData || null,
+      canvas_data: enrichedCanvasData || null,
       total_price: totalPrice || 0,
       status: 'draft',
     }

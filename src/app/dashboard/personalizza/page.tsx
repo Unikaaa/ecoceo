@@ -13,6 +13,19 @@ const SHAPE_OPTIONS = [
   { value: 'circle', label: 'Rotonda' },
 ]
 
+const PERSONALIZATION_TEMPLATES = [
+  {
+    value: 'FIXED_SHAPE',
+    label: 'FIXED_SHAPE (tazze/piatti/vasi)',
+    description: 'Forma fissa, focus su area di stampa/testo e varianti.',
+  },
+  {
+    value: 'GEOMETRIC_SUPPORT',
+    label: 'GEOMETRIC_SUPPORT (funeraria/targhe/mosaici)',
+    description: 'Abilita forma dinamica, sfondi e bordure/decori.',
+  },
+]
+
 export default function PersonalizzaPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
@@ -189,6 +202,8 @@ export default function PersonalizzaPage() {
           description: addFormData.description || '',
           thumbnail_url: addFormData.thumbnail_url || '',
           canvas_shape: addFormData.canvas_shape || 'oval',
+          personalization_type: addFormData.personalization_type || 'FIXED_SHAPE',
+          allowed_shapes: Array.isArray(addFormData.allowed_shapes) ? addFormData.allowed_shapes : null,
           is_active: true,
           display_order: 0,
         }),
@@ -608,7 +623,63 @@ export default function PersonalizzaPage() {
                       <option key={shape.value} value={shape.value}>{shape.label}</option>
                     ))}
                   </select>
+                  <p className="mt-1 text-xs text-gray-500">
+                    Forma predefinita (usata sempre in FIXED_SHAPE, e come default in GEOMETRIC_SUPPORT).
+                  </p>
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Template di Personalizzazione</label>
+                  <select
+                    value={addFormData.personalization_type || 'FIXED_SHAPE'}
+                    onChange={(e) => {
+                      const nextType = e.target.value
+                      setAddFormData({
+                        ...addFormData,
+                        personalization_type: nextType,
+                        allowed_shapes:
+                          nextType === 'GEOMETRIC_SUPPORT'
+                            ? (Array.isArray(addFormData.allowed_shapes) ? addFormData.allowed_shapes : ['oval'])
+                            : null,
+                      })
+                    }}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#663399]"
+                  >
+                    {PERSONALIZATION_TEMPLATES.map((t) => (
+                      <option key={t.value} value={t.value}>{t.label}</option>
+                    ))}
+                  </select>
+                  <p className="mt-1 text-xs text-gray-500">
+                    {PERSONALIZATION_TEMPLATES.find((t) => t.value === (addFormData.personalization_type || 'FIXED_SHAPE'))?.description}
+                  </p>
+                </div>
+
+                {(addFormData.personalization_type || 'FIXED_SHAPE') === 'GEOMETRIC_SUPPORT' && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Forme disponibili (GEOMETRIC_SUPPORT)</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {SHAPE_OPTIONS.map((shape) => {
+                        const selected: string[] = Array.isArray(addFormData.allowed_shapes) ? addFormData.allowed_shapes : []
+                        const checked = selected.includes(shape.value)
+                        return (
+                          <label key={shape.value} className="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm">
+                            <input
+                              type="checkbox"
+                              checked={checked}
+                              onChange={(e) => {
+                                const next = e.target.checked
+                                  ? Array.from(new Set([...selected, shape.value]))
+                                  : selected.filter((v) => v !== shape.value)
+                                setAddFormData({ ...addFormData, allowed_shapes: next.length ? next : ['oval'] })
+                              }}
+                            />
+                            <span>{shape.label}</span>
+                          </label>
+                        )
+                      })}
+                    </div>
+                    <p className="mt-1 text-xs text-gray-500">Se nessuna selezionata, usiamo Ovale come fallback.</p>
+                  </div>
+                )}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Miniatura (opzionale)</label>
                   <ImageUploadField
@@ -932,6 +1003,59 @@ export default function PersonalizzaPage() {
                   </select>
                 </div>
                 <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Template di Personalizzazione</label>
+                  <select
+                    value={editFormData.personalization_type || 'FIXED_SHAPE'}
+                    onChange={(e) => {
+                      const nextType = e.target.value
+                      setEditFormData({
+                        ...editFormData,
+                        personalization_type: nextType,
+                        allowed_shapes:
+                          nextType === 'GEOMETRIC_SUPPORT'
+                            ? (Array.isArray(editFormData.allowed_shapes) ? editFormData.allowed_shapes : ['oval'])
+                            : null,
+                      })
+                    }}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#663399]"
+                  >
+                    {PERSONALIZATION_TEMPLATES.map((t) => (
+                      <option key={t.value} value={t.value}>{t.label}</option>
+                    ))}
+                  </select>
+                  <p className="mt-1 text-xs text-gray-500">
+                    {PERSONALIZATION_TEMPLATES.find((t) => t.value === (editFormData.personalization_type || 'FIXED_SHAPE'))?.description}
+                  </p>
+                </div>
+
+                {(editFormData.personalization_type || 'FIXED_SHAPE') === 'GEOMETRIC_SUPPORT' && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Forme disponibili (GEOMETRIC_SUPPORT)</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {SHAPE_OPTIONS.map((shape) => {
+                        const selected: string[] = Array.isArray(editFormData.allowed_shapes) ? editFormData.allowed_shapes : []
+                        const checked = selected.includes(shape.value)
+                        return (
+                          <label key={shape.value} className="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm">
+                            <input
+                              type="checkbox"
+                              checked={checked}
+                              onChange={(e) => {
+                                const next = e.target.checked
+                                  ? Array.from(new Set([...selected, shape.value]))
+                                  : selected.filter((v) => v !== shape.value)
+                                setEditFormData({ ...editFormData, allowed_shapes: next.length ? next : ['oval'] })
+                              }}
+                            />
+                            <span>{shape.label}</span>
+                          </label>
+                        )
+                      })}
+                    </div>
+                    <p className="mt-1 text-xs text-gray-500">Se nessuna selezionata, usiamo Ovale come fallback.</p>
+                  </div>
+                )}
+                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Stato</label>
                   <select
                     value={editFormData.is_active ? 'true' : 'false'}
@@ -1196,14 +1320,14 @@ export default function PersonalizzaPage() {
               <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">Categorie</h2>
               <button
                 onClick={() => setShowAddForm({ type: 'categories' })}
-                className="w-full sm:w-auto px-4 py-2.5 bg-[#663399] text-white rounded-lg hover:bg-[#552288] transition-colors font-medium"
+                className="w-full sm:w-auto px-4 py-2.5 bg-[#663399] text-white rounded-xl hover:bg-[#552288] transition-colors font-medium text-sm"
               >
                 + Aggiungi Categoria
               </button>
             </div>
 
             {categories.length === 0 ? (
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 sm:p-12 text-center">
                 <p className="text-gray-600 mb-4">Nessuna categoria ancora.</p>
                 <p className="text-sm text-gray-500">Clicca su "Aggiungi Categoria" per iniziare.</p>
               </div>
@@ -1212,21 +1336,21 @@ export default function PersonalizzaPage() {
                 {categories.map((cat) => (
                   <div
                     key={cat.id}
-                    className="bg-white rounded-lg shadow-sm border-2 border-gray-200 hover:border-[#663399] p-4 sm:p-6 transition-all hover:shadow-md"
+                    className="bg-white rounded-2xl shadow-sm border-2 border-gray-200 hover:border-[#663399] p-3.5 sm:p-6 transition-all hover:shadow-md"
                   >
                     <div
                       onClick={() => setSelectedCategory(cat.id)}
                       className="cursor-pointer"
                     >
-                      <h3 className="text-xl font-semibold text-gray-900 mb-2">{cat.name}</h3>
-                      <p className="text-sm text-gray-600 mb-4">{cat.slug}</p>
-                      <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-base sm:text-xl font-semibold text-gray-900 mb-1.5">{cat.name}</h3>
+                      <p className="text-[12px] sm:text-sm text-gray-600 mb-3">{cat.slug}</p>
+                      <div className="flex items-center justify-between mb-3">
                         <span className={`px-2 py-1 rounded-full text-xs ${
                           cat.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
                         }`}>
                           {cat.is_active ? 'Attiva' : 'Disattiva'}
                         </span>
-                        <span className="text-sm text-gray-500">
+                        <span className="text-[12px] sm:text-sm text-gray-500">
                           {productTypes.filter(pt => pt.category_id === cat.id).length} tipi prodotto
                         </span>
                       </div>
@@ -1234,13 +1358,13 @@ export default function PersonalizzaPage() {
                     <div className="flex gap-2 pt-4 border-t border-gray-200">
                       <button
                         onClick={() => handleEdit('categories', cat)}
-                        className="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                        className="flex-1 px-3 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors text-[13px] font-medium"
                       >
                         Modifica
                       </button>
                       <button
                         onClick={() => handleDelete('categories', cat.id)}
-                        className="flex-1 px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+                        className="flex-1 px-3 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors text-[13px] font-medium"
                       >
                         Elimina
                       </button>
@@ -1263,7 +1387,7 @@ export default function PersonalizzaPage() {
                 </svg>
                 Torna alle Categorie
               </button>
-              <h2 className="text-3xl font-semibold text-gray-900">{selectedCategoryData?.name}</h2>
+              <h2 className="text-xl sm:text-3xl font-semibold text-gray-900">{selectedCategoryData?.name}</h2>
             </div>
 
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5 sm:mb-6">
@@ -1277,7 +1401,7 @@ export default function PersonalizzaPage() {
             </div>
 
             {getCategoryProductTypes().length === 0 ? (
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 sm:p-12 text-center">
                 <p className="text-gray-600 mb-4">Nessun tipo prodotto ancora.</p>
                 <p className="text-sm text-gray-500">Clicca su "Aggiungi Tipo Prodotto" per iniziare.</p>
               </div>
@@ -1287,11 +1411,12 @@ export default function PersonalizzaPage() {
                   <div
                     key={pt.id}
                     onClick={() => setSelectedProductType(pt.id)}
-                    className="bg-white rounded-lg shadow-sm border-2 border-gray-200 hover:border-[#663399] p-4 sm:p-6 cursor-pointer transition-all hover:shadow-md"
+                    className="bg-white rounded-2xl shadow-sm border-2 border-gray-200 hover:border-[#663399] p-3.5 sm:p-6 cursor-pointer transition-all hover:shadow-md"
                   >
-                    <h4 className="text-lg font-semibold text-gray-900 mb-2">{pt.name}</h4>
-                    <p className="text-sm text-gray-600 mb-4">{pt.slug}</p>
+                    <h4 className="text-base sm:text-lg font-semibold text-gray-900 mb-1.5">{pt.name}</h4>
+                    <p className="text-[12px] sm:text-sm text-gray-600 mb-3">{pt.slug}</p>
                     <p className="text-xs text-gray-500 mb-4">Forma: {pt.canvas_shape || 'oval'}</p>
+                    <p className="text-xs text-gray-500 mb-4">Template: {pt.personalization_type || 'FIXED_SHAPE'}</p>
                     <div className="flex items-center justify-between">
                       <span className={`px-2 py-1 rounded-full text-xs ${
                         pt.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
@@ -1304,7 +1429,7 @@ export default function PersonalizzaPage() {
                             e.stopPropagation()
                             handleEdit('product-types', pt)
                           }}
-                          className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 transition-colors"
+                          className="px-3 py-1 bg-blue-600 text-white rounded-lg text-[13px] hover:bg-blue-700 transition-colors"
                         >
                           Modifica
                         </button>
@@ -1313,7 +1438,7 @@ export default function PersonalizzaPage() {
                             e.stopPropagation()
                             handleDelete('product-types', pt.id)
                           }}
-                          className="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700 transition-colors"
+                          className="px-3 py-1 bg-red-600 text-white rounded-lg text-[13px] hover:bg-red-700 transition-colors"
                         >
                           Elimina
                         </button>

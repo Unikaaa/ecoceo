@@ -340,177 +340,236 @@ export default function PopupDashboardPage() {
         </div>
 
         {showForm && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8 space-y-4">
-            <h2 className="text-xl font-semibold text-gray-900">{editingPopup ? 'Modifica Pop Up' : 'Nuova Pop Up'}</h2>
-            <input
-              value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              placeholder="Titolo"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            />
-            <textarea
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              placeholder="Descrizione breve"
-              rows={3}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            />
-            <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_240px] gap-3">
-              <ImageUploadField
-                value={formData.image_url}
-                onChange={(url) => setFormData({ ...formData, image_url: url as string })}
-                label="Immagine Pop Up"
-              />
-              <div className="rounded-xl border border-gray-200 p-3 bg-gray-50">
-                <label className="block text-xs font-semibold text-gray-700 mb-2">Spazio immagine popup</label>
-                <select
-                  value={formData.image_area_size || 'md'}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      image_area_size: e.target.value as 'sm' | 'md' | 'lg',
-                    }))
-                  }
-                  className="w-full px-2.5 py-2 text-sm border border-gray-300 rounded-lg bg-white text-gray-700"
-                  title="Dimensione spazio immagine"
-                >
-                  {IMAGE_AREA_OPTIONS.map((option) => (
-                    <option key={option.id} value={option.id}>
-                      {option.label} ({option.sizeLabel})
-                    </option>
-                  ))}
-                </select>
-                <p className="mt-2 text-[11px] text-gray-500">
-                  Dimensione area dove viene mostrata l'immagine.
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8">
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-5">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-[#663399]">Dashboard</p>
+                <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">
+                  {editingPopup ? 'Modifica Pop Up' : 'Nuova Pop Up'}
+                </h2>
+                <p className="text-sm text-gray-500 mt-1">
+                  Compila i campi principali e controlla l’anteprima prima di pubblicare.
                 </p>
               </div>
-            </div>
-            <div className="rounded-2xl border border-gray-200 bg-white p-4">
-              <div className="flex items-center justify-between mb-3">
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">Anteprima immagine</p>
-                  <p className="text-xs text-gray-500">Clicca la pennetta per modificare posizione, zoom e adattamento.</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (!formData.image_url) {
-                        alert('Carica prima un’immagine')
-                        return
-                      }
-                      setShowImageEditor(true)
-                    }}
-                    className="h-9 w-9 rounded-full bg-[#663399] text-white hover:bg-[#552288] transition-colors flex items-center justify-center"
-                    aria-label="Modifica immagine popup"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536M9 13l6.768-6.768a2.5 2.5 0 113.536 3.536L12.536 16.536a4 4 0 01-1.79 1.01L7 18l.454-3.746A4 4 0 018.464 12.464z" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-              <div className={`${IMAGE_AREA_HEIGHT_CLASS[formData.image_area_size || 'md']} rounded-xl overflow-hidden bg-gray-100 relative border border-dashed border-gray-300`}>
-                {formData.image_url ? (
-                  <img
-                    src={formData.image_url}
-                    alt="Anteprima popup"
-                    className="absolute inset-0 w-full h-full select-none pointer-events-none"
-                    style={{
-                      objectFit: formData.image_fit || 'cover',
-                      transform: `translate(${formData.image_offset_x || 0}px, ${formData.image_offset_y || 0}px) scale(${formData.image_scale || 1})`,
-                      transformOrigin: 'center',
-                    }}
-                    draggable={false}
-                  />
-                ) : (
-                  <div className="h-full flex items-center justify-center text-sm text-gray-500">Nessuna immagine</div>
-                )}
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm text-gray-700 mb-1">Data inizio</label>
-                <input
-                  type="datetime-local"
-                  value={formData.starts_at}
-                  onChange={(e) => setFormData({ ...formData, starts_at: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-gray-700 mb-1">Data fine (opzionale)</label>
-                <input
-                  type="datetime-local"
-                  value={formData.ends_at}
-                  onChange={(e) => setFormData({ ...formData, ends_at: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <select
-                value={formData.event_type}
-                onChange={(e) => setFormData({ ...formData, event_type: e.target.value as any })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              <button
+                type="button"
+                onClick={resetForm}
+                className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors text-sm font-medium"
               >
-                <option value="announcement">Annuncio</option>
-                <option value="discount">Sconto</option>
-                <option value="event">Evento</option>
-              </select>
-              <input
-                value={formData.event_label}
-                onChange={(e) => setFormData({ ...formData, event_label: e.target.value })}
-                placeholder="Etichetta evento/sconto (es. Fino al 30/12)"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-              />
+                Chiudi
+              </button>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Bottoni preimpostati</label>
-              <div className="flex flex-wrap gap-2">
-                {PRESET_BUTTONS.map((btn) => {
-                  const selected = formData.buttons.some((b) => b.href === btn.href)
-                  return (
+
+            <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_420px] gap-4 sm:gap-6">
+              {/* Colonna sinistra: contenuti */}
+              <div className="space-y-4">
+                <div className="rounded-2xl border border-gray-200 bg-white p-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">Titolo</label>
+                      <input
+                        value={formData.title}
+                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                        placeholder="Es. Sconto di Primavera"
+                        className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#663399]"
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">Descrizione breve</label>
+                      <textarea
+                        value={formData.description}
+                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                        placeholder="Scrivi un testo chiaro e breve (1–2 righe)."
+                        rows={4}
+                        className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#663399]"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-gray-200 bg-white p-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">Data inizio</label>
+                      <input
+                        type="datetime-local"
+                        value={formData.starts_at}
+                        onChange={(e) => setFormData({ ...formData, starts_at: e.target.value })}
+                        className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#663399]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">Data fine (opzionale)</label>
+                      <input
+                        type="datetime-local"
+                        value={formData.ends_at}
+                        onChange={(e) => setFormData({ ...formData, ends_at: e.target.value })}
+                        className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#663399]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">Tipo</label>
+                      <select
+                        value={formData.event_type}
+                        onChange={(e) => setFormData({ ...formData, event_type: e.target.value as any })}
+                        className="w-full px-4 py-2.5 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-[#663399]"
+                      >
+                        <option value="announcement">Annuncio</option>
+                        <option value="discount">Sconto</option>
+                        <option value="event">Evento</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">Etichetta (opzionale)</label>
+                      <input
+                        value={formData.event_label}
+                        onChange={(e) => setFormData({ ...formData, event_label: e.target.value })}
+                        placeholder="Es. Fino al 30/12"
+                        className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#663399]"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-gray-200 bg-white p-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Bottoni preimpostati</label>
+                  <div className="flex flex-wrap gap-2">
+                    {PRESET_BUTTONS.map((btn) => {
+                      const selected = formData.buttons.some((b) => b.href === btn.href)
+                      return (
+                        <button
+                          key={btn.href}
+                          type="button"
+                          onClick={() => togglePresetButton(btn)}
+                          className={`px-3 py-2 text-[13px] rounded-xl border transition-colors ${
+                            selected
+                              ? 'bg-[#663399] text-white border-[#663399]'
+                              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                          }`}
+                        >
+                          {btn.label}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-gray-200 bg-white p-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <label className="flex items-center gap-2 text-sm text-gray-700">
+                      <input
+                        type="checkbox"
+                        checked={formData.is_active}
+                        onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
+                      />
+                      Attiva popup
+                    </label>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">Priorità</label>
+                      <input
+                        type="number"
+                        value={formData.priority}
+                        onChange={(e) => setFormData({ ...formData, priority: parseInt(e.target.value || '0', 10) || 0 })}
+                        placeholder="0"
+                        className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#663399]"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 pt-4">
                     <button
-                      key={btn.href}
-                      type="button"
-                      onClick={() => togglePresetButton(btn)}
-                      className={`px-3 py-1.5 text-sm rounded-lg border ${
-                        selected
-                          ? 'bg-[#663399] text-white border-[#663399]'
-                          : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                      }`}
+                      onClick={handleSave}
+                      className="w-full sm:w-auto px-5 py-2.5 bg-[#663399] text-white rounded-xl hover:bg-[#552288] transition-colors text-sm font-medium"
                     >
-                      {btn.label}
+                      {editingPopup ? 'Aggiorna' : 'Pubblica'}
                     </button>
-                  )
-                })}
+                    <button
+                      onClick={resetForm}
+                      className="w-full sm:w-auto px-5 py-2.5 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-colors text-sm font-medium"
+                    >
+                      Annulla
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              <label className="flex items-center gap-2 text-sm text-gray-700">
-                <input
-                  type="checkbox"
-                  checked={formData.is_active}
-                  onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
-                />
-                Attiva popup
-              </label>
-              <input
-                type="number"
-                value={formData.priority}
-                onChange={(e) => setFormData({ ...formData, priority: parseInt(e.target.value || '0', 10) || 0 })}
-                placeholder="Priorità"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-              />
-            </div>
-            <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 pt-2">
-              <button onClick={handleSave} className="w-full sm:w-auto px-5 py-2.5 bg-[#663399] text-white rounded-lg hover:bg-[#552288] transition-colors">
-                {editingPopup ? 'Aggiorna' : 'Pubblica'}
-              </button>
-              <button onClick={resetForm} className="w-full sm:w-auto px-5 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
-                Annulla
-              </button>
+
+              {/* Colonna destra: immagine/preview */}
+              <div className="space-y-4">
+                <div className="rounded-2xl border border-gray-200 bg-white p-4">
+                  <div className="grid grid-cols-1 gap-3">
+                    <ImageUploadField
+                      value={formData.image_url}
+                      onChange={(url) => setFormData({ ...formData, image_url: url as string })}
+                      label="Immagine Pop Up"
+                    />
+                    <div className="rounded-xl border border-gray-200 p-3 bg-gray-50">
+                      <label className="block text-xs font-semibold text-gray-700 mb-2">Spazio immagine popup</label>
+                      <select
+                        value={formData.image_area_size || 'md'}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            image_area_size: e.target.value as 'sm' | 'md' | 'lg',
+                          }))
+                        }
+                        className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-xl bg-white text-gray-700"
+                        title="Dimensione spazio immagine"
+                      >
+                        {IMAGE_AREA_OPTIONS.map((option) => (
+                          <option key={option.id} value={option.id}>
+                            {option.label} ({option.sizeLabel})
+                          </option>
+                        ))}
+                      </select>
+                      <p className="mt-2 text-[11px] text-gray-500">
+                        Definisce l’altezza dell’area immagine nella popup.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-gray-200 bg-white p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900">Anteprima immagine</p>
+                      <p className="text-xs text-gray-500">Usa la pennetta per spostare e zoomare.</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!formData.image_url) {
+                          alert('Carica prima un’immagine')
+                          return
+                        }
+                        setShowImageEditor(true)
+                      }}
+                      className="h-9 w-9 rounded-full bg-[#663399] text-white hover:bg-[#552288] transition-colors flex items-center justify-center"
+                      aria-label="Modifica immagine popup"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536M9 13l6.768-6.768a2.5 2.5 0 113.536 3.536L12.536 16.536a4 4 0 01-1.79 1.01L7 18l.454-3.746A4 4 0 018.464 12.464z" />
+                      </svg>
+                    </button>
+                  </div>
+
+                  <div className={`${IMAGE_AREA_HEIGHT_CLASS[formData.image_area_size || 'md']} rounded-xl overflow-hidden bg-gray-100 relative border border-dashed border-gray-300`}>
+                    {formData.image_url ? (
+                      <img
+                        src={formData.image_url}
+                        alt="Anteprima popup"
+                        className="absolute inset-0 w-full h-full select-none pointer-events-none"
+                        style={{
+                          objectFit: formData.image_fit || 'cover',
+                          transform: `translate(${formData.image_offset_x || 0}px, ${formData.image_offset_y || 0}px) scale(${formData.image_scale || 1})`,
+                          transformOrigin: 'center',
+                        }}
+                        draggable={false}
+                      />
+                    ) : (
+                      <div className="h-full flex items-center justify-center text-sm text-gray-500">Nessuna immagine</div>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}

@@ -201,43 +201,50 @@ export default function ContactsKanban() {
       </div>
 
       {/* Kanban Board */}
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
         {columns.map((column) => (
-          <div key={column.id} className={`${column.bgColor} rounded-lg p-4 min-h-[600px]`}>
+          <div
+            key={column.id}
+            className={`${column.bgColor} rounded-2xl p-3.5 sm:p-4 lg:p-4 lg:min-h-[600px] border border-gray-200/70`}
+          >
             {/* Column Header */}
-            <div className="mb-4 pb-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">{column.title}</h3>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-2xl font-bold text-gray-700">{column.contacts.length}</span>
-                <span className="text-sm text-gray-600">
+            <div className="mb-3 pb-3 sm:mb-4 sm:pb-4 border-b border-gray-200">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 leading-tight">
+                    {column.title}
+                  </h3>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-xl sm:text-2xl font-bold text-gray-700">{column.contacts.length}</span>
+                    <span className="text-xs sm:text-sm text-gray-600">
                   {column.contacts.length === 1 ? 'messaggio' : 'messaggi'}
-                </span>
+                    </span>
+                  </div>
+                </div>
+
+                {/* Badge per tutte le colonne */}
+                <div className="shrink-0">
+                  {column.id === 'unread' && (
+                    <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded-lg text-[11px] sm:text-xs font-medium">
+                      Da Leggere
+                    </span>
+                  )}
+                  {column.id === 'in_elaboration' && (
+                    <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-lg text-[11px] sm:text-xs font-medium">
+                      In Elaborazione
+                    </span>
+                  )}
+                  {column.id === 'completed' && (
+                    <span className="px-2 py-1 bg-green-100 text-green-800 rounded-lg text-[11px] sm:text-xs font-medium inline-flex items-center gap-1">
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      Completato
+                    </span>
+                  )}
+                </div>
               </div>
               {/* Badge per tutte le colonne */}
-              {column.id === 'unread' && (
-                <div className="mt-2">
-                  <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-medium">
-                    Da Leggere
-                  </span>
-                </div>
-              )}
-              {column.id === 'in_elaboration' && (
-                <div className="mt-2">
-                  <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-medium">
-                    In Elaborazione
-                  </span>
-                </div>
-              )}
-              {column.id === 'completed' && (
-                <div className="mt-2">
-                  <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-medium flex items-center gap-1 w-fit">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    Completato
-                  </span>
-                </div>
-              )}
             </div>
 
             {/* Contacts List */}
@@ -251,10 +258,10 @@ export default function ContactsKanban() {
                   <div
                     key={contact.id}
                     onClick={() => handleContactClick(contact)}
-                    className={`bg-white rounded-lg p-4 shadow-sm hover:shadow-lg transition-all cursor-pointer ${getCardBorder(contact.priority_color || 'green', contact.status, column.id)}`}
+                    className={`bg-white rounded-2xl p-3.5 sm:p-4 shadow-sm hover:shadow-lg transition-all cursor-pointer ${getCardBorder(contact.priority_color || 'green', contact.status, column.id)}`}
                   >
                     {/* Header con Priority Badge e Data */}
-                    <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-start justify-between mb-3 gap-3">
                       <div className="flex-1">
                         {/* Priority Badge */}
                         <div className="mb-2">

@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { PersonalizzaState } from '@/app/personalizza/page'
 import Button from '@/components/ui/Button'
 import { inferCeramicShapeFromProduct } from '@/lib/personalizza/productShape'
+import { getAvailableOptions } from '@/lib/personalizza/personalizationProfiles'
 
 interface ProductType {
   id: string
@@ -12,6 +13,8 @@ interface ProductType {
   name: string
   slug: string
   canvas_shape?: string | null
+  personalization_type?: string | null
+  allowed_shapes?: string[] | null
   description: string | null
   thumbnail_url: string | null
   is_active: boolean
@@ -66,9 +69,13 @@ export default function PersonalizzaStep2({
   }
 
   const handleSelectProductType = (productType: ProductType) => {
+    const options = getAvailableOptions(productType as any)
+    const nextShape = options.canChooseGeometricShape ? options.defaultShape : inferCeramicShapeFromProduct(productType)
     updateState({
       productTypeId: productType.id,
-      ceramicShape: inferCeramicShapeFromProduct(productType),
+      personalizationType: options.personalizationType,
+      allowedShapes: options.allowedShapes,
+      ceramicShape: nextShape,
     })
     // Auto-avanza allo step successivo al click
     onNext()

@@ -343,15 +343,15 @@ export default function ContenutiPage() {
       <div>
         {/* Header */}
         <div className="border-b border-gray-200 pb-6 mb-8">
-          <h1 className="text-4xl font-serif text-gray-900 mb-2">Contenuti</h1>
-          <p className="text-gray-600">Gestisci i contenuti del sito: Chi Siamo e News</p>
+          <h1 className="text-2xl sm:text-4xl font-serif text-gray-900 mb-2">Contenuti</h1>
+          <p className="text-sm sm:text-base text-gray-600">Gestisci i contenuti del sito: Chi Siamo e News</p>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-4 mb-8">
+        <div className="flex gap-3 sm:gap-4 mb-6 sm:mb-8">
           <button
             onClick={() => setActiveTab('about')}
-            className={`px-6 py-3 rounded-lg font-medium transition-colors ${
+            className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium transition-colors text-sm sm:text-base ${
               activeTab === 'about'
                 ? 'bg-[#663399] text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -361,7 +361,7 @@ export default function ContenutiPage() {
           </button>
           <button
             onClick={() => setActiveTab('news')}
-            className={`px-6 py-3 rounded-lg font-medium transition-colors ${
+            className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium transition-colors text-sm sm:text-base ${
               activeTab === 'news'
                 ? 'bg-[#663399] text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -383,7 +383,7 @@ export default function ContenutiPage() {
             {visibleAboutSections.map((section) => (
               <div
                 key={section.id}
-                className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+                className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6"
               >
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold text-gray-900">

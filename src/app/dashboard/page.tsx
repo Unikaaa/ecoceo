@@ -113,7 +113,7 @@ export default function DashboardPage() {
       title: 'Contatti',
       description: 'Gestisci i messaggi e le richieste dei clienti',
       icon: (
-        <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
         </svg>
       ),
@@ -126,7 +126,7 @@ export default function DashboardPage() {
       title: 'Magazzino',
       description: 'Prodotti, collezioni, ordini e favoriti',
       icon: (
-        <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
         </svg>
       ),
@@ -139,7 +139,7 @@ export default function DashboardPage() {
       title: 'Personalizza',
       description: 'Categorie, tipi, stili, dimensioni e prezzi',
       icon: (
-        <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
         </svg>
       ),
@@ -152,7 +152,7 @@ export default function DashboardPage() {
       title: 'Contenuti',
       description: 'Chi Siamo, News & Blog del sito',
       icon: (
-        <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
         </svg>
       ),
@@ -165,7 +165,7 @@ export default function DashboardPage() {
       title: 'Progetti & Brand',
       description: 'Progetti speciali e impostazioni SEO',
       icon: (
-        <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
         </svg>
       ),
@@ -178,7 +178,7 @@ export default function DashboardPage() {
       title: 'Pop Up',
       description: 'Crea popup evento/sconto con scadenza',
       icon: (
-        <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 8h10M7 12h6m-9 9h16a2 2 0 002-2V7a2 2 0 00-2-2H8l-4 4v10a2 2 0 002 2z" />
         </svg>
       ),
@@ -231,7 +231,7 @@ export default function DashboardPage() {
                 
                 <div className="p-4 sm:p-6 lg:p-7">
                   {/* Icon */}
-                  <div className={`w-12 h-12 sm:w-14 sm:h-14 ${item.bgLight} rounded-xl flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                  <div className={`w-10 h-10 sm:w-14 sm:h-14 ${item.bgLight} rounded-xl flex items-center justify-center mb-2.5 sm:mb-4 group-hover:scale-110 transition-transform duration-300`}>
                     <div className={item.iconColor}>
                       {item.icon}
                     </div>
