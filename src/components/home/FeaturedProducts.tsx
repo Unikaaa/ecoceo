@@ -41,19 +41,15 @@ export default function FeaturedProducts() {
       <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 relative z-10">
         {/* Titolo elegante */}
         <div className="text-center mb-4 md:mb-14 lg:mb-16">
-          <div className="inline-block mb-2.5 md:mb-4">
-            <span className="px-3 py-1.5 bg-gradient-to-r from-primary/10 via-primary/5 to-accent/10 text-primary rounded-full text-xs sm:text-sm font-semibold border border-primary/20">
-              Selezione Esclusiva
-            </span>
-          </div>
-          <h2 className="text-lg sm:text-2xl md:text-5xl lg:text-6xl font-serif text-gray-900 mb-2 md:mb-4 leading-tight">
+          <p className="mb-2 text-[11px] sm:text-xs uppercase tracking-[0.16em] text-[#663399]/80">
+            Selezione
+          </p>
+          <h2 className="text-lg sm:text-2xl md:text-5xl lg:text-6xl font-serif text-[#2a2420] mb-2 md:mb-3 leading-tight">
           {t('featuredProducts')}
         </h2>
-          <div className="flex items-center justify-center gap-3 md:gap-4 mt-4 md:mt-6">
-            <span className="h-px w-16 bg-gradient-to-r from-transparent via-primary to-transparent" />
-            <span className="h-px w-24 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
-            <span className="h-px w-16 bg-gradient-to-r from-transparent via-primary to-transparent" />
-          </div>
+          <p className="text-sm text-[#6b635c] max-w-xl mx-auto">
+            Pezzi scelti con cura, pronti a entrare nella tua casa.
+          </p>
         </div>
 
         {/* Griglia: su mobile più simile allo Shop (2 colonne) */}
@@ -73,7 +69,7 @@ export default function FeaturedProducts() {
             <Link
               key={product.id}
               href={`/shop/${product.slug}`}
-              className={`group bg-white rounded-artistic overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 ${
+              className={`group bg-white rounded-artistic overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-1 ${
                 product.featured
                   ? 'ring-2 ring-amber-200/70 shadow-[0_20px_45px_-24px_rgba(180,83,9,0.45)]'
                   : ''

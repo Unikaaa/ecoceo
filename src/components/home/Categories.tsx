@@ -143,9 +143,12 @@ export default function Categories() {
   return (
     <section className="py-6 md:py-20 lg:py-24 bg-site">
       <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
-        <h2 className="text-lg sm:text-2xl md:text-4xl font-serif text-center mb-4 md:mb-14 lg:mb-16 text-gray-900">
-          Le Nostre Collezioni
-        </h2>
+        <div className="text-center mb-4 md:mb-14 lg:mb-16">
+          <p className="mb-2 text-[11px] sm:text-xs uppercase tracking-[0.16em] text-[#663399]/80">Collezioni</p>
+          <h2 className="text-lg sm:text-2xl md:text-4xl font-serif text-[#2a2420]">
+            Le Nostre Collezioni
+          </h2>
+        </div>
         {collections.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-600">Nessuna collezione disponibile</p>

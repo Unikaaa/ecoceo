@@ -53,10 +53,10 @@ export default function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 border-b transition-colors duration-300 ${
+      className={`sticky top-0 z-50 border-b transition-all duration-300 ${
         isScrolled
-          ? 'bg-white/80 backdrop-blur-md border-gray-200'
-          : 'bg-white/45 backdrop-blur-sm border-transparent'
+          ? 'bg-[#f7f3ee]/90 backdrop-blur-md border-[#e8e0d6] shadow-[0_8px_30px_-20px_rgba(42,36,32,0.35)]'
+          : 'bg-[#f7f3ee]/55 backdrop-blur-sm border-transparent'
       }`}
     >
       <div className="container mx-auto px-4">
@@ -79,10 +79,10 @@ export default function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-base transition-colors ${
+                className={`text-[15px] tracking-wide transition-colors ${
                   isActive(link.href)
                     ? 'text-[#663399] font-semibold'
-                    : 'text-gray-700 hover:text-primary'
+                    : 'text-[#2a2420]/80 hover:text-[#663399]'
                 }`}
               >
                 {link.label}
@@ -90,7 +90,7 @@ export default function Header() {
             ))}
             <button
               onClick={() => setIsContactModalOpen(true)}
-              className="text-base text-gray-700 hover:text-primary transition-colors"
+              className="text-[15px] tracking-wide text-[#2a2420]/80 hover:text-[#663399] transition-colors"
             >
               Contattaci
             </button>

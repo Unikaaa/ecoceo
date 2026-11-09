@@ -1,17 +1,17 @@
 import type { Metadata } from 'next'
-import { Inter, Playfair_Display } from 'next/font/google'
+import { DM_Sans, Fraunces } from 'next/font/google'
 import './globals.css'
 import LayoutWrapper from '@/components/layout/LayoutWrapper'
 
-const inter = Inter({ 
+const dmSans = DM_Sans({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-dm-sans',
   display: 'swap',
 })
 
-const playfair = Playfair_Display({ 
+const fraunces = Fraunces({
   subsets: ['latin'],
-  variable: '--font-playfair',
+  variable: '--font-fraunces',
   display: 'swap',
   weight: ['400', '500', '600', '700'],
 })
@@ -50,7 +50,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="it">
-      <body className={`${inter.variable} ${playfair.variable} font-sans`}>
+      <body className={`${dmSans.variable} ${fraunces.variable} font-sans`}>
         <LayoutWrapper>
           {children}
         </LayoutWrapper>

@@ -4,12 +4,16 @@
 
 @layer base {
   :root {
-    --font-sans: 'Inter', system-ui, sans-serif;
-    --font-serif: 'Playfair Display', Georgia, serif;
+    --font-sans: 'DM Sans', system-ui, sans-serif;
+    --font-serif: 'Fraunces', Georgia, serif;
     /* ============================================
        SFONDO SITO - MODIFICA QUI
        ============================================ */
-    --site-background: #ffff; /* Terracotta chiara - Cambia questo colore per modificare lo sfondo di tutto il sito */
+    --site-background: #f7f3ee; /* Sfondo ceramico caldo, soft */
+    --ink: #2a2420;
+    --muted: #6b635c;
+    --brand: #663399;
+    --terracotta: #c45824;
     /* ============================================ */
   }
 
@@ -26,8 +30,9 @@
 
   body {
     background-color: var(--site-background);
-    @apply text-gray-900 font-sans antialiased;
-    line-height: 1.5;
+    @apply text-[color:var(--ink)] font-sans antialiased;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
     overflow-x: hidden;
   }
 
@@ -196,4 +201,16 @@
 .animate-gradient-x {
   background-size: 200% 200%;
   animation: gradient-x 3s ease infinite;
+}
+
+
+@layer utilities {
+  .fade-rise {
+    animation: fadeInUp 0.7s ease-out both;
+  }
+  .soft-panel {
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    backdrop-filter: blur(6px);
+  }
 }
