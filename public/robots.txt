@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /api/
+Disallow: /dashboard/
 Disallow: /checkout/
 
-Sitemap: https://yourdomain.com/sitemap.xml
+Sitemap: https://sitoufficiale.vercel.app/sitemap.xml

@@ -4,9 +4,18 @@ import type { NextRequest } from 'next/server'
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
-  // Redirect /chisiamo to /about
+  // Redirect legacy /chisiamo to /about
   if (pathname === '/chisiamo' || pathname.startsWith('/chisiamo/')) {
     return NextResponse.redirect(new URL('/about', request.url))
+  }
+
+  // Alias istituzionali (backup se le page redirect non vengono raggiunte)
+  if (pathname === '/chi-siamo') {
+    return NextResponse.redirect(new URL('/about', request.url))
+  }
+  if (pathname === '/blog' || pathname.startsWith('/blog/')) {
+    const rest = pathname.replace(/^\/blog/, '') || ''
+    return NextResponse.redirect(new URL(`/news${rest}`, request.url))
   }
 
   // Redirect /shop# to /shop (remove hash)

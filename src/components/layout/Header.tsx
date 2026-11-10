@@ -47,8 +47,9 @@ export default function Header() {
   const navLinks = [
     { href: '/shop', label: 'Shop' },
     { href: '/personalizza', label: 'Personalizza' },
-    { href: '/news', label: 'News' },
+    { href: '/progetti', label: 'Progetti' },
     { href: '/about', label: 'Chi Siamo' },
+    { href: '/professionisti', label: 'Professionisti' },
   ]
 
   return (
@@ -88,12 +89,16 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
-            <button
-              onClick={() => setIsContactModalOpen(true)}
-              className="text-[15px] tracking-wide text-[#2a2420]/80 hover:text-[#663399] transition-colors"
+            <Link
+              href="/contatti"
+              className={`text-[15px] tracking-wide transition-colors ${
+                isActive('/contatti')
+                  ? 'text-[#663399] font-semibold'
+                  : 'text-[#2a2420]/80 hover:text-[#663399]'
+              }`}
             >
-              Contattaci
-            </button>
+              Contatti
+            </Link>
           </nav>
 
           {/* Right side - Social, Search & Cart */}
@@ -200,15 +205,16 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
-            <button
-              onClick={() => {
-                setIsContactModalOpen(true)
-                setIsMobileMenuOpen(false)
-              }}
-              className="h-10 px-3 text-left rounded-xl text-[13px] text-gray-800 bg-white border border-gray-100 hover:bg-gray-50"
+            <Link
+              href="/contatti"
+              className={`h-10 px-3 flex items-center rounded-xl text-[13px] ${
+                isActive('/contatti')
+                  ? 'text-[#663399] bg-[#663399]/10 font-semibold border border-[#663399]/20'
+                  : 'text-gray-800 bg-white border border-gray-100 hover:bg-gray-50'
+              }`}
             >
-              Contattaci
-            </button>
+              Contatti
+            </Link>
           </nav>
         </div>
       )}
