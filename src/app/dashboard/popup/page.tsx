@@ -133,6 +133,7 @@ export default function PopupDashboardPage() {
     try {
       const response = await fetch('/api/dashboard/auth', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password }),
       })

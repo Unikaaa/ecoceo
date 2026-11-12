@@ -1,21 +1,19 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { NextRequest } from 'next/server'
+import { getSupabaseAdmin, jsonNoStore } from '@/lib/supabaseServer'
+import { requireDashboard } from '@/lib/dashboardAuth'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
-const supabase = supabaseUrl && supabaseServiceKey 
-  ? createClient(supabaseUrl, supabaseServiceKey)
-  : null
-
-// GET - Recupera tutti i prodotti del magazzino
+// GET magazzino — SOLO dashboard (non pubblico)
 export async function GET(request: NextRequest) {
+  const denied = requireDashboard(request)
+  if (denied) return denied
+
   try {
+    const supabase = getSupabaseAdmin()
     if (!supabase) {
-      return NextResponse.json(
-        { error: 'Database non configurato' },
-        { status: 500 }
-      )
+      return jsonNoStore({ error: 'Database non configurato' }, { status: 500 })
     }
 
     const { data, error } = await supabase
@@ -25,30 +23,24 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('Errore recupero inventory:', error)
-      return NextResponse.json(
-        { error: 'Errore nel recupero del magazzino' },
-        { status: 500 }
-      )
+      return jsonNoStore({ error: 'Errore nel recupero del magazzino' }, { status: 500 })
     }
 
-    return NextResponse.json({ inventory: data || [] }, { status: 200 })
-  } catch (error: any) {
+    return jsonNoStore({ inventory: data || [] })
+  } catch (error) {
     console.error('Errore API inventory:', error)
-    return NextResponse.json(
-      { error: 'Errore nel recupero del magazzino' },
-      { status: 500 }
-    )
+    return jsonNoStore({ error: 'Errore nel recupero del magazzino' }, { status: 500 })
   }
 }
 
-// POST - Aggiunge un nuovo prodotto al magazzino
 export async function POST(request: NextRequest) {
+  const denied = requireDashboard(request)
+  if (denied) return denied
+
   try {
+    const supabase = getSupabaseAdmin()
     if (!supabase) {
-      return NextResponse.json(
-        { error: 'Database non configurato' },
-        { status: 500 }
-      )
+      return jsonNoStore({ error: 'Database non configurato' }, { status: 500 })
     }
 
     const body = await request.json()
@@ -59,28 +51,32 @@ export async function POST(request: NextRequest) {
       quantity,
       price,
       is_customizable,
+      is_featured,
       image_url,
+      short_description,
+      show_in_art_gallery,
+      art_gallery_order,
     } = body
 
-    // Validazione
-    if (!product_code || !product_name || !section || quantity === undefined || !price) {
-      return NextResponse.json(
-        { error: 'Campi obbligatori mancanti' },
-        { status: 400 }
-      )
+    if (!product_code || !product_name || !section || quantity === undefined || price === undefined) {
+      return jsonNoStore({ error: 'Campi obbligatori mancanti' }, { status: 400 })
     }
 
     const { data, error } = await supabase
       .from('inventory')
       .insert([
         {
-          product_code,
-          product_name,
-          section,
-          quantity: parseInt(quantity) || 0,
+          product_code: String(product_code).trim(),
+          product_name: String(product_name).trim(),
+          section: String(section).trim(),
+          quantity: parseInt(quantity, 10) || 0,
           price: parseFloat(price) || 0,
-          is_customizable: is_customizable || false,
+          is_customizable: !!is_customizable,
+          is_featured: !!is_featured,
           image_url: image_url || null,
+          short_description: short_description ? String(short_description).trim() : null,
+          show_in_art_gallery: !!show_in_art_gallery,
+          art_gallery_order: parseInt(art_gallery_order, 10) || 0,
         },
       ])
       .select()
@@ -88,53 +84,47 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('Errore inserimento prodotto:', error)
-      return NextResponse.json(
-        { error: 'Errore nell\'inserimento del prodotto' },
-        { status: 500 }
-      )
+      return jsonNoStore({ error: "Errore nell'inserimento del prodotto" }, { status: 500 })
     }
 
-    return NextResponse.json({ product: data }, { status: 201 })
-  } catch (error: any) {
+    return jsonNoStore({ product: data }, { status: 201 })
+  } catch (error) {
     console.error('Errore API inventory POST:', error)
-    return NextResponse.json(
-      { error: 'Errore nell\'inserimento del prodotto' },
-      { status: 500 }
-    )
+    return jsonNoStore({ error: "Errore nell'inserimento del prodotto" }, { status: 500 })
   }
 }
 
-// PATCH - Aggiorna un prodotto esistente
 export async function PATCH(request: NextRequest) {
+  const denied = requireDashboard(request)
+  if (denied) return denied
+
   try {
+    const supabase = getSupabaseAdmin()
     if (!supabase) {
-      return NextResponse.json(
-        { error: 'Database non configurato' },
-        { status: 500 }
-      )
+      return jsonNoStore({ error: 'Database non configurato' }, { status: 500 })
     }
 
     const body = await request.json()
     const { id, ...updates } = body
-
     if (!id) {
-      return NextResponse.json(
-        { error: 'ID prodotto mancante' },
-        { status: 400 }
-      )
+      return jsonNoStore({ error: 'ID prodotto mancante' }, { status: 400 })
     }
 
-    // Recupera il prodotto attuale per verificare se era esaurito
-    const { data: oldProduct } = await supabase
-      .from('inventory')
-      .select('quantity')
-      .eq('id', id)
-      .single()
-
-    // Rimuovi campi che non esistono nella tabella inventory
-    delete updates.availability_status
-    delete updates.production_status
-    delete updates.weight
+    if (typeof updates.product_name === 'string') updates.product_name = updates.product_name.trim()
+    if (typeof updates.product_code === 'string') updates.product_code = updates.product_code.trim()
+    if (typeof updates.section === 'string') updates.section = updates.section.trim()
+    if (typeof updates.short_description === 'string') {
+      updates.short_description = updates.short_description.trim() || null
+    }
+    if (updates.quantity !== undefined) updates.quantity = parseInt(updates.quantity, 10) || 0
+    if (updates.price !== undefined) updates.price = parseFloat(updates.price) || 0
+    if (updates.art_gallery_order !== undefined) {
+      updates.art_gallery_order = parseInt(updates.art_gallery_order, 10) || 0
+    }
+    if (updates.show_in_art_gallery !== undefined) {
+      updates.show_in_art_gallery = !!updates.show_in_art_gallery
+    }
+    if (updates.is_featured !== undefined) updates.is_featured = !!updates.is_featured
 
     const { data, error } = await supabase
       .from('inventory')
@@ -145,72 +135,41 @@ export async function PATCH(request: NextRequest) {
 
     if (error) {
       console.error('Errore aggiornamento prodotto:', error)
-      return NextResponse.json(
-        { error: 'Errore nell\'aggiornamento del prodotto' },
-        { status: 500 }
-      )
+      return jsonNoStore({ error: "Errore nell'aggiornamento del prodotto" }, { status: 500 })
     }
 
-    // Verifica se il prodotto è passato da esaurito a disponibile
-    const was_out_of_stock = oldProduct?.quantity === 0
-    const is_now_available = data.quantity > 0
-
-    return NextResponse.json(
-      { 
-        product: data,
-        was_out_of_stock,
-        is_now_available: was_out_of_stock && is_now_available,
-      },
-      { status: 200 }
-    )
-  } catch (error: any) {
+    return jsonNoStore({ product: data })
+  } catch (error) {
     console.error('Errore API inventory PATCH:', error)
-    return NextResponse.json(
-      { error: 'Errore nell\'aggiornamento del prodotto' },
-      { status: 500 }
-    )
+    return jsonNoStore({ error: "Errore nell'aggiornamento del prodotto" }, { status: 500 })
   }
 }
 
-// DELETE - Elimina un prodotto
 export async function DELETE(request: NextRequest) {
+  const denied = requireDashboard(request)
+  if (denied) return denied
+
   try {
+    const supabase = getSupabaseAdmin()
     if (!supabase) {
-      return NextResponse.json(
-        { error: 'Database non configurato' },
-        { status: 500 }
-      )
+      return jsonNoStore({ error: 'Database non configurato' }, { status: 500 })
     }
 
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
-
     if (!id) {
-      return NextResponse.json(
-        { error: 'ID prodotto mancante' },
-        { status: 400 }
-      )
+      return jsonNoStore({ error: 'ID prodotto mancante' }, { status: 400 })
     }
 
-    const { error } = await supabase
-      .from('inventory')
-      .delete()
-      .eq('id', id)
-
+    const { error } = await supabase.from('inventory').delete().eq('id', id)
     if (error) {
       console.error('Errore eliminazione prodotto:', error)
-      return NextResponse.json(
-        { error: 'Errore nell\'eliminazione del prodotto' },
-        { status: 500 }
-      )
+      return jsonNoStore({ error: "Errore nell'eliminazione del prodotto" }, { status: 500 })
     }
 
-    return NextResponse.json({ success: true }, { status: 200 })
-  } catch (error: any) {
+    return jsonNoStore({ success: true })
+  } catch (error) {
     console.error('Errore API inventory DELETE:', error)
-    return NextResponse.json(
-      { error: 'Errore nell\'eliminazione del prodotto' },
-      { status: 500 }
-    )
+    return jsonNoStore({ error: "Errore nell'eliminazione del prodotto" }, { status: 500 })
   }
 }

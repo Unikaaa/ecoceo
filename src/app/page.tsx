@@ -1,26 +1,26 @@
 import Hero from '@/components/home/Hero'
-import BrandIntro from '@/components/home/BrandIntro'
-import LinesOverview from '@/components/home/LinesOverview'
+import CollectionsGateway from '@/components/home/CollectionsGateway'
 import FeaturedProducts from '@/components/home/FeaturedProducts'
 import Customization from '@/components/home/Customization'
-import ProcessTeaser from '@/components/home/ProcessTeaser'
+import WorksGallery from '@/components/home/WorksGallery'
 import MaterialsTeaser from '@/components/home/MaterialsTeaser'
-import ProjectsTeaser from '@/components/home/ProjectsTeaser'
+import CustomProjectTeaser from '@/components/home/CustomProjectTeaser'
 import ProfessionalsTeaser from '@/components/home/ProfessionalsTeaser'
+import BrandIntro from '@/components/home/BrandIntro'
 import CTA from '@/components/home/CTA'
 
 export default function HomePage() {
   return (
     <>
       <Hero />
-      <BrandIntro />
-      <LinesOverview />
+      <CollectionsGateway />
       <FeaturedProducts />
       <Customization />
-      <ProcessTeaser />
+      <WorksGallery />
       <MaterialsTeaser />
-      <ProjectsTeaser />
+      <CustomProjectTeaser />
       <ProfessionalsTeaser />
+      <BrandIntro />
       <CTA />
     </>
   )

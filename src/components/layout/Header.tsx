@@ -56,8 +56,8 @@ export default function Header() {
     <header
       className={`sticky top-0 z-50 border-b transition-all duration-300 ${
         isScrolled
-          ? 'bg-[#f7f3ee]/90 backdrop-blur-md border-[#e8e0d6] shadow-[0_8px_30px_-20px_rgba(42,36,32,0.35)]'
-          : 'bg-[#f7f3ee]/55 backdrop-blur-sm border-transparent'
+          ? 'bg-[color:var(--ivory)]/92 backdrop-blur-md border-[color:var(--sand)] shadow-[0_8px_30px_-20px_rgba(38,37,34,0.28)]'
+          : 'bg-[color:var(--ivory)]/55 backdrop-blur-sm border-transparent'
       }`}
     >
       <div className="container mx-auto px-4">

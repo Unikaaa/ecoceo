@@ -258,7 +258,28 @@ function ShopPageInner() {
       )}
 
       {/* Griglia Prodotti */}
-      <ProductGrid products={products} />
+      {!isLoading && products.length === 0 ? (
+        <div className="mx-auto max-w-xl text-center py-10 sm:py-14">
+          <p className="font-serif text-xl text-[#2a2420] mb-2">
+            {collectionSlug ? 'Nessun prodotto in questa collezione' : 'Nessun prodotto disponibile'}
+          </p>
+          <p className="text-sm text-[#6b635c] leading-relaxed mb-5">
+            {collectionSlug
+              ? 'La collezione è attiva, ma in magazzino non ci sono ancora prodotti con questa sezione. In dashboard, assegna ai prodotti lo stesso slug della collezione.'
+              : 'I prodotti pubblicati dallo shop arrivano dal magazzino. Aggiungili dalla dashboard.'}
+          </p>
+          {collectionSlug ? (
+            <button
+              onClick={() => router.push('/shop')}
+              className="text-sm text-[#663399] hover:underline"
+            >
+              Vedi tutti i prodotti
+            </button>
+          ) : null}
+        </div>
+      ) : (
+        <ProductGrid products={products} />
+      )}
     </div>
   )
 }

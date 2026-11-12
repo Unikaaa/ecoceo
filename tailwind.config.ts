@@ -36,13 +36,21 @@ const config: Config = {
           DEFAULT: '#663399', // viola ceramico
         },
         ceramic: {
-          white: '#faf9f7', // Bianco porcellana
-          terracotta: '#e15a2a',
-          beige: '#e8e3d8',
-          sand: '#d4c5b0',
-          earth: '#8b7355',
-          clay: '#a67c52',
+          white: '#fcfbf8',
+          ivory: '#f7f5f0',
+          terracotta: '#c45824',
+          beige: '#e8e2d8',
+          sand: '#e8e2d8',
+          earth: '#a68a67',
+          clay: '#c4a77d',
+          bronze: '#a68a67',
+          anthracite: '#262522',
+          gold: '#c4a77d',
         },
+      },
+      transitionDuration: {
+        soft: '500ms',
+        gallery: '700ms',
       },
       fontFamily: {
         sans: ['var(--font-dm-sans)', 'DM Sans', 'system-ui', 'sans-serif'],

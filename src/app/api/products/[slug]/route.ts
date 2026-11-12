@@ -1,21 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { NextRequest } from 'next/server'
+import { getSupabaseAdmin, jsonNoStore } from '@/lib/supabaseServer'
 
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
-
-const supabase = supabaseUrl && supabaseServiceKey 
-  ? createClient(supabaseUrl, supabaseServiceKey)
-  : null
-
-// Helper per generare slug
 function generateSlugBase(input: string): string {
   return (input || '')
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // rimuove accenti/diacritics
+    .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)/g, '')
 }
@@ -28,47 +21,37 @@ function generateProductSlug(item: any): string {
   return `prodotto-${idPart}`
 }
 
-// Helper per trasformare item Supabase in Product
 function transformInventoryToProduct(item: any) {
   const slug = generateProductSlug(item)
-  
-  // Gestisci immagini: usa image_url se presente, altrimenti placeholder
-  const images: string[] = item.image_url 
-    ? [item.image_url] 
-    : ['/placeholder-product.jpg']
-  
+  const images: string[] = item.image_url ? [item.image_url] : ['/placeholder-product.jpg']
+  const priceRaw = item.price ?? 0
+
   return {
     id: item.id,
     inventory_id: item.id,
-    name: item.product_name,
-    description: item.product_name,
-    price: parseFloat(item.price.toString()),
-    images: images,
-    category: item.section,
-    inStock: item.quantity > 0,
+    name: (item.product_name || '').trim(),
+    description: (item.product_name || '').trim(),
+    price: typeof priceRaw === 'number' ? priceRaw : parseFloat(String(priceRaw)) || 0,
+    images,
+    category: (item.section || '').trim(),
+    inStock: Number(item.quantity) > 0,
     maxQuantity: typeof item.quantity === 'number' ? item.quantity : parseInt(item.quantity, 10) || 0,
-    slug: slug,
-    featured: false,
+    slug,
+    featured: item.is_featured || false,
   }
 }
 
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { slug: string } }
 ) {
   try {
+    const supabase = getSupabaseAdmin()
     if (!supabase) {
-      return NextResponse.json(
-        { error: 'Database non configurato' },
-        { status: 500 }
-      )
+      return jsonNoStore({ error: 'Database non configurato' }, { status: 500 })
     }
 
-    // Decodifica lo slug
     const decodedSlug = decodeURIComponent(params.slug)
-    
-    // Cerca il prodotto per slug
-    // Prima recupera tutti i prodotti (anche esauriti per mostrare la pagina)
     const { data: allItems, error } = await supabase
       .from('inventory')
       .select('*')
@@ -76,32 +59,21 @@ export async function GET(
 
     if (error) {
       console.error('Errore recupero prodotti:', error)
-      return NextResponse.json(
-        { error: 'Errore nel recupero dei prodotti' },
-        { status: 500 }
-      )
+      return jsonNoStore({ error: 'Errore nel recupero dei prodotti' }, { status: 500 })
     }
 
-    // Trasforma e cerca per slug (confronto case-insensitive)
     const products = (allItems || []).map(transformInventoryToProduct)
-    const product = products.find((p) => 
-      p.slug.toLowerCase() === decodedSlug.toLowerCase() || 
-      p.slug === decodedSlug
+    const product = products.find(
+      (p) => p.slug.toLowerCase() === decodedSlug.toLowerCase() || p.slug === decodedSlug
     )
 
     if (!product) {
-      return NextResponse.json(
-        { error: 'Prodotto non trovato' },
-        { status: 404 }
-      )
+      return jsonNoStore({ error: 'Prodotto non trovato' }, { status: 404 })
     }
 
-    return NextResponse.json({ product }, { status: 200 })
-  } catch (error: any) {
+    return jsonNoStore({ product })
+  } catch (error) {
     console.error('Errore API prodotto:', error)
-    return NextResponse.json(
-      { error: 'Errore nel recupero del prodotto' },
-      { status: 500 }
-    )
+    return jsonNoStore({ error: 'Errore nel recupero del prodotto' }, { status: 500 })
   }
 }

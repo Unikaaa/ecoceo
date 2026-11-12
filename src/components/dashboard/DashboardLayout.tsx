@@ -61,7 +61,7 @@ export default function DashboardLayout({ children, onLogout, activeSection }: D
           <Link
             href="/dashboard"
             className={`w-full block px-4 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors ${
-              isActive('/dashboard') && !isActive('/dashboard/contacts') && !isActive('/dashboard/magazzino') && !isActive('/dashboard/personalizza') && !isActive('/dashboard/progetti') && !isActive('/dashboard/contenuti') && !isActive('/dashboard/popup') ? 'bg-gray-100 font-medium text-[#663399]' : ''
+              isActive('/dashboard') && !isActive('/dashboard/contacts') && !isActive('/dashboard/magazzino') && !isActive('/dashboard/creazioni') && !isActive('/dashboard/personalizza') && !isActive('/dashboard/progetti') && !isActive('/dashboard/contenuti') && !isActive('/dashboard/popup') ? 'bg-gray-100 font-medium text-[#663399]' : ''
             }`}
           >
             Menu
@@ -82,6 +82,14 @@ export default function DashboardLayout({ children, onLogout, activeSection }: D
             }`}
           >
             Magazzino
+          </Link>
+          <Link
+            href="/dashboard/creazioni"
+            className={`w-full block px-4 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors ${
+              isActive('/dashboard/creazioni') ? 'bg-gray-100 font-medium text-[#663399]' : ''
+            }`}
+          >
+            Creazioni
           </Link>
           <Link
             href="/dashboard/personalizza"

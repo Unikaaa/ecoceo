@@ -64,7 +64,7 @@ export default function InventorySection() {
   const fetchInventory = async () => {
     try {
       setIsLoading(true)
-      const response = await fetch('/api/inventory')
+      const response = await fetch('/api/inventory', { credentials: 'include', cache: 'no-store' })
       const data = await response.json()
       if (response.ok && data.inventory) {
         setInventory(data.inventory)
@@ -78,7 +78,10 @@ export default function InventorySection() {
 
   const fetchCollections = async () => {
     try {
-      const response = await fetch(`/api/collections?t=${Date.now()}`)
+      const response = await fetch(`/api/collections?admin=1&t=${Date.now()}`, {
+        credentials: 'include',
+        cache: 'no-store',
+      })
       const data = await response.json()
       if (response.ok && data.collections) {
         // Filtra solo collezioni attive e ordina per display_order
@@ -124,6 +127,7 @@ export default function InventorySection() {
         // Aggiorna prodotto esistente
         const response = await fetch('/api/inventory', {
           method: 'PATCH',
+          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id: editingId, ...payload }),
         })
@@ -152,6 +156,7 @@ export default function InventorySection() {
         // Crea nuovo prodotto
         const response = await fetch('/api/inventory', {
           method: 'POST',
+          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         })
@@ -189,6 +194,7 @@ export default function InventorySection() {
     try {
       const response = await fetch('/api/inventory', {
         method: 'PATCH',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: item.id, is_featured: !item.is_featured }),
       })
@@ -210,6 +216,7 @@ export default function InventorySection() {
     try {
       const response = await fetch(`/api/inventory?id=${id}`, {
         method: 'DELETE',
+        credentials: 'include',
       })
 
       if (response.ok) {

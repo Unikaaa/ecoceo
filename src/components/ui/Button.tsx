@@ -9,30 +9,30 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ variant = 'primary', size = 'md', className, disabled, children, ...props }, ref) => {
-    const baseStyles = 'inline-flex items-center justify-center font-medium tracking-wide transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none min-h-[44px]'
-    
+    const baseStyles =
+      'inline-flex items-center justify-center font-medium tracking-wide transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none min-h-[44px]'
+
     const variants = {
-      primary: 'bg-primary text-white hover:bg-[#c45824] focus:ring-primary shadow-sm hover:shadow-md',
-      secondary: 'bg-accent text-white hover:bg-[#c45824] focus:ring-accent',
-      outline: 'border-2 border-primary text-primary hover:bg-[#c45824] hover:text-white hover:border-[#c45824] focus:ring-primary',
-      ghost: 'text-gray-700 hover:bg-[#c45824] hover:text-white focus:ring-gray-500',
+      primary:
+        'bg-primary text-white hover:bg-[#5a2d8a] focus:ring-primary shadow-sm hover:shadow-md',
+      secondary:
+        'bg-[color:var(--bronze)] text-white hover:bg-[#8f7556] focus:ring-[color:var(--bronze)]',
+      outline:
+        'border border-[color:var(--anthracite)]/25 text-[color:var(--anthracite)] hover:border-[color:var(--bronze)] hover:text-[color:var(--bronze)] focus:ring-[color:var(--bronze)] bg-transparent',
+      ghost:
+        'text-[color:var(--anthracite)] hover:bg-[color:var(--sand)] focus:ring-[color:var(--sand)]',
     }
-    
+
     const sizes = {
-      sm: 'px-3 py-2 text-xs sm:text-sm rounded-artistic',
-      md: 'px-4 py-2.5 text-sm sm:text-base rounded-artistic',
+      sm: 'px-3 py-2 text-xs sm:text-sm rounded-xl',
+      md: 'px-4 py-2.5 text-sm sm:text-base rounded-xl',
       lg: 'px-6 py-3 text-sm sm:text-base rounded-xl',
     }
 
     return (
       <button
         ref={ref}
-        className={cn(
-          baseStyles,
-          variants[variant],
-          sizes[size],
-          className
-        )}
+        className={cn(baseStyles, variants[variant], sizes[size], className)}
         disabled={disabled}
         {...props}
       >

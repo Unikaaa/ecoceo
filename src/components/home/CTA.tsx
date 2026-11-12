@@ -3,12 +3,11 @@ import Button from '@/components/ui/Button'
 
 export default function CTA() {
   return (
-    <section className="py-12 md:py-20 bg-site">
+    <section className="section-shell bg-site">
       <div className="container mx-auto px-4 text-center max-w-3xl">
-        <h2 className="text-2xl sm:text-4xl font-serif mb-4 text-[#2a2420]">
-          Shop o progetto su misura
-        </h2>
-        <p className="text-sm sm:text-base mb-8 text-[#6b635c] leading-relaxed">
+        <div className="organic-divider mb-10" />
+        <h2 className="section-title mb-4">Shop o progetto su misura</h2>
+        <p className="section-lead mx-auto mb-8">
           Scegli un pezzo dal catalogo oppure avvia una personalizzazione con il laboratorio.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -24,7 +23,7 @@ export default function CTA() {
           </Link>
           <Link href="/contatti">
             <Button size="lg" variant="outline">
-              Richiedi un progetto
+              Contattaci
             </Button>
           </Link>
         </div>

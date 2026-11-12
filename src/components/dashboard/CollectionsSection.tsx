@@ -59,7 +59,7 @@ export default function CollectionsSection() {
   const fetchCollections = async () => {
     try {
       setIsLoading(true)
-      const response = await fetch('/api/collections')
+      const response = await fetch('/api/collections?admin=1', { credentials: 'include', cache: 'no-store' })
       const data = await response.json()
       if (response.ok && data.collections) {
         setCollections(data.collections)
@@ -101,6 +101,7 @@ export default function CollectionsSection() {
         // Aggiorna collezione esistente
         const response = await fetch('/api/collections', {
           method: 'PATCH',
+          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id: editingId, ...payload }),
         })
@@ -115,6 +116,7 @@ export default function CollectionsSection() {
         // Crea nuova collezione
         const response = await fetch('/api/collections', {
           method: 'POST',
+          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         })
@@ -155,6 +157,7 @@ export default function CollectionsSection() {
     try {
       const response = await fetch(`/api/collections?id=${id}`, {
         method: 'DELETE',
+        credentials: 'include',
       })
 
       if (response.ok) {

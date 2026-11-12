@@ -1,65 +1,72 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { NextRequest } from 'next/server'
+import { getSupabaseAdmin, jsonNoStore } from '@/lib/supabaseServer'
+import { requireDashboard } from '@/lib/dashboardAuth'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
-const supabase = supabaseUrl && supabaseServiceKey 
-  ? createClient(supabaseUrl, supabaseServiceKey)
-  : null
-
-// GET - Recupera tutte le collezioni
+// GET collezioni
+// - pubblico: solo attive (vetrina shop)
+// - dashboard (?admin=1 + auth): tutte
 export async function GET(request: NextRequest) {
   try {
+    const supabase = getSupabaseAdmin()
     if (!supabase) {
-      return NextResponse.json(
-        { error: 'Database non configurato' },
-        { status: 500 }
-      )
+      return jsonNoStore({ error: 'Database non configurato' }, { status: 500 })
     }
 
-    // Query base - ordina per display_order
-    let query = supabase
-      .from('collections')
-      .select('*')
-      .order('display_order', { ascending: true })
-      .order('name', { ascending: true })
+    const admin = request.nextUrl.searchParams.get('admin') === '1'
+    const artGallery = request.nextUrl.searchParams.get('artGallery') === 'true'
+    if (admin) {
+      const denied = requireDashboard(request)
+      if (denied) return denied
+    }
+
+    let query = supabase.from('collections').select('*')
+
+    if (artGallery) {
+      query = query
+        .eq('show_in_art_gallery', true)
+        .order('art_gallery_order', { ascending: true })
+        .order('name', { ascending: true })
+    } else {
+      query = query
+        .order('display_order', { ascending: true })
+        .order('name', { ascending: true })
+    }
+
+    if (!admin) {
+      query = query.eq('is_active', true)
+    }
 
     const { data, error } = await query
-
-    // Filtra per is_active lato server se presente
-    const filteredData = data?.filter((c: any) => {
-      // Se is_active non esiste, mostra tutte le collezioni
-      if (c.is_active === undefined) return true
-      return c.is_active === true
-    })
-
     if (error) {
+      if (artGallery && /show_in_art_gallery|art_gallery_order/i.test(error.message || '')) {
+        return jsonNoStore({
+          collections: [],
+          warning:
+            'Colonne galleria non presenti. Esegui supabase/add_art_gallery_flags.sql su Supabase.',
+        })
+      }
       console.error('Errore recupero collezioni:', error)
-      return NextResponse.json(
-        { error: 'Errore nel recupero delle collezioni' },
-        { status: 500 }
-      )
+      return jsonNoStore({ error: 'Errore nel recupero delle collezioni' }, { status: 500 })
     }
 
-    return NextResponse.json({ collections: filteredData || [] }, { status: 200 })
-  } catch (error: any) {
+    return jsonNoStore({ collections: data || [] })
+  } catch (error) {
     console.error('Errore API collezioni:', error)
-    return NextResponse.json(
-      { error: 'Errore nel recupero delle collezioni' },
-      { status: 500 }
-    )
+    return jsonNoStore({ error: 'Errore nel recupero delle collezioni' }, { status: 500 })
   }
 }
 
-// POST - Aggiunge una nuova collezione
 export async function POST(request: NextRequest) {
+  const denied = requireDashboard(request)
+  if (denied) return denied
+
   try {
+    const supabase = getSupabaseAdmin()
     if (!supabase) {
-      return NextResponse.json(
-        { error: 'Database non configurato' },
-        { status: 500 }
-      )
+      return jsonNoStore({ error: 'Database non configurato' }, { status: 500 })
     }
 
     const body = await request.json()
@@ -71,27 +78,27 @@ export async function POST(request: NextRequest) {
       hover_image_url,
       display_order,
       is_active,
+      show_in_art_gallery,
+      art_gallery_order,
     } = body
 
-    // Validazione
     if (!name || !slug) {
-      return NextResponse.json(
-        { error: 'Nome e slug sono obbligatori' },
-        { status: 400 }
-      )
+      return jsonNoStore({ error: 'Nome e slug sono obbligatori' }, { status: 400 })
     }
 
     const { data, error } = await supabase
       .from('collections')
       .insert([
         {
-          name,
-          slug,
+          name: String(name).trim(),
+          slug: String(slug).trim(),
           description: description || null,
           image_url: image_url || null,
           hover_image_url: hover_image_url || null,
           display_order: display_order || 0,
           is_active: is_active !== undefined ? is_active : true,
+          show_in_art_gallery: !!show_in_art_gallery,
+          art_gallery_order: parseInt(art_gallery_order, 10) || 0,
         },
       ])
       .select()
@@ -99,40 +106,40 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('Errore inserimento collezione:', error)
-      return NextResponse.json(
-        { error: 'Errore nell\'inserimento della collezione' },
-        { status: 500 }
-      )
+      return jsonNoStore({ error: "Errore nell'inserimento della collezione" }, { status: 500 })
     }
 
-    return NextResponse.json({ collection: data }, { status: 201 })
-  } catch (error: any) {
+    return jsonNoStore({ collection: data }, { status: 201 })
+  } catch (error) {
     console.error('Errore API collezioni POST:', error)
-    return NextResponse.json(
-      { error: 'Errore nell\'inserimento della collezione' },
-      { status: 500 }
-    )
+    return jsonNoStore({ error: "Errore nell'inserimento della collezione" }, { status: 500 })
   }
 }
 
-// PATCH - Aggiorna una collezione esistente
 export async function PATCH(request: NextRequest) {
+  const denied = requireDashboard(request)
+  if (denied) return denied
+
   try {
+    const supabase = getSupabaseAdmin()
     if (!supabase) {
-      return NextResponse.json(
-        { error: 'Database non configurato' },
-        { status: 500 }
-      )
+      return jsonNoStore({ error: 'Database non configurato' }, { status: 500 })
     }
 
     const body = await request.json()
     const { id, ...updates } = body
-
     if (!id) {
-      return NextResponse.json(
-        { error: 'ID collezione mancante' },
-        { status: 400 }
-      )
+      return jsonNoStore({ error: 'ID collezione mancante' }, { status: 400 })
+    }
+
+    if (updates.art_gallery_order !== undefined) {
+      updates.art_gallery_order = parseInt(updates.art_gallery_order, 10) || 0
+    }
+    if (updates.show_in_art_gallery !== undefined) {
+      updates.show_in_art_gallery = !!updates.show_in_art_gallery
+    }
+    if (updates.display_order !== undefined) {
+      updates.display_order = parseInt(updates.display_order, 10) || 0
     }
 
     const { data, error } = await supabase
@@ -144,61 +151,40 @@ export async function PATCH(request: NextRequest) {
 
     if (error) {
       console.error('Errore aggiornamento collezione:', error)
-      return NextResponse.json(
-        { error: 'Errore nell\'aggiornamento della collezione' },
-        { status: 500 }
-      )
+      return jsonNoStore({ error: "Errore nell'aggiornamento della collezione" }, { status: 500 })
     }
 
-    return NextResponse.json({ collection: data }, { status: 200 })
-  } catch (error: any) {
+    return jsonNoStore({ collection: data })
+  } catch (error) {
     console.error('Errore API collezioni PATCH:', error)
-    return NextResponse.json(
-      { error: 'Errore nell\'aggiornamento della collezione' },
-      { status: 500 }
-    )
+    return jsonNoStore({ error: "Errore nell'aggiornamento della collezione" }, { status: 500 })
   }
 }
 
-// DELETE - Elimina definitivamente una collezione
 export async function DELETE(request: NextRequest) {
+  const denied = requireDashboard(request)
+  if (denied) return denied
+
   try {
+    const supabase = getSupabaseAdmin()
     if (!supabase) {
-      return NextResponse.json(
-        { error: 'Database non configurato' },
-        { status: 500 }
-      )
+      return jsonNoStore({ error: 'Database non configurato' }, { status: 500 })
     }
 
-    const { searchParams } = new URL(request.url)
-    const id = searchParams.get('id')
-
+    const id = request.nextUrl.searchParams.get('id')
     if (!id) {
-      return NextResponse.json(
-        { error: 'ID collezione mancante' },
-        { status: 400 }
-      )
+      return jsonNoStore({ error: 'ID collezione mancante' }, { status: 400 })
     }
 
-    const { error } = await supabase
-      .from('collections')
-      .delete()
-      .eq('id', id)
-
+    const { error } = await supabase.from('collections').delete().eq('id', id)
     if (error) {
       console.error('Errore eliminazione collezione:', error)
-      return NextResponse.json(
-        { error: 'Errore nell\'eliminazione della collezione' },
-        { status: 500 }
-      )
+      return jsonNoStore({ error: "Errore nell'eliminazione della collezione" }, { status: 500 })
     }
 
-    return NextResponse.json({ success: true }, { status: 200 })
-  } catch (error: any) {
+    return jsonNoStore({ success: true })
+  } catch (error) {
     console.error('Errore API collezioni DELETE:', error)
-    return NextResponse.json(
-      { error: 'Errore nell\'eliminazione della collezione' },
-      { status: 500 }
-    )
+    return jsonNoStore({ error: "Errore nell'eliminazione della collezione" }, { status: 500 })
   }
 }

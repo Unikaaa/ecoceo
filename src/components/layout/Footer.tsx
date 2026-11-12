@@ -4,7 +4,7 @@ import { UNIKA_LINES } from '@/lib/lines'
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-b from-[#f7f3ee] to-[#efe8df] border-t border-[#e4dbd0] mt-auto">
+    <footer className="bg-gradient-to-b from-[color:var(--ivory)] to-[#efe8df] border-t border-[color:var(--sand)] mt-auto">
       <div className="container mx-auto px-3 sm:px-4 py-8 md:py-12">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           <div className="col-span-2 lg:col-span-1">

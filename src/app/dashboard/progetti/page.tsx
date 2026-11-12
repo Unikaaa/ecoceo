@@ -28,6 +28,7 @@ export default function ProgettiPage() {
     try {
       const response = await fetch('/api/dashboard/auth', {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -49,6 +50,7 @@ export default function ProgettiPage() {
 
   const handleLogout = () => {
     sessionStorage.removeItem('dashboard_auth')
+    fetch('/api/dashboard/auth', { method: 'DELETE', credentials: 'include' }).catch(() => {})
     setIsAuthenticated(false)
     setPassword('')
   }

@@ -1,25 +1,33 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useTranslations } from '@/lib/i18n/hooks'
 import { Product } from '@/lib/data/mockProducts'
 import { formatPrice } from '@/lib/utils'
 import Button from '@/components/ui/Button'
 
 export default function FeaturedProducts() {
-  const t = useTranslations('home')
   const [featured, setFeatured] = useState<Product[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const fetchFeatured = async () => {
       try {
-        const response = await fetch('/api/products?featured=true&limit=3')
+        const response = await fetch('/api/products?featured=true&limit=6', {
+          cache: 'no-store',
+        })
         const data = await response.json()
-        if (response.ok && data.products) {
-          setFeatured(data.products.slice(0, 3))
+        if (response.ok && data.products?.length) {
+          setFeatured(data.products.slice(0, 6))
+          return
+        }
+
+        // Fallback non inventato: ultimi prodotti reali se nessun featured
+        const fallback = await fetch('/api/products?limit=6', { cache: 'no-store' })
+        const fallbackData = await fallback.json()
+        if (fallback.ok && fallbackData.products) {
+          setFeatured(fallbackData.products.slice(0, 6))
         }
       } catch (error) {
         console.error('Errore caricamento prodotti featured:', error)
@@ -31,117 +39,72 @@ export default function FeaturedProducts() {
   }, [])
 
   return (
-    <section className="py-6 md:py-20 lg:py-24 bg-site relative overflow-hidden">
-      {/* Elementi decorativi di sfondo */}
-      <div className="absolute inset-0 pointer-events-none hidden md:block">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-primary/5 via-transparent to-transparent rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-accent/5 via-transparent to-transparent rounded-full blur-3xl" />
-      </div>
-
-      <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 relative z-10">
-        {/* Titolo elegante */}
-        <div className="text-center mb-4 md:mb-14 lg:mb-16">
-          <p className="mb-2 text-[11px] sm:text-xs uppercase tracking-[0.16em] text-[#663399]/80">
-            Selezione
-          </p>
-          <h2 className="text-lg sm:text-2xl md:text-5xl lg:text-6xl font-serif text-[#2a2420] mb-2 md:mb-3 leading-tight">
-          {t('featuredProducts')}
-        </h2>
-          <p className="text-sm text-[#6b635c] max-w-xl mx-auto">
-            Pezzi scelti con cura, pronti a entrare nella tua casa.
+    <section className="section-shell bg-site relative overflow-hidden">
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="text-center mb-10 md:mb-14">
+          <p className="section-eyebrow">Selezione</p>
+          <h2 className="section-title mb-3">Le creazioni più amate</h2>
+          <p className="section-lead mx-auto">
+            Prodotti reali dal catalogo, con prezzi e disponibilità aggiornati.
           </p>
         </div>
 
-        {/* Griglia: su mobile più simile allo Shop (2 colonne) */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6 md:gap-8 lg:gap-10 xl:gap-12 max-w-7xl mx-auto">
-          {isLoading && [0, 1, 2].map((idx) => (
-            <div key={`skeleton-${idx}`} className="bg-white rounded-artistic overflow-hidden shadow-md animate-pulse">
-              <div className="aspect-[4/5] bg-gray-200" />
-              <div className="p-6 md:p-8 space-y-3">
-                <div className="h-6 bg-gray-200 rounded w-3/4" />
-                <div className="h-4 bg-gray-200 rounded w-full" />
-                <div className="h-4 bg-gray-200 rounded w-2/3" />
-                <div className="h-8 bg-gray-200 rounded w-1/3 mt-6" />
-              </div>
-            </div>
-          ))}
-          {!isLoading && featured.map((product, index) => (
-            <Link
-              key={product.id}
-              href={`/shop/${product.slug}`}
-              className={`group bg-white rounded-artistic overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-1 ${
-                product.featured
-                  ? 'ring-2 ring-amber-200/70 shadow-[0_20px_45px_-24px_rgba(180,83,9,0.45)]'
-                  : ''
-              }`}
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              {/* Immagine prodotto */}
-              <div className="aspect-[1/1] sm:aspect-[4/5] bg-gradient-to-br from-ceramic-beige via-ceramic-white to-ceramic-sand relative overflow-hidden">
-                {product.images && product.images[0] && product.images[0] !== '/placeholder-product.jpg' ? (
-                  <Image
-                    src={product.images[0]}
-                    alt={product.name}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 1024px) 100vw, 33vw"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <span className="text-gray-400 text-sm font-medium">Immagine</span>
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                {/* Overlay hover elegante */}
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                
-                {/* Badge favorito (allineato allo Shop) */}
-                {product.featured && (
-                  <div className="absolute top-3 left-3 z-20">
-                    <div className="inline-flex items-center gap-2 px-2.5 py-1.5 bg-gradient-to-r from-amber-50/95 to-yellow-50/95 backdrop-blur-sm text-amber-900 rounded-xl shadow-lg border border-amber-200/90">
-                      <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-sm">
-                        <svg className="w-3 h-3" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.922-.755 1.688-1.539 1.118l-2.8-2.034a1 1 0 00-1.176 0l-2.8 2.034c-.783.57-1.838-.196-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81H7.03a1 1 0 00.95-.69l1.07-3.292z" />
-                        </svg>
-                      </span>
-                      <div className="leading-tight">
-                        <p className="text-[11px] font-bold uppercase tracking-wider">Favorito</p>
-                        <p className="text-[10px] text-amber-700 font-medium">Piu venduto</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Contenuto prodotto */}
-              <div className="p-3.5 sm:p-4 md:p-7">
-                <h3 className="text-base sm:text-xl md:text-2xl font-serif text-gray-900 mb-2 group-hover:text-primary transition-colors duration-300 leading-tight">
-                  {product.name}
-                </h3>
-                <p className="text-gray-600 text-xs sm:text-sm mb-2.5 line-clamp-2 leading-relaxed">
-                  {product.description}
-                </p>
-                <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                  <p className="text-lg sm:text-2xl md:text-3xl font-serif font-semibold text-primary">
-                  {formatPrice(product.price)}
-                </p>
-                  <div className="flex items-center gap-2 text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <span className="text-sm font-medium">Scopri</span>
-                    <svg className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
-                  </div>
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 max-w-7xl mx-auto">
+          {isLoading &&
+            [0, 1, 2, 3].map((idx) => (
+              <div key={`skeleton-${idx}`} className="overflow-hidden rounded-2xl border border-sand bg-warm animate-pulse">
+                <div className="aspect-[4/5] bg-sand/70" />
+                <div className="p-4 space-y-3">
+                  <div className="h-5 bg-sand rounded w-3/4" />
+                  <div className="h-4 bg-sand rounded w-1/3" />
                 </div>
               </div>
-            </Link>
-          ))}
+            ))}
+
+          {!isLoading &&
+            featured.map((product) => (
+              <Link
+                key={product.id}
+                href={`/shop/${product.slug}`}
+                className="group overflow-hidden rounded-2xl border border-sand bg-warm transition-all duration-soft hover:-translate-y-0.5 hover:border-[color:var(--bronze)]/50"
+              >
+                <div className="aspect-[1/1] sm:aspect-[4/5] relative overflow-hidden bg-[#efe8df]">
+                  {product.images?.[0] && product.images[0] !== '/placeholder-product.jpg' ? (
+                    <Image
+                      src={product.images[0]}
+                      alt={product.name}
+                      fill
+                      className="object-cover transition-transform duration-gallery group-hover:scale-[1.03]"
+                      sizes="(max-width: 1024px) 50vw, 33vw"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-sm text-muted-ink">
+                      Immagine
+                    </div>
+                  )}
+                </div>
+                <div className="p-3.5 sm:p-5">
+                  <h3 className="font-serif text-base sm:text-xl text-ink mb-1.5 group-hover:text-[color:var(--brand)] transition-colors">
+                    {product.name}
+                  </h3>
+                  <p className="font-serif text-lg sm:text-xl text-[color:var(--bronze)]">
+                    {formatPrice(product.price)}
+                  </p>
+                </div>
+              </Link>
+            ))}
         </div>
 
-        {/* CTA centrale */}
-        <div className="text-center mt-8 md:mt-16 lg:mt-20">
+        {!isLoading && featured.length === 0 ? (
+          <p className="text-center text-sm text-muted-ink mt-8">
+            Nessun prodotto disponibile al momento.
+          </p>
+        ) : null}
+
+        <div className="text-center mt-10 md:mt-14">
           <Link href="/shop">
-            <Button variant="primary" size="lg" className="w-full sm:w-auto text-sm md:text-lg px-6 md:px-10 shadow-lg hover:shadow-xl transition-shadow">
-              {t('viewAll')}
+            <Button variant="primary" size="lg">
+              Vedi tutto lo shop
             </Button>
           </Link>
         </div>

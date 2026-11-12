@@ -6,15 +6,20 @@
   :root {
     --font-sans: 'DM Sans', system-ui, sans-serif;
     --font-serif: 'Fraunces', Georgia, serif;
-    /* ============================================
-       SFONDO SITO - MODIFICA QUI
-       ============================================ */
-    --site-background: #f7f3ee; /* Sfondo ceramico caldo, soft */
-    --ink: #2a2420;
+
+    /* UNIKA Contemporary Living Gallery */
+    --ivory: #f7f5f0;
+    --warm-white: #fcfbf8;
+    --sand: #e8e2d8;
+    --bronze: #a68a67;
+    --anthracite: #262522;
+    --soft-gold: #c4a77d;
+    --site-background: var(--ivory);
+    --ink: var(--anthracite);
     --muted: #6b635c;
     --brand: #663399;
     --terracotta: #c45824;
-    /* ============================================ */
+    --section-gap: clamp(3.5rem, 8vw, 7rem);
   }
 
   html {
@@ -22,16 +27,10 @@
     overflow-x: hidden;
   }
 
-  @media (max-width: 768px) {
-    html {
-      font-size: 16px;
-    }
-  }
-
   body {
     background-color: var(--site-background);
     @apply text-[color:var(--ink)] font-sans antialiased;
-    line-height: 1.6;
+    line-height: 1.65;
     letter-spacing: 0.01em;
     overflow-x: hidden;
   }
@@ -43,21 +42,66 @@
     max-width: 100%;
     height: auto;
   }
+
+  ::selection {
+    background: color-mix(in srgb, var(--bronze) 28%, white);
+    color: var(--anthracite);
+  }
 }
 
 @layer components {
-  /* Custom component styles */
+  .section-shell {
+    @apply relative py-12 md:py-20 lg:py-24;
+  }
+
+  .section-eyebrow {
+    @apply mb-2 text-[11px] sm:text-xs uppercase tracking-[0.18em] text-[color:var(--bronze)];
+  }
+
+  .section-title {
+    @apply font-serif text-2xl sm:text-4xl md:text-5xl text-[color:var(--anthracite)] leading-[1.1];
+  }
+
+  .section-lead {
+    @apply text-sm sm:text-base text-[color:var(--muted)] leading-relaxed max-w-2xl;
+  }
+
+  .organic-divider {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      color-mix(in srgb, var(--bronze) 55%, transparent) 50%,
+      transparent 100%
+    );
+  }
 }
 
 @layer utilities {
-  /* Custom utilities */
-  
-  /* Classe per sfondo principale del sito - usa questa invece di bg-white */
   .bg-site {
     background-color: var(--site-background);
   }
 
-  /* Nascondi scrollbar ma mantieni scroll funzionante */
+  .bg-warm {
+    background-color: var(--warm-white);
+  }
+
+  .text-ink {
+    color: var(--anthracite);
+  }
+
+  .text-muted-ink {
+    color: var(--muted);
+  }
+
+  .text-bronze {
+    color: var(--bronze);
+  }
+
+  .border-sand {
+    border-color: var(--sand);
+  }
+
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -66,62 +110,28 @@
     display: none;
   }
 
-  /* Scrollbar personalizzata per categorie */
   .scrollbar-custom::-webkit-scrollbar {
-    height: 8px;
+    height: 6px;
   }
   .scrollbar-custom::-webkit-scrollbar-track {
-    background: #f3f4f6;
-    border-radius: 4px;
+    background: var(--sand);
+    border-radius: 999px;
   }
   .scrollbar-custom::-webkit-scrollbar-thumb {
-    background: linear-gradient(to right, #663399, #c45824);
-    border-radius: 4px;
-  }
-  .scrollbar-custom::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(to right, #552288, #a0451a);
-  }
-
-  /* Animazione scroll indicator */
-  @keyframes scroll-indicator {
-    0%, 100% {
-      transform: translateX(-100%);
-    }
-    50% {
-      transform: translateX(100%);
-    }
-  }
-  .animate-scroll-indicator {
-    animation: scroll-indicator 2s ease-in-out infinite;
+    background: color-mix(in srgb, var(--bronze) 70%, var(--anthracite));
+    border-radius: 999px;
   }
 }
 
-/* Animazioni per modal */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* Animazioni per pagina articolo spettacolare */
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(24px);
   }
   to {
     opacity: 1;
@@ -129,88 +139,49 @@
   }
 }
 
-@keyframes fadeIn {
+@keyframes slideUp {
   from {
     opacity: 0;
+    transform: translateY(20px) scale(0.98);
   }
   to {
     opacity: 1;
+    transform: translateY(0) scale(1);
   }
+}
+
+@keyframes softShimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 .animate-fade-in-up {
   animation: fadeInUp 0.8s ease-out forwards;
 }
 
-.animate-fade-in-up-delay {
-  animation: fadeInUp 0.8s ease-out 0.2s forwards;
-  opacity: 0;
+.fade-rise {
+  animation: fadeInUp 0.75s ease-out both;
 }
 
-.animate-fade-in-up-delay-2 {
-  animation: fadeInUp 0.8s ease-out 0.4s forwards;
-  opacity: 0;
+.soft-panel {
+  background: color-mix(in srgb, var(--warm-white) 72%, transparent);
+  border: 1px solid color-mix(in srgb, var(--sand) 80%, transparent);
+  backdrop-filter: blur(6px);
 }
 
-.animate-fade-in-delay-3 {
-  animation: fadeIn 0.8s ease-out 0.6s forwards;
-  opacity: 0;
-}
-
-.animate-fade-in-up-delay-4 {
-  animation: fadeInUp 0.8s ease-out 0.8s forwards;
-  opacity: 0;
-}
-
-/* Animazioni per divisori spettacolari */
-@keyframes spin-slow {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.animate-spin-slow {
-  animation: spin-slow 20s linear infinite;
-}
-
-@keyframes shimmer {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-.animate-shimmer {
-  animation: shimmer 3s ease-in-out infinite;
-}
-
-@keyframes gradient-x {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
-.animate-gradient-x {
-  background-size: 200% 200%;
-  animation: gradient-x 3s ease infinite;
-}
-
-
-@layer utilities {
-  .fade-rise {
-    animation: fadeInUp 0.7s ease-out both;
-  }
-  .soft-panel {
-    background: rgba(255, 255, 255, 0.18);
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    backdrop-filter: blur(6px);
+@media (prefers-reduced-motion: reduce) {
+  .fade-rise,
+  .animate-fade-in-up,
+  .animate-fade-in-up-delay,
+  .animate-fade-in-up-delay-2,
+  .animate-fade-in-delay-3,
+  .animate-fade-in-up-delay-4,
+  .animate-shimmer,
+  .animate-gradient-x,
+  .animate-spin-slow,
+  .animate-scroll-indicator {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
